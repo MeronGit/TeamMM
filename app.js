@@ -1,7 +1,7 @@
 
 let validators = {};
 
-validators["firstName"] = validators["lastName"] = function(field) {
+validators["firstName"] = validators["lastName"] = validators["city"] = validators["street"] = validators["country"] = function(field) {
     if (field.value.length < 2)
         return "Vähemalt 2 tähemärki";
 };
@@ -46,15 +46,19 @@ validators["arrivalDate"] = function(field) {
         return "Sisesta kuupäev";
     }
 };
-validators["country"] = validators["county"] = function(field) {
-    if (field.value.trim().length() < 2) {
-        return "Sisesta väärtus";
-    }
-};
+validators["street"] = validators["county"] = function(field) {
+    if (field.value.length < 4)
+        return "Vähemalt 4 tähemärki";
+}
+validators["postalCode"] = function(field) {
+    if (field.value.length < 3)
+        return "Vähemalt 3 tähemärki";
+}
 
 let fieldsByStep = {
     0: ["firstName", "lastName", "personalCode", "email", "phoneNumber",
         "arrivalSourceAddress", "arrivalDate"],
+    1: ["country", "county", "city", "street", "postalCode"],
 };
 
 var vm = new Vue({
@@ -184,7 +188,7 @@ var vm = new Vue({
                 this.phoneNumberEditable = false;
             }
             setTimeout(function () {
-                for (fieldName of ["firstName", "lastName", "personalCode", "phoneNumber"]) {
+                for (fieldName of ["firstName", "lastName", "personalCode", "phoneNumber", "county"]) {
                     vm.validateField(document.getElementById(fieldName), true);
                 }
             }, 5);

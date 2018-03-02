@@ -103,27 +103,32 @@
           <div class="form-row">
             <div class="form-group col-sm">
               <label for="country">Riik</label>
-              <input type="text" id="country" class="form-control" />
+              <input type="text" id="country" v-model="country" class="form-control" :class="{ invalid: countryInvalid }" @blur="validateField($event.target)" @input="validateField($event.target, true)"/>
+              <div class="noticeDiv">{{ countryMsg }}</div>
             </div>
             <div class="form-group col-sm">
               <label for="county">Maakond</label>
-              <input type="text" id="county" class="form-control" />
+              <input type="text" id="county" v-model="county" class="form-control" :class="{ invalid: countyInvalid }" @blur="validateField($event.target)" @input="validateField($event.target, true)"/>
+              <div class="noticeDiv">{{ countyMsg }}</div>
             </div>
           </div>
           <div class="form-row">
             <div class="form-group col-sm">
               <label for="city">Vald/linn, alevik, küla</label>
-              <input type="text" id="city" class="form-control" />
+              <input type="text" id="city" v-model="city" class="form-control" :class="{ invalid: cityInvalid }" @blur="validateField($event.target)" @input="validateField($event.target, true)"/>
+              <div class="noticeDiv">{{ cityMsg }}</div>
             </div>
           </div>
           <div class="form-row">
             <div class="form-group col-sm-8">
               <label for="street">Tänav/talu, maja nr, korteri nr</label>
-              <input type="text" id="street" class="form-control" />
+              <input type="text" id="street" class="form-control" v-model="street" :class="{ invalid: streetInvalid }" @blur="validateField($event.target)" @input="validateField($event.target, true)"/>
+              <div class="noticeDiv">{{ streetMsg }}</div>
             </div>
             <div class="form-group col-sm-4">
               <label for="postalCode">Postiindeks</label>
-              <input type="text" id="postalCode" class="form-control" />
+              <input type="text" id="postalCode" class="form-control" v-model="postalCode" :class="{ invalid: postalCodeInvalid }" @blur="validateField($event.target)" @input="validateField($event.target, true)"/>
+              <div class="noticeDiv">{{ postalCodeMsg }}</div>
             </div>
           </div>
 
