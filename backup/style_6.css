@@ -1,0 +1,33 @@
+.introDiv, .stepDiv, .finalDiv {
+  min-height: 428px;
+}
+.introDiv {
+  padding-top: 125px;
+}
+.finalDiv {
+  padding-top: 100px;
+  min-height: 436px;
+}
+
+.formFieldError{
+  margin-top: 10px;
+  text-align: center;
+  color: red;
+}
+.invalid {
+  border-color: red !important;
+  background-color: #ff181817 !important;
+}
+
+.inhabitantEntry {
+  background-color: #ddd;
+  padding: 10px 5px 10px 15px;
+}
+.inhabitantEntry:nth-child(odd) {
+  background-color: #eee;
+}
+.inhabitantEntry > button {
+  float: right;
+  margin-top: -3px;
+  margin-left: 3px;
+}

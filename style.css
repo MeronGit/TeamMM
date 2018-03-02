@@ -1,0 +1,56 @@
+.introDiv, .stepDiv, .finalDiv {
+  min-height: 428px;
+}
+.introDiv {
+  padding-top: 125px;
+}
+.finalDiv {
+  padding-top: 100px;
+  min-height: 436px;
+}
+
+.formFieldError{
+  margin-top: 10px;
+  text-align: center;
+  color: red;
+}
+.invalid {
+  border-color: red !important;
+  background-color: #ff181817 !important;
+}
+
+.inhabitantEntry {
+  background-color: #ddd;
+  padding: 10px 5px 10px 15px;
+}
+.inhabitantEntry:nth-child(odd) {
+  background-color: #eee;
+}
+.inhabitantEntry > button {
+  float: right;
+  margin-top: -3px;
+  margin-left: 3px;
+}
+
+.noticeDiv {
+  min-height: 25px;
+  font-size: 13px;
+  color: red;
+}
+/*html, body {
+    margin: 0;
+    height: 100%;
+}
+
+body {
+    background-image: linear-gradient(to bottom, #b1d6ff9e, #b1d6ff9e 30%, white 70%, white);
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.container {
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 25px;
+  padding: 25px;
+
+}*/

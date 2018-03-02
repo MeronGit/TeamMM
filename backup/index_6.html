@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Elukohast teatamine</title>
+    <link rel="stylesheet" href="bootstrap.min.css" />
+    <link rel="stylesheet" href="open-iconic/css/open-iconic-bootstrap.css" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="d-none">
+    <main role="main" class="container" id="app" style="max-width: 450px;">
+      <h1 class="mt-4">Elukohast teatamine</h1>
+
+      <!-- PAGE -1 -->
+      <div class="introDiv text-center" v-if="stepNo == -1">
+        <p class="lead">Selle vormi kaudu saad teatada oma elukoha andmed.</p>
+        <button class="btn btn-success btn-lg" @click="goToNextStep()">Alusta täitmist</button>
+      </div>
+
+      <!-- PAGE 0 -->
+      <div class="stepDiv" v-if="stepNo == 0">
+        <h2 class="mt-3">Sinu andmed</h2>
+        <div class="text-right">
+          <div class="float-left mt-2">Eeltäida:</div>
+          <div v-if="fillSource">
+            <div class="d-inline-block mt-2 mr-1">
+              Allikas:
+              <strong>{{fillSource}}</strong>
+            </div>
+            <button class="btn" @click="revertFieldFill" style="margin-top: -5px">Ennista</button>
+          </div>
+          <div v-else>
+            <button class="btn ml-2" @click="fillFieldsWithID">ID-kaart</button>
+            <button class="btn" @click="fillFieldsWithID">Mobiil-ID</button>
+            <button class="btn" @click="fillFieldsWithID">Smart-ID</button>
+          </div>
+        </div>
+        <div class="formFieldError" style="min-height: 25px">
+          <li v-for="error in errors" style="color:red">{{ error }}</li>
+        </div>
+        <form class="mt-3 step">
+          <div class="form-row">
+            <div class="form-group col-sm">
+              <label for="firstName">Eesnimi</label>
+              <input type="text" id="firstName" v-model="firstName" :disabled="!identityEditable" class="form-control" v-bind:class="{ invalid: firstNameInvalid }" />
+            </div>
+            <div class="form-group col-sm">
+              <label for="lastName">Perenimi</label>
+              <input type="text" id="lastName" v-model="lastName" :disabled="!identityEditable" class="form-control" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-sm">
+              <label for="personalCode">Isikukood</label>
+              <input type="text" id="personalCode" v-model="personalCode" :disabled="!identityEditable" class="form-control" />
+            </div>
+            <div class="form-group col-sm">
+              <label for="foreignPersonalCode">Välisriigi isikukood</label>
+              <input type="text" id="foreignPersonalCode" v-model="foreignPersonalCode" class="form-control" placeholder="Täita olemasolul" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-sm">
+              <label for="email">E-post</label>
+              <input type="email" id="email" v-model="email" class="form-control"  v-bind:class="{ invalid: emailInvalid }" />
+            </div>
+            <div class="form-group col-sm">
+              <label for="phoneNumber">Telefoninumber</label>
+              <input type="text" id="phoneNumber" v-model="phoneNumber" :disabled="!phoneNumberEditable" class="form-control" />
+            </div>
+          </div>
+          <div class="form-check">
+            <input type="checkbox" style="zoom: 1.6" class="form-check-input" id="arrivalCheckbox" v-model="showArrivalRow"/>
+            <label for="arrivalCheckbox" class="form-check-label">
+              Saabusin välismaalt
+            </label>
+          </div>
+          <div class="form-row" v-if="showArrivalRow">
+            <div class="form-group col-sm">
+              <label for="arrivalSourceAddress">Lähteaadress</label>
+              <input type="text" id="arrivalSourceAddress" v-model="arrivalSourceAddress" class="form-control" placeholder="Riik, haldusüksus" />
+            </div>
+            <div class="form-group col-sm">
+              <label for="arrivalDate">Lahkumise kuupäev</label>
+              <input type="date" id="arrivalDate" v-model="arrivalDate" class="form-control" />
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- PAGE 1 -->
+      <div class="stepDiv" v-else-if="stepNo == 1">
+        <h2 class="mt-3">Elukoha aadress</h2>
+        <form class="mt-3">
+          <div class="form-row">
+            <div class="form-group col-sm">
+              <label for="country">Riik</label>
+              <input type="text" id="country" class="form-control" />
+            </div>
+            <div class="form-group col-sm">
+              <label for="county">Maakond</label>
+              <input type="text" id="county" class="form-control" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-sm">
+              <label for="city">Vald/linn, alevik, küla</label>
+              <input type="text" id="city" class="form-control" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-sm-8">
+              <label for="street">Tänav/talu, maja nr, korteri nr</label>
+              <input type="text" id="street" class="form-control" />
+            </div>
+            <div class="form-group col-sm-4">
+              <label for="postalCode">Postiindeks</label>
+              <input type="text" id="postalCode" class="form-control" />
+            </div>
+          </div>
+
+          <div class="form-check mt-3">
+            <input type="checkbox" style="zoom: 1.6" class="form-check-input" id="additionalAddressCheckbox" v-model="additionalAddressPresent" />
+            <label for="additionalAddressCheckbox" class="form-check-label">
+              Mul on teine sideaadress
+            </label>
+          </div>
+        </form>
+      </div>
+
+      <!-- PAGE 2 -->
+      <div class="stepDiv" v-else-if="stepNo == 2">
+        <h2 class="mt-3">Sideaadress</h2>
+        <form class="mt-3">
+          <div class="form-row">
+            <div class="form-group col-sm">
+              <label for="country">Riik</label>
+              <input type="text" id="country" class="form-control" />
+            </div>
+            <div class="form-group col-sm">
+              <label for="county">Maakond</label>
+              <input type="text" id="county" class="form-control" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-sm">
+              <label for="city">Vald/linn, alevik, küla</label>
+              <input type="text" id="city" class="form-control" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-sm-8">
+              <label for="street">Tänav/talu, maja nr, korteri nr</label>
+              <input type="text" id="street" class="form-control" />
+            </div>
+            <div class="form-group col-sm-4">
+              <label for="postalCode">Postiindeks</label>
+              <input type="text" id="postalCode" class="form-control" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-sm">
+              <label for="startDate">Kehtib alates</label>
+              <input type="date" id="startDate" class="form-control" />
+            </div>
+            <div class="form-group col-sm">
+              <label for="endDate">Kehtib kuni</label>
+              <input type="date" id="endDate" class="form-control" />
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- PAGE 3 -->
+      <div class="stepDiv" v-else-if="stepNo == 3">
+        <h2 class="mt-3">Ruumi kasutamise õigus</h2>
+        <form class="mt-4">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" id="permissionOwner" name="permission" value="owner" v-model="permission">
+            <label class="form-check-label" for="permissionOwner">
+              Olen ruumi (kaas)omanik
+            </label>
+          </div>
+          <div class="form-check mt-2">
+            <input class="form-check-input" type="radio" id="permissionUnderLease" name="permission" value="underLease" v-model="permission">
+            <label class="form-check-label" for="permissionUnderLease">
+              Üürilepingu alusel
+            </label>
+          </div>
+          <div class="form-check mt-2">
+            <input class="form-check-input" type="radio" id="permissionFromOwner" name="permission" value="fromOwner" v-model="permission">
+            <label class="form-check-label" for="permissionFromOwner">
+              Omaniku nõusoleku alusel
+            </label>
+          </div>
+          <div class="form-check mt-2">
+            <input class="form-check-input" type="radio" id="permissionOther" name="permission" value="other" v-model="permission">
+            <label class="form-check-label" for="permissionOther">
+              Muul alusel
+              <div class="text-muted">(näiteks isiklik kasutusõigus või olen perekonnaliige)</div>
+            </label>
+          </div>
+          <hr/>
+          <div v-if="permission == 'underLease'">
+            Lisa üürileping:
+            <div class="custom-file mt-1">
+              <input type="file" class="custom-file-input" id="customFile" @change="leaseContractFileChanged($event.target)">
+              <label class="custom-file-label" for="customFile">Vali dokument: <strong>{{ leaseContractFile }}</strong></label>
+            </div>
+            <div class="text-muted mt-1">Allkirjastatud .bdoc dokument.</div>
+          </div>
+          <div v-else-if="permission == 'fromOwner'">
+            Küsi omaniku nõusolekut:
+            <input type="email" class="form-control" name="ownerEmail" placeholder="Omaniku e-mail" />
+          </div>
+        </form>
+      </div>
+
+      <!-- PAGE 4 -->
+      <div class="stepDiv" v-else-if="stepNo == 4">
+        <div v-if="inhabitantFormShown">
+          <h2 class="mt-3">{{inhabitantFormVerb}} elanik</h2>
+          <ul>
+            <li>E-posti teel küsitakse digiallkirjastatud nõusolekut.</li>
+            <li>Alaealise puhul tuleb sisestada lapsevanema/eestkostja e-post ja telefoninumber.</li>
+          </ul>
+          <form class="mt-3 step">
+            <div class="form-row">
+              <div class="form-group col-sm">
+                <label for="firstName">Eesnimi</label>
+                <input type="text" id="firstName" v-model="ihFirstName" class="form-control" />
+              </div>
+              <div class="form-group col-sm">
+                <label for="lastName">Perenimi</label>
+                <input type="text" id="lastName" v-model="ihLastName" class="form-control" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-sm">
+                <label for="personalCode">Isikukood</label>
+                <input type="text" id="personalCode" v-model="ihPersonalCode" class="form-control" />
+              </div>
+              <div class="form-group col-sm">
+                <label for="foreignPersonalCode">Välisriigi isikukood</label>
+                <input type="text" id="foreignPersonalCode" v-model="ihForeignPersonalCode" class="form-control" placeholder="Täita olemasolul" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-sm">
+                <label for="email">E-post</label>
+                <input type="email" id="email" v-model="ihEmail" class="form-control" />
+              </div>
+              <div class="form-group col-sm">
+                <label for="phoneNumber">Telefoninumber</label>
+                <input type="text" id="phoneNumber" v-model="ihPhoneNumber" class="form-control" />
+              </div>
+            </div>
+            <div class="form-check">
+              <input type="checkbox" style="zoom: 1.6" class="form-check-input" id="arrivalCheckbox" v-model="ihShowArrivalRow"/>
+              <label for="arrivalCheckbox" class="form-check-label">
+                Saabus välismaalt
+              </label>
+            </div>
+            <div class="form-row" v-if="ihShowArrivalRow">
+              <div class="form-group col-sm">
+                <label for="arrivalSourceAddress">Lähteaadress</label>
+                <input type="text" id="arrivalSourceAddress" v-model="ihArrivalSourceAddress" class="form-control" placeholder="Riik, haldusüksus" />
+              </div>
+              <div class="form-group col-sm">
+                <label for="arrivalDate">Lahkumise kuupäev</label>
+                <input type="date" id="arrivalDate" v-model="ihArrivalDate" class="form-control" />
+              </div>
+            </div>
+          </form>
+        </div>
+        <div v-else>
+          <h2 class="mt-3">Elanikud</h2>
+          <div class="mt-3">
+            <div class="form-check ml-2">
+              <input type="checkbox" class="form-check-input" v-model="inhabitantsIncludeMe" id="includeMeCheckbox"/>
+              <label for="includeMeCheckbox" class="form-check-label">
+                Mina: <strong>{{firstName}} {{lastName}}</strong>
+              </label>
+            </div>
+            <div class="inhabitantEntry" v-for="(inhabitant, index) in inhabitants">
+              <button class="btn btn-sm btn-dark" @click="removeInhabitant(index)">
+                <span class="oi oi-trash" title="Remove">
+              </button>
+              <button class="btn btn-sm btn-dark" @click="showInhabitantForm(index)">
+                <span class="oi oi-pencil" title="Edit"></span>
+              </button>
+              {{inhabitant.firstName}} {{inhabitant.lastName}}
+            </div>
+            <button class="btn btn-success mt-2 btn-block" @click="showInhabitantForm(-1)">
+              + Lisa elanik
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="finalDiv text-center" v-else-if="stepNo == 5">
+        <h1>Tehtud!</h1>
+        <p class="lead">
+          Kahjuks pole tegu
+          <a target="_blank" href="https://www.siseministeerium.ee/sites/default/files/dokumendid/Rahvastiku-statistika/lisa_1_elukohateade_taidetav_sm_0.pdf">tegeliku ankeediga</a>.</p>
+      </div>
+
+      <!-- END OF PAGES -->
+      <div class="mt-2" v-if="inhabitantFormShown">
+        <button class="btn btn-success float-right px-4" @click="submitInhabitantForm()">{{inhabitantFormVerb}}</button>
+        <button class="btn btn-secondary" @click="cancelInhabitantForm()">
+          Katkesta
+        </button>
+      </div>
+      <div v-else-if="stepNo >= 0">
+        <div class="progress mb-1 mt-3">
+          <div class="progress-bar" role="progressbar" :style="{ width: completionPercentage + '%' }">
+            {{ completionPercentage }}%
+          </div>
+        </div>
+        <button class="btn float-right" :class="{ 'btn-success': (stepNo < numSteps) }" :disabled="(stepNo >= numSteps)" @click="checkEmptyMandatoryFields">
+          <span v-if="(stepNo >= numSteps-1)">Lõpeta</span><span v-else>Edasi</span>
+        </button>
+        <button class="btn" :class="{ 'btn-secondary': (stepNo > 0) }" :disabled="(stepNo <= 0 || stepNo == numSteps)" @click="goToPreviousStep()">
+          Tagasi
+        </button>
+      </div>
+    </main>
+    <script src="vue.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

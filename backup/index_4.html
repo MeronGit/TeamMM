@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Elukohast teatamine</title>
+    <link rel="stylesheet" href="bootstrap.min.css" />
+  </head>
+  <body>
+    <main role="main" class="container" id="app" style="max-width: 450px;">
+      <h1 class="mt-4">Elukohast teatamine</h1>
+
+      <!-- PAGE 0 -->
+      <div class="stepDiv" v-if="stepNo == 0">
+        <p class="lead">Siin saad teatada oma elukoha andmed.</p>
+        <h2>Sinu andmed</h2>
+        <div class="text-right">
+          <div class="float-left mt-2">Eeltäida:</div>
+          <button class="btn ml-2" @click="fillFieldsWithID(false)">ID-kaart</button>
+          <button class="btn" @click="fillFieldsWithID(true)">Mobiil-ID</button>
+          <button class="btn" @click="fillFieldsWithID(false)">Smart-ID</button>
+        </div>
+        <form class="mt-3 step">
+          <div class="form-row">
+            <div class="form-group col-sm">
+              <label for="firstName">Eesnimi</label>
+              <input type="text" id="firstName" v-model="firstName" class="form-control" />
+            </div>
+            <div class="form-group col-sm">
+              <label for="lastName">Perenimi</label>
+              <input type="text" id="lastName" v-model="lastName" class="form-control" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-sm">
+              <label for="personalCode">Isikukood</label>
+              <input type="text" id="personalCode" v-model="personalCode" class="form-control" />
+            </div>
+            <div class="form-group col-sm">
+              <label for="foreignPersonalCode">Välisriigi isikukood</label>
+              <input type="text" id="foreignPersonalCode" class="form-control" placeholder="Täita olemasolul" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-sm">
+              <label for="email">E-post</label>
+              <input type="email" id="email" class="form-control" />
+            </div>
+            <div class="form-group col-sm">
+              <label for="phoneNumber">Telefoninumber</label>
+              <input type="text" id="phoneNumber" v-model="phoneNumber" class="form-control" />
+            </div>
+          </div>
+          <div class="form-check">
+            <input type="checkbox" style="zoom: 1.6" class="form-check-input" id="arrivalCheckbox" v-model="showArrivalRow"/>
+            <label for="arrivalCheckbox" clas="form-check-label">
+              Saabusin välismaalt
+            </label>
+          </div>
+          <div class="form-row" v-if="showArrivalRow">
+            <div class="form-group col-sm1">
+              <label for="arrivalSourceAddress">Lähteaadress</label>
+              <input type="text" id="arrivalSourceAddress" class="form-control" placeholder="Riik, haldusüksus" />
+            </div>
+            <div class="form-group col-sm">
+              <label for="arrivalDate">Lahkumise kuupäev</label>
+              <input type="date" id="arrivalDate" class="form-control" />
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- PAGE 1 -->
+      <div class="stepDiv" v-else-if="stepNo == 1">
+        <h2>Elukoha aadress</h2>
+        <form class="mt-3">
+          <div class="form-row">
+            <div class="form-group col-sm">
+              <label for="country">Riik</label>
+              <input type="text" id="country" class="form-control" />
+            </div>
+            <div class="form-group col-sm">
+              <label for="county">Maakond</label>
+              <input type="text" id="county" class="form-control" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-sm">
+              <label for="city">Vald/linn, alevik, küla</label>
+              <input type="text" id="city" class="form-control" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-sm-8">
+              <label for="street">Tänav/talu, maja nr, korteri nr</label>
+              <input type="text" id="street" class="form-control" />
+            </div>
+            <div class="form-group col-sm-4">
+              <label for="postalCode">Postiindeks</label>
+              <input type="text" id="postalCode" class="form-control" />
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- PAGE 2 -->
+      <div class="stepDiv" v-else-if="stepNo == 2">
+        <h2>Ruumi kasutamise õigus</h2>
+        <form class="mt-4">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" id="permissionOwner" name="permission" value="owner" v-model="permission">
+            <label class="form-check-label" for="permissionOwner">
+              Olen ruumi (kaas)omanik
+            </label>
+          </div>
+          <div class="form-check mt-2">
+            <input class="form-check-input" type="radio" id="permissionUnderLease" name="permission" value="underLease" v-model="permission">
+            <label class="form-check-label" for="permissionUnderLease">
+              Üürilepingu alusel
+            </label>
+          </div>
+          <div class="form-check mt-2">
+            <input class="form-check-input" type="radio" id="permissionFromOwner" name="permission" value="fromOwner" v-model="permission">
+            <label class="form-check-label" for="permissionFromOwner">
+              Omaniku nõusoleku alusel
+            </label>
+          </div>
+          <div class="form-check mt-2">
+            <input class="form-check-input" type="radio" id="permissionOther" name="permission" value="other" v-model="permission">
+            <label class="form-check-label" for="permissionOther">
+              Muul alusel
+              <div class="text-muted">(näiteks isiklik kasutusõigus või olen perekonnaliige)</div>
+            </label>
+          </div>
+          <hr/>
+          <div v-if="permission == 'underLease'">
+            Lisa üürileping:
+            <div class="custom-file">
+              <input type="file" class="custom-file-input" id="customFile" @change="leaseContractFileChanged($event.target)">
+              <label class="custom-file-label" for="customFile">Vali dokument: <strong>{{ leaseContractFile }}</strong></label>
+            </div>
+          </div>
+          <div v-else-if="permission == 'fromOwner'">
+            Küsi omaniku nõusolekut:
+            <input type="email" class="form-control" name="ownerEmail" placeholder="Omaniku e-mail" />
+          </div>
+        </form>
+      </div>
+
+      <div class="progress mb-1 mt-3">
+        <div class="progress-bar" role="progressbar" :style="{ width: completionPercentage + '%' }">
+          {{ completionPercentage }}%
+        </div>
+      </div>
+      <button class="btn btn-success float-right" @click="goToNextStep()">Edasi</button>
+      <button class="btn" :class="{ 'btn-secondary': (stepNo > 0) }" :disabled="(stepNo <= 0)" @click="goToPreviousStep()">
+        Tagasi
+      </button>
+    </main>
+    <script src="vue.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
