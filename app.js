@@ -1,7 +1,8 @@
 
 let validators = {};
 
-validators["firstName"] = validators["lastName"] = validators["city"] = validators["street"] = validators["country"] = function(field) {
+validators["firstName"] = validators["lastName"] = validators["city"] = validators["street"] =
+validators["country"] = validators["cityContact"] = validators["streetContact"] = validators["countryContact"] = function(field) {
     if (field.value.length < 2)
         return "Vähemalt 2 tähemärki";
 };
@@ -35,10 +36,12 @@ validators["arrivalSourceAddress"] = function(field) {
         return "Ebakorrektne aadress";
     }
 };
-validators["arrivalDate"] = function(field) {
+validators["arrivalDate"] = validators["startDate"] = validators["endDate"] = function(field) {
     if (!vm.showArrivalRow) {
         return "";
     }
+    //kas siia peaks kirjutama ka if !vm.showFutureContactDate ja !vm.showEndContactDate?
+    //või teha teine funktsioon?
     console.log("validating arrivalDate");
     if (!field.validity.valid) {
         return "Ebakorrektne kuupäev";
@@ -46,11 +49,13 @@ validators["arrivalDate"] = function(field) {
         return "Sisesta kuupäev";
     }
 };
-validators["street"] = validators["county"] = function(field) {
+
+//vb saab neid ka paremini teha iga numbri jaoks
+validators["county"] = validators["countyContact"] = function(field) {
     if (field.value.length < 4)
         return "Vähemalt 4 tähemärki";
 }
-validators["postalCode"] = function(field) {
+validators["postalCode"] = validators["postalCodeContact"] = function(field) {
     if (field.value.length < 3)
         return "Vähemalt 3 tähemärki";
 }
@@ -59,6 +64,8 @@ let fieldsByStep = {
     0: ["firstName", "lastName", "personalCode", "email", "phoneNumber",
         "arrivalSourceAddress", "arrivalDate"],
     1: ["country", "county", "city", "street", "postalCode"],
+    2: ["countryContact", "countyContact", "cityContact", "streetContact",
+        "postalCodeContact", "startDate", "endDate"],
 };
 
 var vm = new Vue({
@@ -74,6 +81,8 @@ var vm = new Vue({
             phoneNumberEditable: true,
             foreignPersonalCode: "",
             showArrivalRow: false,
+            showEndContactDate: false,
+            showFutureContactDate: false,
             errors: [],
 
             // PAGE 1
@@ -170,6 +179,14 @@ var vm = new Vue({
                 if (!this.validateStep()) {
                     return;
                 }
+                this.stepNo++;
+                if (!this.additionalAddressPresent && this.stepNo == 2) {
+                    this.stepNo++;
+                }
+            }
+        },
+        goToNextStepDebug() {
+            if (this.stepNo < this.numSteps) {
                 this.stepNo++;
                 if (!this.additionalAddressPresent && this.stepNo == 2) {
                     this.stepNo++;

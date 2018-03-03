@@ -11,6 +11,7 @@
   <body class="d-none">
     <main role="main" class="container" id="app" style="max-width: 450px;">
       <h1 class="mt-4">Elukohast teatamine</h1>
+      <hr v-if="stepNo >= 0"/>
 
       <!-- PAGE -1 -->
       <div class="introDiv text-center" v-if="stepNo == -1">
@@ -21,8 +22,8 @@
       <!-- PAGE 0 -->
       <div class="stepDiv" v-if="stepNo == 0">
         <h2 class="mt-3">Sinu andmed</h2>
-        <div class="text-right">
-          <div class="float-left mt-2">Eeltäida:</div>
+        <div class="text-right mt-4 alertField">
+          <div class="float-left mt-2 ml-1">Kasuta andmeid:</div>
           <div v-if="fillSource">
             <div class="d-inline-block mt-2 mr-1">
               Allikas:
@@ -31,14 +32,12 @@
             <button class="btn" @click="revertFieldFill" style="margin-top: -5px">Ennista</button>
           </div>
           <div v-else>
-            <button class="btn ml-2" @click="fillFieldsWithID">ID-kaart</button>
-            <button class="btn" @click="fillFieldsWithID">Mobiil-ID</button>
-            <button class="btn" @click="fillFieldsWithID">Smart-ID</button>
+            <button class="btn btn-light ml-2" @click="fillFieldsWithID">ID-kaart</button>
+            <button class="btn btn-light" @click="fillFieldsWithID">Mobiil-ID</button>
+            <button class="btn btn-light" @click="fillFieldsWithID">Smart-ID</button>
           </div>
         </div>
-        <div class="formFieldError" style="min-height: 25px">
-          <li v-for="error in errors" style="color:red">{{ error }}</li>
-        </div>
+        <hr />
         <form class="mt-3 step">
           <div class="form-row">
             <div class="form-group col-sm">
@@ -100,6 +99,7 @@
       <div class="stepDiv" v-else-if="stepNo == 1">
         <h2 class="mt-3">Elukoha aadress</h2>
         <form class="mt-3">
+          <hr />
           <div class="form-row">
             <div class="form-group col-sm">
               <label for="country">Riik</label>
@@ -145,41 +145,65 @@
       <div class="stepDiv" v-else-if="stepNo == 2">
         <h2 class="mt-3">Sideaadress</h2>
         <form class="mt-3">
+          <hr />
           <div class="form-row">
             <div class="form-group col-sm">
               <label for="country">Riik</label>
-              <input type="text" id="country" class="form-control" />
+              <input type="text" id="country" v-model="countryContact" class="form-control" :class="{ invalid: countryContactInvalid }" @blur="validateField($event.target)" @input="validateField($event.target, true)"/>
+              <div class="noticeDiv">{{ countryContactMsg }}</div>
             </div>
             <div class="form-group col-sm">
               <label for="county">Maakond</label>
-              <input type="text" id="county" class="form-control" />
+              <input type="text" id="county" v-model="countyContact" class="form-control" :class="{ invalid: countyContactInvalid }" @blur="validateField($event.target)" @input="validateField($event.target, true)"/>
+              <div class="noticeDiv">{{ countyContactMsg }}</div>
             </div>
           </div>
           <div class="form-row">
             <div class="form-group col-sm">
               <label for="city">Vald/linn, alevik, küla</label>
-              <input type="text" id="city" class="form-control" />
+              <input type="text" id="city" v-model="cityContact" class="form-control" :class="{ invalid: cityContactInvalid }" @blur="validateField($event.target)" @input="validateField($event.target, true)"/>
+              <div class="noticeDiv">{{ cityContactMsg }}</div>
             </div>
           </div>
           <div class="form-row">
             <div class="form-group col-sm-8">
               <label for="street">Tänav/talu, maja nr, korteri nr</label>
-              <input type="text" id="street" class="form-control" />
+              <input type="text" id="street" class="form-control" v-model="streetContact" :class="{ invalid: streetContactInvalid }" @blur="validateField($event.target)" @input="validateField($event.target, true)"/>
+              <div class="noticeDiv">{{ streetContactMsg }}</div>
             </div>
             <div class="form-group col-sm-4">
               <label for="postalCode">Postiindeks</label>
-              <input type="text" id="postalCode" class="form-control" />
+              <input type="text" id="postalCode" class="form-control" v-model="postalCodeContact" :class="{ invalid: postalCodeContactInvalid }" @blur="validateField($event.target)" @input="validateField($event.target, true)"/>
+              <div class="noticeDiv">{{ postalCodeContactMsg }}</div>
             </div>
           </div>
-          <div class="form-row">
+          <div class="form-row ml-3">
             <div class="form-group col-sm">
-              <label for="startDate">Kehtib alates</label>
-              <input type="date" id="startDate" class="form-control" />
+              <input type="checkbox" style="zoom:1.6" class="form-check-input" id="futureContactDate" v-model="showFutureContactDate"/>
+              <label for="futureContactDate" class="form-check-label">
+                Kehtivus algab tulevikus
+              </label>
+
+              <div class ="mt-1" v-if="showFutureContactDate">
+                <label for="startDate">Kehtib alates</label>
+                <input type="date" id="startDate" class="form-control" v-model="startDate" class="form-control" :class="{ invalid: startDateInvalid }" @blur="validateField($event.target)" @focus="clearFieldMessage($event.target)" />
+                <div class="noticeDiv">{{ startDateMsg }}</div>
+              </div>
             </div>
+
             <div class="form-group col-sm">
-              <label for="endDate">Kehtib kuni</label>
-              <input type="date" id="endDate" class="form-control" />
-            </div>
+              <input type="checkbox" style="zoom:1.6" class="form-check-input" id="endContactDate" v-model="showEndContactDate"/>
+              <label for="endContactDate" class="form-check-label">
+                Lõpukuupäev on teada
+              </label>
+
+              <div class ="mt-1" v-if="showEndContactDate">
+                <label for="endDate">Kehtib kuni</label>
+                <input type="date" id="endDate" class="form-control" v-model="endDate" class="form-control" :class="{ invalid: endDateInvalid }" @blur="validateField($event.target)" @focus="clearFieldMessage($event.target)" />
+                <div class="noticeDiv">{{ endDateMsg }}</div>
+              </div>
+           </div>
+
           </div>
         </form>
       </div>

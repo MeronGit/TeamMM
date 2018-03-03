@@ -1,12 +1,12 @@
 .introDiv, .stepDiv, .finalDiv {
-  min-height: 428px;
+  min-height: 520px;
 }
 .introDiv {
   padding-top: 125px;
 }
 .finalDiv {
   padding-top: 100px;
-  min-height: 436px;
+  min-height: 520px;
 }
 
 .formFieldError{
@@ -36,6 +36,20 @@
   min-height: 25px;
   font-size: 13px;
   color: red;
+}
+
+.alertField {
+  background-color: #b1d6ff9e;
+  padding: 6px;
+  border-radius: 5px;
+
+}
+
+.boxField {
+  background-color: #b1d6ff9e;
+  border-radius: 5px;
+  padding: 1px;
+
 }
 /*html, body {
     margin: 0;
