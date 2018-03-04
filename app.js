@@ -13,14 +13,14 @@ validators["personalCode"] = validators["ihPersonalCode"] = function(field) {
         return "Eesti isikukoodis on 11 numbrit";
 };
 
-validators["email"] = function(field) {
+validators["email"] = validators["ihEmail"] = function(field) {
     if (field.value.trim().length <= 0) {
         return "Sisesta e-postiaadress";
     } else if (!field.validity.valid) {
         return "Ebakorrektne e-postiaadress";
     }
 };
-validators["phoneNumber"] = function(field) {
+validators["phoneNumber"] = validators["ihPhoneNumber"] = function(field) {
     let value = field.value.replace(/\s+/g, "");
     if (value.length == 0) {
         return "Sisesta telefoninumber"
@@ -28,7 +28,7 @@ validators["phoneNumber"] = function(field) {
         return "Ebakorrektne telefoninumber";
     }
 };
-validators["arrivalSourceAddress"] = function(field) {
+validators["arrivalSourceAddress"] = validators["ihArrivalSourceAddress"] = function(field) {
     if (!vm.showArrivalRow) {
         return "";
     }
@@ -38,7 +38,7 @@ validators["arrivalSourceAddress"] = function(field) {
         return "Ebakorrektne aadress";
     }
 };
-validators["arrivalDate"] = validators["startDate"] = validators["endDate"] = function(field) {
+validators["arrivalDate"] = validators["ihArrivalDate"] = validators["startDate"] = validators["endDate"] = function(field) {
     if (!vm.showArrivalRow) {
         return "";
     }
@@ -68,6 +68,8 @@ let fieldsByStep = {
     1: ["country", "county", "city", "street", "postalCode"],
     2: ["countryContact", "countyContact", "cityContact", "streetContact",
         "postalCodeContact", "startDate", "endDate"],
+    4: ["ihFirstName", "ihLastName", "ihPersonalCode", "ihEmail", "ihPhoneNumber",
+        "ihArrivalSourceAddress", "ihArrivalDate"],
 };
 
 var vm = new Vue({
@@ -103,8 +105,8 @@ var vm = new Vue({
             //ihLastName: "",
             //ihPersonalCode: "",
             ihForeignPersonalCode: "",
-            ihEmail: "",
-            ihPhoneNumber: "",
+            //ihEmail: "",
+            //ihPhoneNumber: "",
             ihShowArrivalRow: false,
             ihArrivalSourceAddress: "",
             ihArrivalDate: ""
