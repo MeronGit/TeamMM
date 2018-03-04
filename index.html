@@ -149,58 +149,58 @@
           <div class="form-row">
             <div class="form-group col-sm">
               <label for="country">Riik</label>
-              <input type="text" id="country" v-model="countryContact" class="form-control" :class="{ invalid: countryContactInvalid }" @blur="validateField($event.target)" @input="validateField($event.target, true)"/>
-              <div class="noticeDiv">{{ countryContactMsg }}</div>
+              <input type="text" id="contactCountry" v-model="contactCountry" class="form-control" :class="{ invalid: contactCountryInvalid }" @blur="validateField($event.target)" @input="validateField($event.target, true)"/>
+              <div class="noticeDiv">{{ contactCountryMsg }}</div>
             </div>
             <div class="form-group col-sm">
               <label for="county">Maakond</label>
-              <input type="text" id="county" v-model="countyContact" class="form-control" :class="{ invalid: countyContactInvalid }" @blur="validateField($event.target)" @input="validateField($event.target, true)"/>
-              <div class="noticeDiv">{{ countyContactMsg }}</div>
+              <input type="text" id="contactCounty" v-model="contactCounty" class="form-control" :class="{ invalid: contactCountyInvalid }" @blur="validateField($event.target)" @input="validateField($event.target, true)"/>
+              <div class="noticeDiv">{{ contactCountyMsg }}</div>
             </div>
           </div>
           <div class="form-row">
             <div class="form-group col-sm">
               <label for="city">Vald/linn, alevik, küla</label>
-              <input type="text" id="city" v-model="cityContact" class="form-control" :class="{ invalid: cityContactInvalid }" @blur="validateField($event.target)" @input="validateField($event.target, true)"/>
-              <div class="noticeDiv">{{ cityContactMsg }}</div>
+              <input type="text" id="contactCity" v-model="contactCity" class="form-control" :class="{ invalid: contactCityInvalid }" @blur="validateField($event.target)" @input="validateField($event.target, true)"/>
+              <div class="noticeDiv">{{ contactCityMsg }}</div>
             </div>
           </div>
           <div class="form-row">
             <div class="form-group col-sm-8">
               <label for="street">Tänav/talu, maja nr, korteri nr</label>
-              <input type="text" id="street" class="form-control" v-model="streetContact" :class="{ invalid: streetContactInvalid }" @blur="validateField($event.target)" @input="validateField($event.target, true)"/>
-              <div class="noticeDiv">{{ streetContactMsg }}</div>
+              <input type="text" id="contactStreet" class="form-control" v-model="contactStreet" :class="{ invalid: contactStreetInvalid }" @blur="validateField($event.target)" @input="validateField($event.target, true)"/>
+              <div class="noticeDiv">{{ contactStreetMsg }}</div>
             </div>
             <div class="form-group col-sm-4">
               <label for="postalCode">Postiindeks</label>
-              <input type="text" id="postalCode" class="form-control" v-model="postalCodeContact" :class="{ invalid: postalCodeContactInvalid }" @blur="validateField($event.target)" @input="validateField($event.target, true)"/>
-              <div class="noticeDiv">{{ postalCodeContactMsg }}</div>
+              <input type="text" id="contactPostalCode" class="form-control" v-model="contactPostalCode" :class="{ invalid: contactPostalCodeInvalid }" @blur="validateField($event.target)" @input="validateField($event.target, true)"/>
+              <div class="noticeDiv">{{ contactPostalCodeMsg }}</div>
             </div>
           </div>
           <div class="form-row ml-3">
             <div class="form-group col-sm">
-              <input type="checkbox" style="zoom:1.6" class="form-check-input" id="futureContactDate" v-model="showFutureContactDate"/>
-              <label for="futureContactDate" class="form-check-label">
+              <input type="checkbox" style="zoom:1.6" class="form-check-input" id="showStartContactDate" v-model="startContactDateShown" />
+              <label for="showStartContactDate" class="form-check-label">
                 Kehtivus algab tulevikus
               </label>
 
-              <div class ="mt-1" v-if="showFutureContactDate">
-                <label for="startDate">Kehtib alates</label>
-                <input type="date" id="startDate" class="form-control" v-model="startDate" class="form-control" :class="{ invalid: startDateInvalid }" @blur="validateField($event.target)" @focus="clearFieldMessage($event.target)" />
-                <div class="noticeDiv">{{ startDateMsg }}</div>
+              <div class="mt-1" v-if="startContactDateShown">
+                <label for="startContactDate">Kehtib alates</label>
+                <input type="date" id="startContactDate" class="form-control" v-model="startContactDate" class="form-control" :class="{ invalid: startContactDateInvalid }" @blur="validateField($event.target)" @focus="clearFieldMessage($event.target)" />
+                <div class="noticeDiv">{{ startContactDateMsg }}</div>
               </div>
             </div>
 
             <div class="form-group col-sm">
-              <input type="checkbox" style="zoom:1.6" class="form-check-input" id="endContactDate" v-model="showEndContactDate"/>
-              <label for="endContactDate" class="form-check-label">
+              <input type="checkbox" style="zoom:1.6" class="form-check-input" id="showEndContactDate" v-model="endContactDateShown" />
+              <label for="showEndContactDate" class="form-check-label">
                 Lõpukuupäev on teada
               </label>
 
-              <div class ="mt-1" v-if="showEndContactDate">
+              <div class="mt-1" v-if="endContactDateShown">
                 <label for="endDate">Kehtib kuni</label>
-                <input type="date" id="endDate" class="form-control" v-model="endDate" class="form-control" :class="{ invalid: endDateInvalid }" @blur="validateField($event.target)" @focus="clearFieldMessage($event.target)" />
-                <div class="noticeDiv">{{ endDateMsg }}</div>
+                <input type="date" id="endContactDate" class="form-control" v-model="endContactDate" class="form-control" :class="{ invalid: endContactDateInvalid }" @blur="validateField($event.target)" @focus="clearFieldMessage($event.target)" />
+                <div class="noticeDiv">{{ endContactDateMsg }}</div>
               </div>
            </div>
 

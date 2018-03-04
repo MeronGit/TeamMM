@@ -2,8 +2,8 @@
 let validators = {};
 
 validators["firstName"] = validators["lastName"] = validators["city"] = validators["street"] =
-validators["country"] = validators["cityContact"] = validators["streetContact"] =
-validators["countryContact"] = validators["ihFirstName"] = validators["ihLastName"] = function(field) {
+validators["country"] = validators["contactCity"] = validators["contactStreet"] =
+validators["contactCountry"] = validators["ihFirstName"] = validators["ihLastName"] = function(field) {
     if (field.value.length < 2)
         return "Vähemalt 2 tähemärki";
 };
@@ -38,13 +38,18 @@ validators["arrivalSourceAddress"] = validators["ihArrivalSourceAddress"] = func
         return "Ebakorrektne aadress";
     }
 };
-validators["arrivalDate"] = validators["ihArrivalDate"] = validators["startDate"] = validators["endDate"] = function(field) {
-    if (!vm.showArrivalRow) {
+function validateDateField(field) {
+
+}
+validators["arrivalDate"] = validators["ihArrivalDate"] = validators["startContactDate"] =
+validators["endContactDate"] = function(field) {
+    if (vm.stepNo == 0 && !vm.showArrivalRow
+            || vm.stepNo == 3 && vm.inhabitantFormShown && !vm.ihShowArrivalRow
+            || vm.stepNo == 2 && !vm[field.id + "Shown"]) {
         return "";
     }
     //kas siia peaks kirjutama ka if !vm.showFutureContactDate ja !vm.showEndContactDate?
     //või teha teine funktsioon?
-    console.log("validating arrivalDate");
     if (!field.validity.valid) {
         return "Ebakorrektne kuupäev";
     } else if (field.value.trim().length == 0) {
@@ -53,11 +58,11 @@ validators["arrivalDate"] = validators["ihArrivalDate"] = validators["startDate"
 };
 
 //vb saab neid ka paremini teha iga numbri jaoks
-validators["county"] = validators["countyContact"] = function(field) {
+validators["county"] = validators["contactCounty"] = function(field) {
     if (field.value.length < 4)
         return "Vähemalt 4 tähemärki";
 }
-validators["postalCode"] = validators["postalCodeContact"] = function(field) {
+validators["postalCode"] = validators["contactPostalCode"] = function(field) {
     if (field.value.length < 3)
         return "Vähemalt 3 tähemärki";
 }
@@ -66,8 +71,8 @@ let fieldsByStep = {
     0: ["firstName", "lastName", "personalCode", "email", "phoneNumber",
         "arrivalSourceAddress", "arrivalDate"],
     1: ["country", "county", "city", "street", "postalCode"],
-    2: ["countryContact", "countyContact", "cityContact", "streetContact",
-        "postalCodeContact", "startDate", "endDate"],
+    2: ["contactCountry", "contactCounty", "contactCity", "contactStreet",
+        "contactPostalCode", "startContactDate", "endContactDate"],
     4: ["ihFirstName", "ihLastName", "ihPersonalCode", "ihEmail", "ihPhoneNumber",
         "ihArrivalSourceAddress", "ihArrivalDate"],
 };
@@ -85,8 +90,6 @@ var vm = new Vue({
             phoneNumberEditable: true,
             foreignPersonalCode: "",
             showArrivalRow: false,
-            showEndContactDate: false,
-            showFutureContactDate: false,
             errors: [],
 
             // PAGE 1
@@ -95,6 +98,8 @@ var vm = new Vue({
             // PAGE 2
             permission: "",
             leaseContractFile: "",
+            startContactDateShown: false,
+            endContactDateShown: false,
 
             // PAGE 3
             inhabitantsIncludeMe: true,
