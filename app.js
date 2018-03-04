@@ -2,15 +2,17 @@
 let validators = {};
 
 validators["firstName"] = validators["lastName"] = validators["city"] = validators["street"] =
-validators["country"] = validators["cityContact"] = validators["streetContact"] = validators["countryContact"] = function(field) {
+validators["country"] = validators["cityContact"] = validators["streetContact"] =
+validators["countryContact"] = validators["ihFirstName"] = validators["ihLastName"] = function(field) {
     if (field.value.length < 2)
         return "Vähemalt 2 tähemärki";
 };
-validators["personalCode"] = function(field) {
+validators["personalCode"] = validators["ihPersonalCode"] = function(field) {
     let value = field.value;
     if (value.trim().length != 11 || isNaN(value) || value <= 0)
         return "Eesti isikukoodis on 11 numbrit";
 };
+
 validators["email"] = function(field) {
     if (field.value.trim().length <= 0) {
         return "Sisesta e-postiaadress";
@@ -98,9 +100,8 @@ var vm = new Vue({
             inhabitantFormShown: false,
             inhabitantFormVerb: "",
             inhabitantIndex: -1,
-            ihFirstName: "",
-            ihLastName: "",
-            ihPersonalCode: "",
+            //ihLastName: "",
+            //ihPersonalCode: "",
             ihForeignPersonalCode: "",
             ihEmail: "",
             ihPhoneNumber: "",
@@ -205,7 +206,7 @@ var vm = new Vue({
                 this.phoneNumberEditable = false;
             }
             setTimeout(function () {
-                for (fieldName of ["firstName", "lastName", "personalCode", "phoneNumber", "county"]) {
+                for (fieldName of ["firstName", "lastName", "personalCode", "phoneNumber"]) {
                     vm.validateField(document.getElementById(fieldName), true);
                 }
             }, 5);
@@ -217,12 +218,59 @@ var vm = new Vue({
             this.phoneNumberEditable = true;
         },
 
-        // PAGE 2
+        // PAGE 3
         leaseContractFileChanged(event) {
             this.leaseContractFile = event.target.files[0].name;
         },
 
-        // PAGE 3
+        // PAGE 4
+        checkIfUnderage(fieldName){
+            // check century https://dukelupus.wordpress.com/2010/04/05/eesti-isikukoodi-valideerimine-javascriptis/
+             switch (fieldName.substr(0, 1)) {
+                 case '1':
+                 case '2':
+                     {
+                         century = 1800;
+                         break;
+                     }
+                 case '3':
+                 case '4':
+                     {
+                         century = 1900;
+                         break;
+                     }
+                 case '5':
+                 case '6':
+                     {
+                         century = 2000;
+                         break;
+                     }
+                 default:
+                     {
+                         return false;
+                     }
+             }
+             var year = (century + new Number(fieldName.substr(1, 2)));
+             var month = fieldName.substr(3, 2);
+             var day = fieldName.substr(5, 2);
+             var birth = new Date(year, month, day);
+
+             var today = new Date();
+             var dayToday = today.getDate();
+             var monthToday = today.getMonth()+1; //January is 0!
+             var yearToday = today.getFullYear();
+
+
+            var age = yearToday - year;
+            var monthDifference = monthToday - month;
+            if (monthDifference  < 0 || (monthDifference  === 0 && dayToday < day)) {
+                age--;
+            }
+
+           if (age < 18) return true;
+           else return false;
+
+        },
         removeInhabitant(index) {
             this.inhabitants.splice(index, 1);
         },
