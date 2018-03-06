@@ -76,7 +76,7 @@ var vm = new Vue({
     el: "#app",
     data() {
         let obj = {
-            stepNo: 4,
+            stepNo: -1,
             numSteps: document.getElementsByClassName("stepDiv").length,
 
             // PAGE 0
@@ -85,6 +85,9 @@ var vm = new Vue({
             phoneNumberEditable: true,
             foreignPersonalCode: "",
             showArrivalRow: false,
+            showOptionalDataField: false,
+            nationality: "",
+            motherTongue: "",
             errors: [],
 
             // PAGE 1
