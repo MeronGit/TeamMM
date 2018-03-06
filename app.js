@@ -107,8 +107,13 @@ var vm = new Vue({
             inhabitantIndex: -1,
             ihForeignPersonalCode: "",
             ihShowArrivalRow: false,
+
             ihArrivalSourceAddress: "",
-            ihArrivalDate: ""
+            ihArrivalDate: "",
+            ihShowOptionalDataField: false,
+            //Neid ka vaja? 
+            ihNationality: "",
+            ihMotherTongue: "",
         };
 
         for (let fieldName in validators) {
@@ -291,8 +296,10 @@ var vm = new Vue({
                 this.inhabitantFormVerb = "Lisa";
                 this.ihFirstName = this.ihLastName = this.ihPersonalCode =
                 this.ihForeignPersonalCode = this.ihEmail = this.ihPhoneNumber =
-                this.ihArrivalSourceAddress = this.ihArrivalDate = "";
+                this.ihArrivalSourceAddress = this.ihArrivalDate =
+                this.ihNationality = this.ihMotherTongue = "";
                 this.ihShowArrivalRow = false;
+                this.ihShowOptionalDataField = false;
             } else {
                 this.inhabitantFormVerb = "Muuda";
                 let ih = this.inhabitants[index];
@@ -304,7 +311,11 @@ var vm = new Vue({
                 this.ihPhoneNumber = ih.phoneNumber;
                 this.ihArrivalSourceAddress = ih.arrivalSourceAddress;
                 this.ihArrivalDate = ih.arrivalDate;
+                this.ihNationality = ih.nationality;
+                this.ihMotherTongue = ih.motherTongue;
                 this.ihShowArrivalRow = !!(ih.arrivalSourceAddress || ih.arrivalDate);
+                //?? pole kindel..
+                this.ihShowOptionalDataField = !!(ih.nationality || ih.motherTongue);
             }
         },
         cancelInhabitantForm() {

@@ -1,12 +1,12 @@
 .introDiv, .stepDiv, .finalDiv {
-  min-height: 530px;
+  min-height: 535px;
 }
 .introDiv {
   padding-top: 125px;
 }
 .finalDiv {
   padding-top: 100px;
-  min-height: 530px;
+  min-height: 535px;
 }
 
 .formFieldError{
