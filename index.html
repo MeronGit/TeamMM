@@ -268,37 +268,37 @@
             <div class="form-row">
               <div class="form-group col-sm">
                 <label for="firstName">Eesnimi</label>
-                <input type="text" id="firstName" v-model="ihFirstName" class="form-control" :class="{ invalid: ihFirstNameInvalid }" @blur="validateField($event.target)" @input="validateField($event.target, true)" />
+                <input type="text" id="ihFirstName" v-model="ihFirstName" class="form-control" :class="{ invalid: ihFirstNameInvalid }" @blur="validateField($event.target)" @input="validateField($event.target, true)" />
                 <div class="noticeDiv">{{ ihFirstNameMsg }}</div>
               </div>
               <div class="form-group col-sm">
                 <label for="lastName">Perenimi</label>
-                <input type="text" id="lastName" v-model="ihLastName" class="form-control" :class="{ invalid: ihLastNameInvalid }" @blur="validateField($event.target)" @input="validateField($event.target, true)"/>
+                <input type="text" id="ihLastName" v-model="ihLastName" class="form-control" :class="{ invalid: ihLastNameInvalid }" @blur="validateField($event.target)" @input="validateField($event.target, true)"/>
                 <div class="noticeDiv">{{ ihLastNameMsg }}</div>
               </div>
             </div>
             <div class="form-row">
               <div class="form-group col-sm">
                 <label for="personalCode">Isikukood</label>
-                <input type="text" id="personalCode" v-model="ihPersonalCode" class="form-control" :class="{ invalid: ihPersonalCodeInvalid }" @blur="validateField($event.target)" @input="validateField($event.target, true)" />
+                <input type="text" id="ihPersonalCode" v-model="ihPersonalCode" class="form-control" :class="{ invalid: ihPersonalCodeInvalid }" @blur="validateField($event.target)" @input="validateField($event.target, true)" />
                 <div class="noticeDiv">{{ ihPersonalCodeMsg }}</div>
               </div>
               <div class="form-group col-sm">
                 <label for="foreignPersonalCode">Välisriigi isikukood</label>
-                <input type="text" id="foreignPersonalCode" v-model="ihForeignPersonalCode" class="form-control" placeholder="Täita olemasolul" />
+                <input type="text" id="ihForeignPersonalCode" v-model="ihForeignPersonalCode" class="form-control" placeholder="Täita olemasolul" />
               </div>
             </div>
             <div class="form-row">
               <div class="form-group col-sm">
                 <label for="email" v-if="checkIfUnderage(ihPersonalCode)" style="color:green">Lapsevanema E-post</label>
                 <label for="email" v-else>E-post</label>
-                <input type="email" id="email" v-model="ihEmail" class="form-control" :class="{ invalid: ihEmailInvalid }" @blur="validateField($event.target)" @input="validateField($event.target, true)" />
+                <input type="email" id="ihEmail" v-model="ihEmail" class="form-control" :class="{ invalid: ihEmailInvalid }" @blur="validateField($event.target)" @input="validateField($event.target, true)" />
                 <div class="noticeDiv">{{ ihEmailMsg }}</div>
               </div>
               <div class="form-group col-sm">
                 <label for="phoneNumber" v-if="checkIfUnderage(ihPersonalCode)" style="color:green">Lapsevanema telefon</label>
                 <label for="phoneNumber" v-else>Telefoninumber</label>
-                <input type="text" id="phoneNumber" v-model="ihPhoneNumber" class="form-control" :class="{ invalid: ihPhoneNumberInvalid }" @blur="validateField($event.target)" @input="validateField($event.target, true)" />
+                <input type="text" id="ihPhoneNumber" v-model="ihPhoneNumber" class="form-control" :class="{ invalid: ihPhoneNumberInvalid }" @blur="validateField($event.target)" @input="validateField($event.target, true)" />
                 <div class="noticeDiv">{{ ihPhoneNumberMsg }}</div>
               </div>
             </div>
@@ -311,12 +311,12 @@
             <div class="form-row" v-if="ihShowArrivalRow">
               <div class="form-group col-sm">
                 <label for="arrivalSourceAddress">Lähteaadress</label>
-                <input type="text" id="arrivalSourceAddress" v-model="ihArrivalSourceAddress" class="form-control" placeholder="Riik, haldusüksus" :class="{ invalid: ihArrivalSourceAddressInvalid }" @blur="validateField($event.target)" @input="validateField($event.target, true)" />
+                <input type="text" id="ihArrivalSourceAddress" v-model="ihArrivalSourceAddress" class="form-control" placeholder="Riik, haldusüksus" :class="{ invalid: ihArrivalSourceAddressInvalid }" @blur="validateField($event.target)" @input="validateField($event.target, true)" />
                 <div class="noticeDiv">{{ ihArrivalSourceAddressMsg }}</div>/>
               </div>
               <div class="form-group col-sm">
                 <label for="arrivalDate">Lahkumise kuupäev</label>
-                <input type="date" id="arrivalDate" v-model="ihArrivalDate" class="form-control" :class="{ invalid: ihArrivalDateInvalid }" @blur="validateField($event.target)" @focus="clearFieldMessage($event.target)" />
+                <input type="date" id="ihArrivalDate" v-model="ihArrivalDate" class="form-control" :class="{ invalid: ihArrivalDateInvalid }" @blur="validateField($event.target)" @focus="clearFieldMessage($event.target)" />
                 <div class="noticeDiv">{{ ihArrivalDateMsg }}</div>/>
               </div>
             </div>
