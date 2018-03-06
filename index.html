@@ -58,7 +58,7 @@
               <div class="noticeDiv">{{ personalCodeMsg }}</div>
             </div>
             <div class="form-group col-sm">
-              <label for="foreignPersonalCode">Välisriigi isikukood</label>
+              <label for="foreignPersonalCode">Välisriigi isikukood, riik</label>
               <input type="text" id="foreignPersonalCode" v-model="foreignPersonalCode" class="form-control" placeholder="Täita olemasolul" />
             </div>
           </div>
@@ -258,86 +258,89 @@
       <div class="stepDiv" v-else-if="stepNo == 4">
         <div v-if="inhabitantFormShown">
           <h2 class="mt-3">{{inhabitantFormVerb}} elanik</h2>
-          <div class="alertBox mt-4">
-            <ul>
-              <li>E-posti teel küsitakse digiallkirjastatud nõusolekut.</li>
-            </ul>
+          <div class="alertBox py-3 mt-3">
+            <ul class="m-0"><li>E-posti teel küsitakse digiallkirjastatud nõusolekut.</ul></li>
           </div>
           <hr />
           <form class="mt-4 step">
             <div class="form-row">
               <div class="form-group col-sm">
-                <label for="firstName">Eesnimi</label>
+                <label for="ihFirstName">Eesnimi</label>
                 <input type="text" id="ihFirstName" v-model="ihFirstName" class="form-control" :class="{ invalid: ihFirstNameInvalid }" @blur="validateField($event.target)" @input="validateField($event.target, true)" />
                 <div class="noticeDiv">{{ ihFirstNameMsg }}</div>
               </div>
               <div class="form-group col-sm">
-                <label for="lastName">Perenimi</label>
+                <label for="ihLastName">Perenimi</label>
                 <input type="text" id="ihLastName" v-model="ihLastName" class="form-control" :class="{ invalid: ihLastNameInvalid }" @blur="validateField($event.target)" @input="validateField($event.target, true)"/>
                 <div class="noticeDiv">{{ ihLastNameMsg }}</div>
               </div>
             </div>
             <div class="form-row">
               <div class="form-group col-sm">
-                <label for="personalCode">Isikukood</label>
+                <label for="ihPersonalCode">Isikukood</label>
                 <input type="text" id="ihPersonalCode" v-model="ihPersonalCode" class="form-control" :class="{ invalid: ihPersonalCodeInvalid }" @blur="validateField($event.target)" @input="validateField($event.target, true)" />
                 <div class="noticeDiv">{{ ihPersonalCodeMsg }}</div>
               </div>
               <div class="form-group col-sm">
-                <label for="foreignPersonalCode">Välisriigi isikukood</label>
+                <label for="ihForeignPersonalCode">Välisriigi isikukood, riik</label>
                 <input type="text" id="ihForeignPersonalCode" v-model="ihForeignPersonalCode" class="form-control" placeholder="Täita olemasolul" />
               </div>
             </div>
             <div class="form-row">
               <div class="form-group col-sm">
-                <label for="email" v-if="checkIfUnderage(ihPersonalCode)" style="color:green">Lapsevanema E-post</label>
-                <label for="email" v-else>E-post</label>
+                <label for="ihEmail" v-if="checkIfUnderage(ihPersonalCode)" style="color:green">Lapsevanema E-post</label>
+                <label for="ihEmail" v-else>E-post</label>
                 <input type="email" id="ihEmail" v-model="ihEmail" class="form-control" :class="{ invalid: ihEmailInvalid }" @blur="validateField($event.target)" @input="validateField($event.target, true)" />
                 <div class="noticeDiv">{{ ihEmailMsg }}</div>
               </div>
               <div class="form-group col-sm">
-                <label for="phoneNumber" v-if="checkIfUnderage(ihPersonalCode)" style="color:green">Lapsevanema telefon</label>
-                <label for="phoneNumber" v-else>Telefoninumber</label>
+                <label for="ihPhoneNumber" v-if="checkIfUnderage(ihPersonalCode)" style="color:green">Lapsevanema telefon</label>
+                <label for="ihPhoneNumber" v-else>Telefoninumber</label>
                 <input type="text" id="ihPhoneNumber" v-model="ihPhoneNumber" class="form-control" :class="{ invalid: ihPhoneNumberInvalid }" @blur="validateField($event.target)" @input="validateField($event.target, true)" />
                 <div class="noticeDiv">{{ ihPhoneNumberMsg }}</div>
               </div>
             </div>
             <div class="form-check">
-              <input type="checkbox" style="zoom: 1.6" class="form-check-input" id="arrivalCheckbox" v-model="ihShowArrivalRow"/>
-              <label for="arrivalCheckbox" class="form-check-label">
+              <input type="checkbox" style="zoom: 1.6" class="form-check-input" id="ihArrivalCheckbox" v-model="ihShowArrivalRow"/>
+              <label for="ihArrivalCheckbox" class="form-check-label">
                 Saabus välismaalt
               </label>
             </div>
             <div class="form-row" v-if="ihShowArrivalRow">
               <div class="form-group col-sm">
-                <label for="arrivalSourceAddress">Lähteaadress</label>
+                <label for="ihArrivalSourceAddress">Lähteaadress</label>
                 <input type="text" id="ihArrivalSourceAddress" v-model="ihArrivalSourceAddress" class="form-control" placeholder="Riik, haldusüksus" :class="{ invalid: ihArrivalSourceAddressInvalid }" @blur="validateField($event.target)" @input="validateField($event.target, true)" />
-                <div class="noticeDiv">{{ ihArrivalSourceAddressMsg }}</div>/>
+                <div class="noticeDiv">{{ ihArrivalSourceAddressMsg }}</div>
               </div>
               <div class="form-group col-sm">
-                <label for="arrivalDate">Lahkumise kuupäev</label>
+                <label for="ihArrivalDate">Lahkumise kuupäev</label>
                 <input type="date" id="ihArrivalDate" v-model="ihArrivalDate" class="form-control" :class="{ invalid: ihArrivalDateInvalid }" @blur="validateField($event.target)" @focus="clearFieldMessage($event.target)" />
-                <div class="noticeDiv">{{ ihArrivalDateMsg }}</div>/>
+                <div class="noticeDiv">{{ ihArrivalDateMsg }}</div>
               </div>
             </div>
           </form>
         </div>
         <div v-else>
           <h2 class="mt-3">Elanikud</h2>
-          <hr />
           <div class="mt-3">
-            <div class="form-check ml-2">
+            <div class="form-check ml-2 mb-3">
               <input type="checkbox" class="form-check-input" v-model="inhabitantsIncludeMe" id="includeMeCheckbox"/>
               <label for="includeMeCheckbox" class="form-check-label">
                 Mina: <strong>{{firstName}} {{lastName}}</strong>
               </label>
             </div>
             <div class="inhabitantEntry" v-for="(inhabitant, index) in inhabitants">
-              <button class="btn btn-sm btn-dark" @click="removeInhabitant(index)">
+              <button class="btn btn-sm btn-dark" @click="toggleInhabitantDeleteConfirm(index)" v-if="!inhabitant.confirmDelete">
                 <span class="oi oi-trash" title="Remove">
               </button>
-              <button class="btn btn-sm btn-dark" @click="showInhabitantForm(index)">
+              <button class="btn btn-sm btn-dark" @click="showInhabitantForm(index)" v-if="!inhabitant.confirmDelete">
                 <span class="oi oi-pencil" title="Edit"></span>
+              </button>
+              <button class="btn btn-sm btn-dark" @click="toggleInhabitantDeleteConfirm(index)" v-if="inhabitant.confirmDelete">
+                Loobu
+              </button>
+              <button class="btn btn-sm btn-danger" @click="deleteInhabitant(index)" v-if="inhabitant.confirmDelete">
+                Kustuta
               </button>
               {{inhabitant.firstName}} {{inhabitant.lastName}}
             </div>
@@ -371,7 +374,7 @@
         <button class="btn float-right" :class="{ 'btn-success': (stepNo < numSteps) }" :disabled="(stepNo >= numSteps)" @click="goToNextStep">
           <span v-if="(stepNo >= numSteps-1)">Lõpeta</span><span v-else>Edasi</span>
         </button>
-        <button class="btn" :class="{ 'btn-secondary': (stepNo > 0) }" :disabled="(stepNo <= 0 || stepNo == numSteps)" @click="goToPreviousStep">
+        <button class="btn" :class="{ 'btn-secondary': (stepNo > 0 && stepNo < numSteps) }" :disabled="(stepNo <= 0 || stepNo == numSteps)" @click="goToPreviousStep">
           Tagasi
         </button>
       </div>

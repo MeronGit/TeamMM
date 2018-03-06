@@ -29,18 +29,16 @@ validators["phoneNumber"] = validators["ihPhoneNumber"] = function(field) {
     }
 };
 validators["arrivalSourceAddress"] = validators["ihArrivalSourceAddress"] = function(field) {
-    if (!vm.showArrivalRow) {
+    if (vm.stepNo == 0 && !vm.showArrivalRow
+            || vm.stepNo == 3 && vm.inhabitantFormShown && !vm.ihShowArrivalRow) {
         return "";
     }
     let parts = field.value.split(",");
     if (parts.length < 2 || parts[0].trim().length < 2
                 || parts[1].trim().length < 2) {
-        return "Ebakorrektne aadress";
+        return "Sisesta riik, haldusüksus";
     }
 };
-function validateDateField(field) {
-
-}
 validators["arrivalDate"] = validators["ihArrivalDate"] = validators["startContactDate"] =
 validators["endContactDate"] = function(field) {
     if (vm.stepNo == 0 && !vm.showArrivalRow
@@ -48,8 +46,6 @@ validators["endContactDate"] = function(field) {
             || vm.stepNo == 2 && !vm[field.id + "Shown"]) {
         return "";
     }
-    //kas siia peaks kirjutama ka if !vm.showFutureContactDate ja !vm.showEndContactDate?
-    //või teha teine funktsioon?
     if (!field.validity.valid) {
         return "Ebakorrektne kuupäev";
     } else if (field.value.trim().length == 0) {
@@ -57,7 +53,6 @@ validators["endContactDate"] = function(field) {
     }
 };
 
-//vb saab neid ka paremini teha iga numbri jaoks
 validators["county"] = validators["contactCounty"] = function(field) {
     if (field.value.length < 4)
         return "Vähemalt 4 tähemärki";
@@ -73,7 +68,7 @@ let fieldsByStep = {
     1: ["country", "county", "city", "street", "postalCode"],
     2: ["contactCountry", "contactCounty", "contactCity", "contactStreet",
         "contactPostalCode", "startContactDate", "endContactDate"],
-    4: ["ihFirstName", "ihLastName", "ihPersonalCode", "ihEmail", "ihPhoneNumber",
+    "ihform": ["ihFirstName", "ihLastName", "ihPersonalCode", "ihEmail", "ihPhoneNumber",
         "ihArrivalSourceAddress", "ihArrivalDate"],
 };
 
@@ -81,7 +76,7 @@ var vm = new Vue({
     el: "#app",
     data() {
         let obj = {
-            stepNo: -1,
+            stepNo: 4,
             numSteps: document.getElementsByClassName("stepDiv").length,
 
             // PAGE 0
@@ -101,17 +96,13 @@ var vm = new Vue({
             startContactDateShown: false,
             endContactDateShown: false,
 
-            // PAGE 3
+            // PAGE 4
             inhabitantsIncludeMe: true,
             inhabitants: [],
             inhabitantFormShown: false,
             inhabitantFormVerb: "",
             inhabitantIndex: -1,
-            //ihLastName: "",
-            //ihPersonalCode: "",
             ihForeignPersonalCode: "",
-            //ihEmail: "",
-            //ihPhoneNumber: "",
             ihShowArrivalRow: false,
             ihArrivalSourceAddress: "",
             ihArrivalDate: ""
@@ -153,13 +144,19 @@ var vm = new Vue({
             return !msg;
         },
         clearFieldMessage(field) {
-            /*this[field.id + "Invalid"] = false;
-            this[field.id + "Msg"] = "";*/
-            this.arrivalDateInvalid = false;
-            this.arrivalDateMsg = "";
+            if (!field) {
+                return;
+            }
+            this[field.id + "Invalid"] = false;
+            this[field.id + "Msg"] = "";
         },
         validateStep() {
-            let fieldsToValidate = fieldsByStep[this.stepNo];
+            let fieldsToValidate;
+            if (this.stepNo == 4 && this.inhabitantFormShown) {
+                fieldsToValidate = fieldsByStep["ihform"];
+            } else {
+                fieldsToValidate = fieldsByStep[this.stepNo];
+            }
             if (!fieldsToValidate) {
                 return true;
             }
@@ -233,39 +230,39 @@ var vm = new Vue({
         // PAGE 4
         checkIfUnderage(fieldName){
             // check century https://dukelupus.wordpress.com/2010/04/05/eesti-isikukoodi-valideerimine-javascriptis/
-             switch (fieldName.substr(0, 1)) {
-                 case '1':
-                 case '2':
-                     {
-                         century = 1800;
-                         break;
-                     }
-                 case '3':
-                 case '4':
-                     {
-                         century = 1900;
-                         break;
-                     }
-                 case '5':
-                 case '6':
-                     {
-                         century = 2000;
-                         break;
-                     }
-                 default:
-                     {
+            switch (fieldName.substr(0, 1)) {
+                case '1':
+                case '2':
+                    {
+                        century = 1800;
+                        break;
+                    }
+                case '3':
+                case '4':
+                    {
+                        century = 1900;
+                        break;
+                    }
+                case '5':
+                case '6':
+                    {
+                        century = 2000;
+                        break;
+                    }
+                default:
+                    {
                          return false;
-                     }
-             }
-             var year = (century + new Number(fieldName.substr(1, 2)));
-             var month = fieldName.substr(3, 2);
-             var day = fieldName.substr(5, 2);
-             var birth = new Date(year, month, day);
+                    }
+            }
+            var year = (century + new Number(fieldName.substr(1, 2)));
+            var month = fieldName.substr(3, 2);
+            var day = fieldName.substr(5, 2);
+            var birth = new Date(year, month, day);
 
-             var today = new Date();
-             var dayToday = today.getDate();
-             var monthToday = today.getMonth()+1; //January is 0!
-             var yearToday = today.getFullYear();
+            var today = new Date();
+            var dayToday = today.getDate();
+            var monthToday = today.getMonth()+1; //January is 0!
+            var yearToday = today.getFullYear();
 
 
             var age = yearToday - year;
@@ -274,11 +271,14 @@ var vm = new Vue({
                 age--;
             }
 
-           if (age < 18) return true;
-           else return false;
+            if (age < 18) return true;
+            else return false;
 
         },
-        removeInhabitant(index) {
+        toggleInhabitantDeleteConfirm(index) {
+            Vue.set(this.inhabitants[index], "confirmDelete", !this.inhabitants[index].confirmDelete);
+        },
+        deleteInhabitant(index) {
             this.inhabitants.splice(index, 1);
         },
         showInhabitantForm(index) {
@@ -305,9 +305,15 @@ var vm = new Vue({
             }
         },
         cancelInhabitantForm() {
+            for (fieldName of fieldsByStep["ihform"]) {
+                this.clearFieldMessage(document.getElementById(fieldName));
+            }
             this.inhabitantFormShown = false;
         },
         submitInhabitantForm() {
+            if (!this.validateStep()) {
+                return;
+            }
             let inhabitant = {
                 firstName: this.ihFirstName,
                 lastName: this.ihLastName,
