@@ -42,7 +42,7 @@
   background-color: #b1d6ff9e;
   padding: 6px;
   border-radius: 5px;
-
+  min-height: 51px;
 }
 
 .alertBox {

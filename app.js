@@ -97,6 +97,7 @@ var vm = new Vue({
 
             // STEP 0
             fillSource: "",
+            confirmRevert: false,
             identityEditable: true,
             phoneNumberEditable: true,
             foreignPersonalCode: "",
@@ -113,6 +114,7 @@ var vm = new Vue({
 
             // STEP 3
             permission: "",
+            permissionMsg: "",
             leaseContractFile: "",
             startContactDateShown: false,
             endContactDateShown: false,
@@ -187,6 +189,10 @@ var vm = new Vue({
                 return true;
             }
             let allValid = true;
+            if (this.stepNo == 3 && !this.permission) {
+                this.permissionMsg = "Vali üks alljärgnevatest:";
+                allValid = false;
+            }
             for (let fieldName of fieldsToValidate) {
                 if (!this.validateField(document.getElementById(fieldName))) {
                     this[fieldName + "Invalid"] = true;
@@ -242,8 +248,16 @@ var vm = new Vue({
             }, 5);
             this.fillSource = event.target.textContent;
         },
+        toggleConfirmRevert(event) {
+            this.confirmRevert = !this.confirmRevert;
+        },
         revertFieldFill(event) {
+            this.confirmRevert = false;
             this.fillSource = "";
+            this.firstName = this.lastName = this.personalCode = "";
+            if (!this.phoneNumberEditable) {
+                this.phoneNumber = "";
+            }
             this.identityEditable = true;
             this.phoneNumberEditable = true;
         },
