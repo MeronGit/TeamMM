@@ -13,34 +13,34 @@
       <h1 class="mt-4" :class="{ 'text-center': stepNo == -1 }">Elukohast teatamine</h1>
       <hr v-if="stepNo >= 0" />
 
-      <!-- PAGE -1 -->
+      <!-- STEP -1 -->
       <div class="introDiv text-center" v-if="stepNo == -1">
         <p class="lead">Selle vormi kaudu saad teatada oma elukoha andmed.</p>
         <button class="btn btn-success btn-lg" @click="goToNextStep()">Alusta täitmist</button>
       </div>
 
-      <!-- PAGE 0 -->
+      <!-- STEP 0 -->
       <div class="stepDiv" v-if="stepNo == 0">
         <h2 class="mt-3">Sinu andmed</h2>
         <div class="text-right mt-4 alertField">
-          <div class="float-left mt-2 ml-1">Kasuta andmeid:</div>
+          <div class="float-left ml-1" style="margin-top: 10px;">Kasuta andmeid:</div>
           <div v-if="fillSource">
             <div v-if="confirmRevert">
-              <button class="btn btn-danger" @click="revertFieldFill">Logi välja</button>
-              <button class="btn" @click="toggleConfirmRevert">Loobu</button>
+              <button class="btn btn-danger mt-1" @click="revertFieldFill">Logi välja</button>
+              <button class="btn mt-1" @click="toggleConfirmRevert">Loobu</button>
             </div>
             <div v-else>
-              <div class="d-inline-block mt-2 mr-1">
+              <div class="d-inline-block mr-1" style="margin-top: 10px;">
                 Allikas:
                 <strong>{{fillSource}}</strong>
               </div>
-              <button class="btn" @click="toggleConfirmRevert" style="margin-top: -5px">Logi välja</button>
+              <button class="btn" @click="toggleConfirmRevert">Logi välja</button>
             </div>
           </div>
           <div v-else>
-            <button class="btn btn-light ml-2" @click="fillFieldsWithID">ID-kaart</button>
-            <button class="btn btn-light" @click="fillFieldsWithID">Mobiil-ID</button>
-            <button class="btn btn-light" @click="fillFieldsWithID">Smart-ID</button>
+            <button class="btn btn-light mt-1" @click="fillFieldsWithID">ID-kaart</button>
+            <button class="btn btn-light mt-1" @click="fillFieldsWithID">Mobiil-ID</button>
+            <button class="btn btn-light mt-1" @click="fillFieldsWithID">Smart-ID</button>
           </div>
         </div>
         <hr />
@@ -81,7 +81,7 @@
           </div>
           </div>
           <div class="form-check">
-            <input type="checkbox" style="zoom: 1.6" class="form-check-input" id="arrivalCheckbox" v-model="showArrivalRow"/>
+            <input type="checkbox" class="form-check-input" id="arrivalCheckbox" v-model="showArrivalRow"/>
             <label for="arrivalCheckbox" class="form-check-label">
               Saabusin välismaalt
             </label>
@@ -99,7 +99,7 @@
             </div>
           </div>
           <div class="form-check mt-2">
-            <input type="checkbox" style="zoom: 1.6" class="form-check-input" id="optionalDataCheckbox" v-model="showOptionalDataField"/>
+            <input type="checkbox" class="form-check-input" id="optionalDataCheckbox" v-model="showOptionalDataField"/>
             <label for="optionalDataCheckbox" class="form-check-label">
               Soovin anda täiendavat infot
             </label>
@@ -160,7 +160,7 @@
         </form>
       </div>
 
-      <!-- PAGE 1 -->
+      <!-- STEP 1 -->
       <div class="stepDiv" v-else-if="stepNo == 1">
         <h2 class="mt-3">Elukoha aadress</h2>
         <form class="mt-4">
@@ -197,7 +197,7 @@
           </div>
 
           <div class="form-check mt-3">
-            <input type="checkbox" style="zoom: 1.6" class="form-check-input" id="additionalAddressCheckbox" v-model="additionalAddressPresent" />
+            <input type="checkbox" class="form-check-input" id="additionalAddressCheckbox" v-model="additionalAddressPresent" />
             <label for="additionalAddressCheckbox" class="form-check-label">
               Mul on teine sideaadress
             </label>
@@ -205,7 +205,7 @@
         </form>
       </div>
 
-      <!-- PAGE 2 -->
+      <!-- STEP 2 -->
       <div class="stepDiv" v-else-if="stepNo == 2">
         <h2 class="mt-3">Sideaadress</h2>
         <form class="mt-4">
@@ -242,7 +242,7 @@
           </div>
           <div class="form-row ml-3">
             <div class="form-group col-sm">
-              <input type="checkbox" style="zoom:1.6" class="form-check-input" id="showStartContactDate" v-model="startContactDateShown" />
+              <input type="checkbox" class="form-check-input" id="showStartContactDate" v-model="startContactDateShown" />
               <label for="showStartContactDate" class="form-check-label">
                 Kehtivus algab tulevikus
               </label>
@@ -255,7 +255,7 @@
             </div>
 
             <div class="form-group col-sm">
-              <input type="checkbox" style="zoom:1.6" class="form-check-input" id="showEndContactDate" v-model="endContactDateShown" />
+              <input type="checkbox" class="form-check-input" id="showEndContactDate" v-model="endContactDateShown" />
               <label for="showEndContactDate" class="form-check-label">
                 Lõpukuupäev on teada
               </label>
@@ -270,7 +270,7 @@
         </form>
       </div>
 
-      <!-- PAGE 3 -->
+      <!-- STEP 3 -->
       <div class="stepDiv" v-else-if="stepNo == 3">
         <h2 class="mt-3">Ruumi kasutamise õigus</h2>
         <form class="mt-2">
@@ -318,7 +318,7 @@
         </form>
       </div>
 
-      <!-- PAGE 4 -->
+      <!-- STEP 4 -->
       <div class="stepDiv" v-else-if="stepNo == 4">
         <div v-if="inhabitantFormShown">
           <h2 class="mt-3">{{inhabitantFormVerb}} elanik</h2>
@@ -365,7 +365,7 @@
               </div>
             </div>
             <div class="form-check">
-              <input type="checkbox" style="zoom: 1.6" class="form-check-input" id="ihArrivalCheckbox" v-model="ihShowArrivalRow"/>
+              <input type="checkbox" class="form-check-input" id="ihArrivalCheckbox" v-model="ihShowArrivalRow"/>
               <label for="ihArrivalCheckbox" class="form-check-label">
                 Saabus välismaalt
               </label>
@@ -384,7 +384,7 @@
             </div>
             <!---optional-->
             <div class="form-check mt-2">
-              <input type="checkbox" style="zoom: 1.6" class="form-check-input" id="ihOptionalDataCheckbox" v-model="ihShowOptionalDataField"/>
+              <input type="checkbox" class="form-check-input" id="ihOptionalDataCheckbox" v-model="ihShowOptionalDataField"/>
               <label for="ihOptionalDataCheckbox" class="form-check-label">
                 Soovin anda täiendavat infot
               </label>
@@ -485,7 +485,7 @@
         </p>
       </div>
 
-      <!-- END OF PAGES -->
+      <!-- END OF STEPS -->
       <div class="mt-2" v-if="inhabitantFormShown">
         <button class="btn btn-success float-right px-4" @click="submitInhabitantForm()">{{inhabitantFormVerb}}</button>
         <button class="btn btn-secondary" @click="cancelInhabitantForm()">

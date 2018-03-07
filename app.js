@@ -232,7 +232,7 @@ var vm = new Vue({
         fillFieldsWithID(event) {
             this.firstName = "Jaagup";
             this.lastName = "Irve";
-            this.personalCode = 38214569871;
+            this.personalCode = 38207079871;
             this.identityEditable = false;
             if (event.target.textContent == "Mobiil-ID") {
                 this.phoneNumber = 55963214;
