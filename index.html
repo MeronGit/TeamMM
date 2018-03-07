@@ -107,49 +107,48 @@
               <label for="motherTongue">Emakeel</label>
               <input type="text" id="motherTongue" v-model="motherTongue" class="form-control" />
             </div>
-            <div class="form-row">
-              <div class="form-group col-sm mt-4">
-                Omandatud haridustase
-                <select class="form-control mt-2">
-                  <option selected disabled>Vali siit</option>
-                  <optgroup label="Muud valikud">
-                    <option>Ei soovi vastata</option>
-                    <option>Alghariduseta</option>
-                    <option>Koolieelne haridus</option>
-                  </optgroup>
-                  <optgroup label="Põhiharidus">
-                    <option>Põhikooli 1.-6.klass</option>
-                    <option>Põhikooli 7.-9.klass</option>
-                  </optgroup>
-                  <optgroup label="Põhihariduse baasil">
-                    <option>Kutsekeskharidus või kutseõpe </option>
-                    <option>Keskeri- või tehnikumiharidus </option>
-                  </optgroup>
-                  <optgroup label="Keskharidus">
-                    <option>Keskharidus</option>
-                    <option>Keskhariduse baasil kutsekeskharidus või kutseõpe</option>
-                  </optgroup>
-                  <optgroup label="Kõrgharidus">
-                    <option>Bakalaureus või sellega võrdsustatud haridus</option>
-                    <option>Magister või sellega võrdsustatud haridus</option>
-                    <option>Doktor või sellega võrdsustatud haridus</option>
-                  </optgroup>
-                </select>
-              </div>
-              <div class="form-group col-sm mt-4">
-                Sotsiaal-majanduslik seisund
-                <select class="form-control mt-2">
-                  <option selected disabled>Vali siit</option>
-                  <option>Töötav</option>
-                  <option>Kodune</option>
-                  <option>Töötu/tööd otsiv</option>
-                  <option>Ajateenija</option>
-                  <option>(Üli)õpilane</option>
-                  <option>Pensionär</option>
-                  <option>Lapsehoolduspuhkusel</option>
-                  <option>Muu mittetöötav</option>
-                </select>
-              </div>
+          </div>
+          <div class="form-row" v-if="showOptionalDataField">
+            <div class="form-group col-sm mt-4">
+              <label for="education">Omandatud haridustase</label>
+              <select class="form-control" id="education" v-model="education">
+                <option selected>Määramata</option>
+                <optgroup label="Muud valikud">
+                  <option>Alghariduseta</option>
+                  <option>Koolieelne haridus</option>
+                </optgroup>
+                <optgroup label="Põhiharidus">
+                  <option>Põhikooli 1.-6.klass</option>
+                  <option>Põhikooli 7.-9.klass</option>
+                </optgroup>
+                <optgroup label="Põhihariduse baasil">
+                  <option>Kutsekeskharidus või kutseõpe </option>
+                  <option>Keskeri- või tehnikumiharidus </option>
+                </optgroup>
+                <optgroup label="Keskharidus">
+                  <option>Keskharidus</option>
+                  <option>Keskhariduse baasil kutsekeskharidus või kutseõpe</option>
+                </optgroup>
+                <optgroup label="Kõrgharidus">
+                  <option>Bakalaureus või sellega võrdsustatud haridus</option>
+                  <option>Magister või sellega võrdsustatud haridus</option>
+                  <option>Doktor või sellega võrdsustatud haridus</option>
+                </optgroup>
+              </select>
+            </div>
+            <div class="form-group col-sm mt-4">
+              <label for="socialStatus">Sotsiaalmajanduslik seisund</label>
+              <select class="form-control" id="socialStatus" v-model="socialStatus">
+                <option selected>Määramata</option>
+                <option>Töötav</option>
+                <option>Kodune</option>
+                <option>Töötu/tööd otsiv</option>
+                <option>Ajateenija</option>
+                <option>(Üli)õpilane</option>
+                <option>Pensionär</option>
+                <option>Lapsehoolduspuhkusel</option>
+                <option>Muu mittetöötav</option>
+              </select>
             </div>
           </div>
         </form>
@@ -263,7 +262,6 @@
                 <div class="noticeDiv">{{ endContactDateMsg }}</div>
               </div>
            </div>
-
           </div>
         </form>
       </div>
@@ -271,8 +269,8 @@
       <!-- PAGE 3 -->
       <div class="stepDiv" v-else-if="stepNo == 3">
         <h2 class="mt-3">Ruumi kasutamise õigus</h2>
-        <hr />
-        <form class="mt-4">
+        <form class="mt-1">
+          <div class="noticeDiv" style="font-size: 1em;">{{ permissionMsg }}</div>
           <div class="form-check">
             <input class="form-check-input" type="radio" id="permissionOwner" name="permission" value="owner" v-model="permission">
             <label class="form-check-label" for="permissionOwner">
@@ -300,16 +298,18 @@
           </div>
           <hr/>
           <div v-if="permission == 'underLease'">
-            Lisa üürileping:
+            <label for="leaseContractFile">Lisa üürileping:</label>
             <div class="custom-file mt-1">
-              <input type="file" class="custom-file-input" id="customFile" @change="leaseContractFileChanged">
-              <label class="custom-file-label" for="customFile">Vali dokument: <strong>{{ leaseContractFile }}</strong></label>
+              <input type="file" class="custom-file-input" id="leaseContractFile" :class="{ invalid: leaseContractFileInvalid }" @change="leaseContractFileChanged" @blur="validateField($event.target)" @focus="clearFieldMessage($event.target)">
+              <label class="custom-file-label" for="leaseContractFile">Vali dokument: <strong>{{ leaseContractFile }}</strong></label>
             </div>
-            <div class="text-muted mt-1">Digiallkirjastatud .bdoc dokument.</div>
+            <div class="noticeDiv mt-1" v-if="leaseContractFileInvalid" style="font-size: 1em;">{{ leaseContractFileMsg }}</div>
+            <div class="text-muted mt-1" v-else>Digiallkirjastatud .bdoc dokument.</div>
           </div>
           <div v-else-if="permission == 'fromOwner'">
-            Küsi omaniku nõusolekut:
-            <input type="email" class="form-control" name="ownerEmail" placeholder="Omaniku e-mail" />
+            <label for="ownerEmail">Küsi omaniku nõusolekut:</label>
+            <input type="email" class="form-control" id="ownerEmail" placeholder="Omaniku e-mail" v-model="ownerEmail" :class="{ invalid: ownerEmailInvalid }" @blur="validateField($event.target)" @input="validateField($event.target, true)" />
+            <div class="noticeDiv">{{ ownerEmailMsg }}</div>
           </div>
         </form>
       </div>
@@ -394,49 +394,48 @@
                 <label for="ihMotherTongue">Emakeel</label>
                 <input type="text" id="ihMotherTongue" v-model="ihMotherTongue" class="form-control" />
               </div>
-              <div class="form-row">
-                <div class="form-group col-sm mt-4">
-                  Omandatud haridustase
-                  <select class="form-control mt-2">
-                    <option selected disabled>Vali siit</option>
-                    <optgroup label="Muud valikud">
-                      <option>Ei soovi vastata</option>
-                      <option>Alghariduseta</option>
-                      <option>Koolieelne haridus</option>
-                    </optgroup>
-                    <optgroup label="Põhiharidus">
-                      <option>Põhikooli 1.-6.klass</option>
-                      <option>Põhikooli 7.-9.klass</option>
-                    </optgroup>
-                    <optgroup label="Põhihariduse baasil">
-                      <option>Kutsekeskharidus või kutseõpe </option>
-                      <option>Keskeri- või tehnikumiharidus </option>
-                    </optgroup>
-                    <optgroup label="Keskharidus">
-                      <option>Keskharidus</option>
-                      <option>Keskhariduse baasil kutsekeskharidus või kutseõpe</option>
-                    </optgroup>
-                    <optgroup label="Kõrgharidus">
-                      <option>Bakalaureus või sellega võrdsustatud haridus</option>
-                      <option>Magister või sellega võrdsustatud haridus</option>
-                      <option>Doktor või sellega võrdsustatud haridus</option>
-                    </optgroup>
-                  </select>
-                </div>
-                <div class="form-group col-sm mt-4">
-                  Sotsiaal-majanduslik seisund
-                  <select class="form-control mt-2">
-                    <option selected disabled>Vali siit</option>
-                    <option>Töötav</option>
-                    <option>Kodune</option>
-                    <option>Töötu/tööd otsiv</option>
-                    <option>Ajateenija</option>
-                    <option>(Üli)õpilane</option>
-                    <option>Pensionär</option>
-                    <option>Lapsehoolduspuhkusel</option>
-                    <option>Muu mittetöötav</option>
-                  </select>
-                </div>
+            </div>
+            <div class="form-row" v-if="ihShowOptionalDataField">
+              <div class="form-group col-sm mt-4">
+                <label for="ihEducation">Omandatud haridustase</label>
+                <select class="form-control" id="ihEducation" v-model="ihEducation">
+                  <option selected>Määramata</option>
+                  <optgroup label="Muud valikud">
+                    <option>Alghariduseta</option>
+                    <option>Koolieelne haridus</option>
+                  </optgroup>
+                  <optgroup label="Põhiharidus">
+                    <option>Põhikooli 1.-6.klass</option>
+                    <option>Põhikooli 7.-9.klass</option>
+                  </optgroup>
+                  <optgroup label="Põhihariduse baasil">
+                    <option>Kutsekeskharidus või kutseõpe </option>
+                    <option>Keskeri- või tehnikumiharidus </option>
+                  </optgroup>
+                  <optgroup label="Keskharidus">
+                    <option>Keskharidus</option>
+                    <option>Keskhariduse baasil kutsekeskharidus või kutseõpe</option>
+                  </optgroup>
+                  <optgroup label="Kõrgharidus">
+                    <option>Bakalaureus või sellega võrdsustatud haridus</option>
+                    <option>Magister või sellega võrdsustatud haridus</option>
+                    <option>Doktor või sellega võrdsustatud haridus</option>
+                  </optgroup>
+                </select>
+              </div>
+              <div class="form-group col-sm mt-4">
+                <label for="ihSocialStatus">Sotsiaalmajanduslik seisund</label>
+                <select class="form-control" id="ihSocialStatus" v-model="ihSocialStatus">
+                  <option selected>Määramata</option>
+                  <option>Töötav</option>
+                  <option>Kodune</option>
+                  <option>Töötu/tööd otsiv</option>
+                  <option>Ajateenija</option>
+                  <option>(Üli)õpilane</option>
+                  <option>Pensionär</option>
+                  <option>Lapsehoolduspuhkusel</option>
+                  <option>Muu mittetöötav</option>
+                </select>
               </div>
             </div>
           </form>

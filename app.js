@@ -52,14 +52,29 @@ validators["endContactDate"] = function(field) {
         return "Sisesta kuupäev";
     }
 };
-
 validators["county"] = validators["contactCounty"] = function(field) {
     if (field.value.length < 4)
         return "Vähemalt 4 tähemärki";
-}
+};
 validators["postalCode"] = validators["contactPostalCode"] = function(field) {
     if (field.value.length < 3)
         return "Vähemalt 3 tähemärki";
+};
+validators["leaseContractFile"] = function(field) {
+    if (vm.permission != 'underLease') {
+        return "";
+    }
+    if (vm.leaseContractFile.length < 6
+            || !vm.leaseContractFile.toLowerCase().endsWith(".bdoc")) {
+        return "Sisesta allkirjastatud .bdoc dokument";
+    }
+};
+validators["ownerEmail"] = function(field) {
+    if (field.value.trim().length <= 0) {
+        return "Sisesta omaniku e-postiaadress";
+    } else if (!field.validity.valid) {
+        return "Ebakorrektne omaniku e-postiaadress";
+    }
 }
 
 let fieldsByStep = {
@@ -68,6 +83,7 @@ let fieldsByStep = {
     1: ["country", "county", "city", "street", "postalCode"],
     2: ["contactCountry", "contactCounty", "contactCity", "contactStreet",
         "contactPostalCode", "startContactDate", "endContactDate"],
+    3: ["leaseContractFile", "ownerEmail"],
     "ihform": ["ihFirstName", "ihLastName", "ihPersonalCode", "ihEmail", "ihPhoneNumber",
         "ihArrivalSourceAddress", "ihArrivalDate"],
 };
@@ -79,7 +95,7 @@ var vm = new Vue({
             stepNo: -1,
             numSteps: document.getElementsByClassName("stepDiv").length,
 
-            // PAGE 0
+            // STEP 0
             fillSource: "",
             identityEditable: true,
             phoneNumberEditable: true,
@@ -88,18 +104,20 @@ var vm = new Vue({
             showOptionalDataField: false,
             nationality: "",
             motherTongue: "",
+            education: "",
+            socialStatus: "",
             errors: [],
 
-            // PAGE 1
+            // STEP 1
             additionalAddressPresent: false,
 
-            // PAGE 2
+            // STEP 3
             permission: "",
             leaseContractFile: "",
             startContactDateShown: false,
             endContactDateShown: false,
 
-            // PAGE 4
+            // STEP 4
             inhabitantsIncludeMe: true,
             inhabitants: [],
             inhabitantFormShown: false,
@@ -107,13 +125,13 @@ var vm = new Vue({
             inhabitantIndex: -1,
             ihForeignPersonalCode: "",
             ihShowArrivalRow: false,
-
             ihArrivalSourceAddress: "",
             ihArrivalDate: "",
             ihShowOptionalDataField: false,
-            //Neid ka vaja? 
             ihNationality: "",
             ihMotherTongue: "",
+            ihEducation: "",
+            ihSocialStatus: ""
         };
 
         for (let fieldName in validators) {
@@ -297,7 +315,8 @@ var vm = new Vue({
                 this.ihFirstName = this.ihLastName = this.ihPersonalCode =
                 this.ihForeignPersonalCode = this.ihEmail = this.ihPhoneNumber =
                 this.ihArrivalSourceAddress = this.ihArrivalDate =
-                this.ihNationality = this.ihMotherTongue = "";
+                this.ihNationality = this.ihMotherTongue =
+                this.ihEducation = this.ihSocialStatus = "";
                 this.ihShowArrivalRow = false;
                 this.ihShowOptionalDataField = false;
             } else {
@@ -311,10 +330,12 @@ var vm = new Vue({
                 this.ihPhoneNumber = ih.phoneNumber;
                 this.ihArrivalSourceAddress = ih.arrivalSourceAddress;
                 this.ihArrivalDate = ih.arrivalDate;
-                this.ihNationality = ih.nationality;
-                this.ihMotherTongue = ih.motherTongue;
                 this.ihShowArrivalRow = !!(ih.arrivalSourceAddress || ih.arrivalDate);
                 //?? pole kindel..
+                this.ihNationality = ih.nationality;
+                this.ihMotherTongue = ih.motherTongue;
+                this.ihEducation = ih.education;
+                this.ihSocialStatus = ih.socialStatus;
                 this.ihShowOptionalDataField = !!(ih.nationality || ih.motherTongue);
             }
         },
@@ -336,7 +357,11 @@ var vm = new Vue({
                 email: this.ihEmail,
                 phoneNumber: this.ihPhoneNumber,
                 arrivalSourceAddress: this.ihArrivalSourceAddress,
-                arrivalDate: this.ihArrivalDate
+                arrivalDate: this.ihArrivalDate,
+                nationality: this.ihNationality,
+                motherTongue: this.ihMotherTongue,
+                education: this.ihEducation,
+                socialStatus: this.ihSocialStatus
             };
             if (this.inhabitantIndex != -1) {
                 this.inhabitants.splice(this.inhabitantIndex, 1, inhabitant);
