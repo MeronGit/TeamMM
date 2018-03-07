@@ -11,7 +11,7 @@
   <body class="d-none">
     <main role="main" class="container" id="app" style="max-width: 450px;">
       <h1 class="mt-4" :class="{ 'text-center': stepNo == -1 }">Elukohast teatamine</h1>
-      <hr v-if="stepNo >= 0"/>
+      <hr v-if="stepNo >= 0" />
 
       <!-- PAGE -1 -->
       <div class="introDiv text-center" v-if="stepNo == -1">
@@ -442,14 +442,15 @@
                 </select>
               </div>
             </div>
+            <!---end optional-->
           </form>
         </div>
-        <!---end optional-->
         <div v-else>
           <h2 class="mt-3">Elanikud</h2>
-          <div class="mt-3">
+          <div class="mt-2">
+            <div class="noticeDiv mb-1">{{ inhabitantsMsg }}</div>
             <div class="form-check ml-2 mb-3">
-              <input type="checkbox" class="form-check-input" v-model="inhabitantsIncludeMe" id="includeMeCheckbox"/>
+              <input type="checkbox" class="form-check-input" v-model="inhabitantsIncludeMe" id="includeMeCheckbox" @change="clearInhabitantsMsg"/>
               <label for="includeMeCheckbox" class="form-check-label">
                 Mina: <strong>{{firstName}} {{lastName}}</strong>
               </label>
@@ -480,7 +481,8 @@
         <h1>Tehtud!</h1>
         <p class="lead">
           Kahjuks pole tegu
-          <a target="_blank" href="https://www.siseministeerium.ee/sites/default/files/dokumendid/Rahvastiku-statistika/lisa_1_elukohateade_taidetav_sm_0.pdf">tegeliku ankeediga</a>.</p>
+          <a target="_blank" href="https://www.siseministeerium.ee/sites/default/files/dokumendid/Rahvastiku-statistika/lisa_1_elukohateade_taidetav_sm_0.pdf">tegeliku ankeediga</a>.
+        </p>
       </div>
 
       <!-- END OF PAGES -->

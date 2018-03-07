@@ -1,12 +1,11 @@
 .introDiv, .stepDiv, .finalDiv {
-  min-height: 535px;
+  min-height: 480px;
 }
 .introDiv {
   padding-top: 125px;
 }
 .finalDiv {
   padding-top: 100px;
-  min-height: 535px;
 }
 
 .formFieldError{
@@ -49,22 +48,4 @@
   background-color: #b1d6ff9e;
   border-radius: 5px;
   padding: 1px;
-
 }
-/*html, body {
-    margin: 0;
-    height: 100%;
-}
-
-body {
-    background-image: linear-gradient(to bottom, #b1d6ff9e, #b1d6ff9e 30%, white 70%, white);
-    background-size: cover;
-    background-repeat: no-repeat;
-}
-
-.container {
-  background-color: rgba(255, 255, 255, 0.8);
-  border-radius: 25px;
-  padding: 25px;
-
-}*/

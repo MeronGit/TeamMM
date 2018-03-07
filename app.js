@@ -2,9 +2,10 @@
 let validators = {};
 
 validators["firstName"] = validators["lastName"] = validators["city"] = validators["street"] =
-validators["country"] = validators["contactCity"] = validators["contactStreet"] =
-validators["contactCountry"] = validators["ihFirstName"] = validators["ihLastName"] = function(field) {
-    if (field.value.length < 2)
+validators["county"] = validators["country"] = validators["contactCity"] = validators["contactStreet"] =
+validators["contactCounty"] = validators["contactCountry"] = validators["postalCode"] =
+validators["contactPostalCode"] = validators["ihFirstName"] =  validators["ihLastName"] = function(field) {
+    if (field.value.trim().length < 2)
         return "Vähemalt 2 tähemärki";
 };
 validators["personalCode"] = validators["ihPersonalCode"] = function(field) {
@@ -12,7 +13,6 @@ validators["personalCode"] = validators["ihPersonalCode"] = function(field) {
     if (value.trim().length != 11 || isNaN(value) || value <= 0)
         return "Eesti isikukoodis on 11 numbrit";
 };
-
 validators["email"] = validators["ihEmail"] = function(field) {
     if (field.value.trim().length <= 0) {
         return "Sisesta e-postiaadress";
@@ -52,20 +52,12 @@ validators["endContactDate"] = function(field) {
         return "Sisesta kuupäev";
     }
 };
-validators["county"] = validators["contactCounty"] = function(field) {
-    if (field.value.length < 4)
-        return "Vähemalt 4 tähemärki";
-};
-validators["postalCode"] = validators["contactPostalCode"] = function(field) {
-    if (field.value.length < 3)
-        return "Vähemalt 3 tähemärki";
-};
 validators["leaseContractFile"] = function(field) {
     if (vm.permission != 'underLease') {
         return "";
     }
-    if (vm.leaseContractFile.length < 6
-            || !vm.leaseContractFile.toLowerCase().endsWith(".bdoc")) {
+    if (vm.leaseContractFile.trim().length < 6
+            || !vm.leaseContractFile.trim().toLowerCase().endsWith(".bdoc")) {
         return "Sisesta allkirjastatud .bdoc dokument";
     }
 };
@@ -122,6 +114,7 @@ var vm = new Vue({
             // STEP 4
             inhabitantsIncludeMe: true,
             inhabitants: [],
+            inhabitantsMsg: "",
             inhabitantFormShown: false,
             inhabitantFormVerb: "",
             inhabitantIndex: -1,
@@ -180,18 +173,22 @@ var vm = new Vue({
         },
         validateStep() {
             let fieldsToValidate;
-            if (this.stepNo == 4 && this.inhabitantFormShown) {
-                fieldsToValidate = fieldsByStep["ihform"];
-            } else {
-                fieldsToValidate = fieldsByStep[this.stepNo];
-            }
-            if (!fieldsToValidate) {
-                return true;
-            }
             let allValid = true;
             if (this.stepNo == 3 && !this.permission) {
                 this.permissionMsg = "Vali üks alljärgnevatest:";
                 allValid = false;
+            } else if (this.stepNo == 4) {
+                if (this.inhabitantFormShown) {
+                    fieldsToValidate = fieldsByStep["ihform"];
+                } else if (!this.inhabitantsIncludeMe && this.inhabitants.length == 0) {
+                    this.inhabitantsMsg = "Elukohateatis peab sisaldama vähemalt ühte elanikku";
+                    allValid = false;
+                }
+            } else {
+                fieldsToValidate = fieldsByStep[this.stepNo];
+            }
+            if (!fieldsToValidate || !allValid) {
+                return allValid;
             }
             for (let fieldName of fieldsToValidate) {
                 if (!this.validateField(document.getElementById(fieldName))) {
@@ -382,7 +379,11 @@ var vm = new Vue({
             } else {
                 this.inhabitants.push(inhabitant);
             }
+            this.clearInhabitantsMsg();
             this.inhabitantFormShown = false;
+        },
+        clearInhabitantsMsg() {
+            this.inhabitantsMsg = "";
         }
     }
 });
