@@ -44,7 +44,7 @@ section {
   border-radius: 30px;
   text-align: center;
   box-sizing: border-box;
-  padding: 10px 15px;
+  padding: 10px 17px;
 
   position: absolute;
 
@@ -59,7 +59,7 @@ section.top {
   text-align: center;
   width: 200px;
   height: 200px;
-  top: 80px;
+  top: 90px;
 }
 
 section.bottom {
@@ -89,11 +89,13 @@ section.bottom {
 }
 
 #currentLogoHolder {
+  text-align: center;
+
   border: 1px dashed white;
   border-radius: 40px;
 
   width: 250px;
-  height: 250px;
+  height: 275px;
 
   position: absolute;
   left: 250px;
@@ -114,4 +116,47 @@ section.bottom {
 }
 #scoreChange {
   font-size: 1.5rem;
+}
+
+.logo-card {
+  background-color: white;
+  border-radius: 10px;
+  margin: 7px 5px;
+  padding: 2px;
+  width: 68px;
+  height: 75px;
+}
+#nextSection .logo-card {
+  float: right;
+}
+section.bottom .logo-card {
+  float: left;
+}
+.logo {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  width: 55px;
+  height: 55px;
+  margin: 2px auto 0px;
+}
+.logo-card .name {
+  color: black;
+  margin-top: 3px;
+  font-size: 0.8em;
+}
+
+#currentLogoHolder .logo-card {
+  float: none;
+  border-radius: inherit;
+  margin: 0px;
+  width: 100%;
+  height: 100%;
+}
+#currentLogoHolder .logo {
+  width: 200px;
+  height: 200px;
+}
+#currentLogoHolder .logo-card .name {
+  font-size: 2em;
 }
