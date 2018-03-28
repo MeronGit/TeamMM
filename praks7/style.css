@@ -1,0 +1,105 @@
+body {
+  color: #222;
+  font-family: 'Muli', sans-serif;
+
+  width: 250px;
+  margin: 150px auto 50px;
+}
+
+h1, p {
+  text-align: center;
+}
+
+@keyframes attnBordersAppear {
+  0% {
+    transform: translateY(5rem);
+    border-left-width: 0px;
+    border-right-width: 0px;
+  }
+  80% {
+    transform: translateY(-1rem);
+  }
+  100% {
+    transform: translateY(0);
+    border-left-width: 3px;
+    border-right-width: 3px;
+  }
+}
+
+#attnBorders {
+  border-left: 3px solid black;
+  border-right: 3px solid black;
+  height: 2.4rem;
+  box-sizing: border-box;
+  width: 250px;
+  margin-top: 2px;
+  position: absolute;
+
+  animation: 1s attnBordersAppear 1.5s backwards;
+}
+
+@keyframes appearFromLeft {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0.0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1.0;
+  }
+}
+
+@keyframes disappearToRight {
+  0% {
+    transform: translateX(0);
+    opacity: 1.0;
+  }
+  100% {
+    transform: translateX(100%);
+    opacity: 0.0;
+  }
+}
+
+input {
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+#emailGroup {
+  animation: 1s appearFromLeft backwards;
+}
+#passwordGroup {
+  animation: 1s appearFromLeft .25s backwards;
+}
+
+body.loggedIn h1 {
+  animation: 1s disappearToRight forwards;
+}
+body.loggedIn p, body.loggedIn #attnBorders {
+  animation: 1s disappearToRight .1s forwards;
+}
+body.loggedIn #emailGroup {
+  animation: 1s disappearToRight .2s forwards;
+}
+body.loggedIn #passwordGroup {
+  animation: 1s disappearToRight .3s forwards;
+}
+body.loggedIn .btn {
+  animation: 1s disappearToRight .4s forwards;
+}
+
+.btn {
+  background-color: black;
+  color: white;
+  display: inline-block;
+  text-align: center;
+  text-decoration: none;
+  padding: 7px 14px;
+  box-sizing: border-box;
+  width: 100%;
+}
+.btn:hover {
+  background-color: #222;
+}
