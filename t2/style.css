@@ -1,4 +1,4 @@
-CardHolder@font-face {
+@font-face {
   font-family: 'LatoWeb';
   src: url('fonts/Lato-Regular.eot'); /* IE9 Compat Modes */
   src: url('fonts/Lato-Regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
@@ -119,32 +119,50 @@ section.bottom {
   font-size: 1.5rem;
 }
 
-@keyframes slide-into-next {
+@keyframes slideIntoNext {
   from { transform: translateX(-300%); }
   to   { transform: translateX(0); }
 }
-@keyframes move-to-first {
+@keyframes moveToFirst {
   from { transform: translateX(-82px); }
   to   { transform: translateX(0); }
 }
-@keyframes move-to-holder {
+
+@keyframes resizeToHolder {
   from {
     border-radius: 10px;
     margin: 7px 5px;
     padding: 2px;
     width: 68px;
     height: 75px;
-    transform: translate(-150px, 68px);
   }
   to {
     border-radius: inherit;
     margin: 0px;
     width: 100%;
     height: 100%;
-    transform: translate(0, 0);
   }
 }
-@keyframes move-to-holder-logo {
+@keyframes resizeToHolder2 {
+  from {
+    border-radius: 10px;
+    margin: 7px 5px;
+    padding: 2px;
+    width: 68px;
+    height: 75px;
+  }
+  to {
+    border-radius: inherit;
+    margin: 0px;
+    width: 100%;
+    height: 100%;
+  }
+}
+@keyframes moveToHolder {
+  from { transform: translate(-150px, 68px); }
+  to   { transform: translate(0, 0); }
+}
+@keyframes moveToHolderLogo {
   from {
     width: 55px;
     height: 55px;
@@ -154,16 +172,34 @@ section.bottom {
     height: 200px;
   }
 }
-@keyframes move-to-holder-name {
-  from {
-    font-size: 0.8em;
-  }
-  to {
-    font-size: 2em;
-  }
+@keyframes moveToHolderName {
+  from { font-size: 0.8em; }
+  to   { font-size: 2em; }
 }
 
-.logo-card {
+@keyframes moveToFrontEnd {
+  from { transform: translate(0, 0); }
+  to   { transform: translate(-234px, 329px); }
+}
+
+@keyframes makeRoom1 {
+  from { transform: translateX(0); }
+  to   { transform: translateX(82px); }
+}
+@keyframes makeRoom2 {
+  from { transform: translateY(0); }
+  to   { transform: translateY(92px); }
+}
+@keyframes makeRoom3 {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-82px); }
+}
+@keyframes makeRoom4 {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-100px); }
+}
+
+.logoCard {
   background-color: white;
   border-radius: 10px;
   margin: 7px 5px;
@@ -171,14 +207,33 @@ section.bottom {
   width: 68px;
   height: 75px;
 }
-.logo-card.move-to-first {
-  animation: 1s move-to-first backwards !important;
+.logoCard.moveToFirst {
+  animation: 1s moveToFirst backwards !important;
 }
-#nextSection .logo-card {
+section.makeRoom .logoCard {
+  animation-duration: .5s;
+  animation-fill-mode: forwards;
+}
+section.makeRoom .logoCard:nth-child(1) {
+  animation-name: makeRoom1;
+}
+section.makeRoom .logoCard:nth-child(2) {
+  animation-name: makeRoom2;
+}
+section.makeRoom .logoCard:nth-child(4) {
+  animation-name: makeRoom3;
+}
+section.makeRoom .logoCard:nth-child(3) {
+  animation-name: makeRoom4;
+}
+section .logoCard:nth-child(n+5) {
+  display: none;
+}
+#nextSection .logoCard {
   float: right;
-  animation: 1s slide-into-next backwards;
+  animation: 1s slideIntoNext backwards;
 }
-section.bottom .logo-card {
+section.bottom .logoCard {
   float: left;
 }
 .logo {
@@ -189,29 +244,38 @@ section.bottom .logo-card {
   height: 55px;
   margin: 2px auto 0px;
 }
-.logo-card .name {
+.logoCard .name {
   color: black;
   margin-top: 3px;
   font-size: 0.8em;
 }
 
-#currentCardHolder .logo-card {
+#currentCardHolder .logoCard {
   float: none;
   border-radius: inherit;
   margin: 0px;
   width: 100%;
   height: 100%;
-  animation: 1s move-to-holder backwards;
+  animation: 1s moveToHolder backwards, 1s resizeToHolder backwards;
   transform-origin: 0 0;
 }
 #currentCardHolder .logo {
   width: 200px;
   height: 200px;
-  animation: 1s move-to-holder-logo;
+  animation: 1s moveToHolderLogo;
 }
-#currentCardHolder .logo-card .name {
+#currentCardHolder .logoCard .name {
   font-size: 2em;
-  animation: 1s move-to-holder-name;
+  animation: 1s moveToHolderName;
+}
+.logoCard.moveToFrontEnd {
+  animation: 1s moveToFrontEnd forwards, 1s resizeToHolder2 reverse forwards !important;
+  position: relative;
+  z-index: 10;
+}
+.logoCard.moveToFrontEnd > * {
+  animation-direction: reverse !important;
+  animation-fill-mode: forwards !important;
 }
 
 #questionArea {
