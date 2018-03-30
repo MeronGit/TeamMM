@@ -1,9 +1,9 @@
 let cards = [
-    { name: "Angular" },
-    { name: "C#", logoName: "csharp" },
-    { name: "Java" },
-    { name: "Meteor" },
-    { name: "Python" },
-    { name: "React" },
-    { name: "Vue" }
+    { name: "Angular", cardType: "frontEnd" },
+    { name: "C#", logoName: "csharp", cardType: "backEnd"},
+    { name: "Java", cardType: "backEnd" },
+    { name: "Meteor", cardType: "backEnd" },
+    { name: "Python", cardType: "backEnd" },
+    { name: "React", cardType: "frontEnd" },
+    { name: "Vue", cardType: "frontEnd" }
 ];
