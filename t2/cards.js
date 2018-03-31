@@ -5,5 +5,10 @@ let cards = [
     { name: "Meteor", cardType: "backEnd" },
     { name: "Python", cardType: "backEnd" },
     { name: "React", cardType: "frontEnd" },
-    { name: "Vue", cardType: "frontEnd" }
+    { name: "Vue", cardType: "frontEnd" },
+    { name: "Bootmetro", cardType: "frontEnd"},
+    { name: "Bootstrap", cardType: "frontEnd"},
+    { name: "jQuery", cardType: "frontEnd"},
+    { name: "PHP", cardType: "backEnd"},
+    { name: "Ruby", cardType: "backEnd"}
 ];
