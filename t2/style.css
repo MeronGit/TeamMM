@@ -42,10 +42,11 @@ nav a:hover, nav a:active {
 
 section {
   background-color: #111423;
+  border: 2px none green;
   border-radius: 30px;
   text-align: center;
   box-sizing: border-box;
-  padding: 10px 17px;
+  padding: 8px 15px;
   overflow: hidden;
   position: absolute;
 }
@@ -63,6 +64,7 @@ section.top {
 }
 
 section.bottom {
+  border: 2px solid #2f386d;
   color: #dddee0;
   text-align: center;
   width: 200px;
@@ -217,6 +219,26 @@ section.bottom {
   to   { transform: translate(316px, 328px); }
 }
 
+@keyframes scaleToZero {
+  from { transform: scale(1.0); }
+  to   { transform: scale(0.0); }
+}
+
+@keyframes indicateCorrect {
+  0%   { border-color: #2f386d; }
+  30%  { border-color: #1cea8f; }
+  100% { border-color: #2f386d; }
+}
+@keyframes indicateIncorrect {
+  0%   { border-color: white; }
+  30%  { border-color: #ff5b5b; }
+  100% { border-color: white; }
+}
+
+#currentCardHolder.incorrect {
+  animation: 1s indicateIncorrect !important;
+}
+
 .logoCard {
   background-color: white;
   border-radius: 10px;
@@ -227,6 +249,10 @@ section.bottom {
 }
 .logoCard.moveToFirst {
   animation: 1s moveToFirst backwards !important;
+}
+.logoCard.disappear {
+  animation: 0.5s scaleToZero forwards !important;
+  transform-origin: 50% 50% !important;
 }
 section.makeRoom .logoCard {
   animation-duration: .5s;
@@ -247,6 +273,9 @@ section.makeRoom .logoCard:nth-child(4) {
 section .logoCard:nth-child(n+5) {
   display: none;
 }
+section.correct {
+  animation: indicateCorrect 1s;
+}
 #nextSection .logoCard {
   float: right;
   animation: 1s slideIntoNext backwards;
@@ -258,7 +287,7 @@ section.bottom .logoCard:nth-child(3),
 section.bottom .logoCard:nth-child(4) {
   float: right;
 }
-.logo {
+.logoCard .logo {
   background-position: center;
   background-repeat: no-repeat;
   background-size: contain;

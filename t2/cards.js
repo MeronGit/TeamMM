@@ -1,14 +1,14 @@
 let cards = [
-    { name: "Angular", cardType: "frontEnd" },
-    { name: "C#", logoName: "csharp", cardType: "backEnd"},
-    { name: "Java", cardType: "backEnd" },
-    { name: "Meteor", cardType: "backEnd" },
-    { name: "Python", cardType: "backEnd" },
-    { name: "React", cardType: "frontEnd" },
-    { name: "Vue", cardType: "frontEnd" },
-    { name: "Bootmetro", cardType: "frontEnd"},
-    { name: "Bootstrap", cardType: "frontEnd"},
-    { name: "jQuery", cardType: "frontEnd"},
-    { name: "PHP", cardType: "backEnd"},
-    { name: "Ruby", cardType: "backEnd"}
+    { name: "Angular", type: "frontEnd" },
+    { name: "C#", logoName: "csharp", type: "backEnd"},
+    { name: "Java", type: "backEnd" },
+    { name: "Meteor", type: "backEnd" },
+    { name: "Python", type: "backEnd" },
+    { name: "React", type: "frontEnd" },
+    { name: "Vue", type: "frontEnd" },
+    { name: "Bootmetro", type: "frontEnd"},
+    { name: "Bootstrap", type: "frontEnd"},
+    { name: "jQuery", type: "frontEnd"},
+    { name: "PHP", type: "backEnd"},
+    { name: "Ruby", type: "backEnd"}
 ];
