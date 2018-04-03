@@ -39,23 +39,28 @@ function getCardFromHolder() {
     return document.getElementById("currentCardHolder").firstElementChild;
 }
 
-function moveCardFromHolderToDestination(isFrontEnd) {
+function capitalizeStr(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+function moveCardFromHolderToDestination(destName) {
     let cardDiv = getCardFromHolder();
     if (!cardDiv) {
         return false;
     }
-    let className = isFrontEnd ? "moveToFrontEnd" : "moveToBackEnd";
-    cardDiv.classList.add(className);
+    let destinationSection = document.getElementById(destName + "Section");
+    destinationSection.classList.add("makeRoom");
+    let movingClassName = "moveTo" + capitalizeStr(destName);
+    cardDiv.classList.add(movingClassName);
     let logoDiv = cardDiv.getElementsByClassName("logo")[0];
     let nameDiv = cardDiv.getElementsByClassName("name")[0];
-    cardDiv.style.animation = 'none';
-    logoDiv.style.animation = 'none';
-    nameDiv.style.animation = 'none';
     setTimeout(function() {
-        cardDiv.style.animation = '';
-        logoDiv.style.animation = '';
-        nameDiv.style.animation = '';
-    }, 10);
+        cardDiv.parentNode.removeChild(cardDiv);
+        cardDiv.classList.remove(movingClassName);
+        destinationSection.classList.remove("makeRoom");
+        let destinationCards = document.getElementById(destName + "Cards");
+        destinationCards.insertBefore(cardDiv, destinationCards.firstElementChild);
+    }, 1010);
 }
 
 // testing
@@ -70,9 +75,5 @@ setTimeout(function() {
 }, 2000);
 
 setTimeout(function() {
-    document.getElementById("frontEndSection").classList.add("makeRoom");
-}, 3000);
-
-setTimeout(function() {
-    moveCardFromHolderToDestination(true);
+    moveCardFromHolderToDestination('frontEnd');
 }, 3000);
