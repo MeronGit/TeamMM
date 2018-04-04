@@ -106,6 +106,21 @@ section.bottom {
   left: 250px;
 }
 
+@keyframes feedbackAnimation {
+  0% {
+    opacity: 0.0;
+    transform: translateY(100px);
+  }
+  20%, 70% {
+    opacity: 1.0;
+    transform: translateY(0px);
+  }
+  100% {
+    opacity: 0.0;
+    transform: translateY(-100px);
+  }
+}
+
 #feedbackArea {
   text-align: center;
   position: absolute;
@@ -113,13 +128,21 @@ section.bottom {
   left: 225px;
   width: 300px;
 }
-#feedbackArea.correct {
+.feedback {
+  animation: feedbackAnimation 1.5s both;
+  position: absolute;
+  width: 100%;
+}
+.feedback.correct {
   color: #1cea8f;
 }
-#outcome {
+.feedback.wrong {
+  color: #ff5b5b;
+}
+.outcome {
   font-size: 3rem;
 }
-#scoreChange {
+.scoreChange {
   font-size: 1.5rem;
 }
 

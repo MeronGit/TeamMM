@@ -1,6 +1,24 @@
 
+let gameActive = false;
 let readyToMoveCard = false;
 let lastCardMoveInNextTime;
+let lastCardArrivalInHolderTime;
+let score = 0;
+
+/**
+ * Shuffles array in place.
+ * From: https://stackoverflow.com/a/6274381/2655932
+ * @param {Array} a items An array containing the items.
+ */
+function shuffle(a) {
+    let j, x, i;
+    for (i = a.length - 1; i > 0; i--) {
+        j = Math.floor(Math.random() * (i + 1));
+        x = a[i];
+        a[i] = a[j];
+        a[j] = x;
+    }
+}
 
 function createCard(params) {
     let name = params.name;
@@ -56,6 +74,7 @@ function moveCardToHolder() {
     }
     setTimeout(function() {
         readyToMoveCard = true;
+        lastCardArrivalInHolderTime = Date.now();
     }, 1000);
 }
 
@@ -110,7 +129,32 @@ function getTypeForCardByName(name) {
     }
 }
 
+function incrementScore(delta) {
+    score += delta;
+    document.getElementById("score").textContent = score;
+}
+
+function showFeedback(outcome, scoreChange) {
+    let feedbackDiv = document.createElement("div");
+    feedbackDiv.className = "feedback " + outcome;
+    let outcomeDiv = document.createElement("div");
+    outcomeDiv.className = "outcome";
+    outcomeDiv.textContent = capitalizeStr(outcome);
+    let scoreChangeDiv = document.createElement("scoreChange");
+    scoreChangeDiv.className = "scoreChange";
+    scoreChangeDiv.textContent = (scoreChange >= 0 ? "+" : "") + scoreChange + " point" +
+                                (Math.abs(scoreChange) != 1 ? "s" : "");
+    feedbackDiv.appendChild(outcomeDiv);
+    feedbackDiv.appendChild(scoreChangeDiv);
+    document.getElementById("feedbackArea").appendChild(feedbackDiv);
+    incrementScore(scoreChange);
+    setTimeout(function() {
+        feedbackDiv.parentNode.removeChild(feedbackDiv);
+    }, 1500);
+}
+
 function main() {
+    shuffle(cards);
     let nextCardsElem = document.getElementById("nextCards");
     let cardIndex = 0;
     let placeNewCardIntoNextInterval;
@@ -118,14 +162,14 @@ function main() {
         if (nextCardsElem.children.length > 1) {
             alert("Game over!");
             clearInterval(placeNewCardIntoNextInterval);
-            readyToMoveCard = false;
+            gameActive = false;
             return;
         }
         let card = cards[cardIndex++];
         if (!card) {
             alert("You WON!");
             clearInterval(placeNewCardIntoNextInterval);
-            readyToMoveCard = false;
+            gameActive = false;
             return;
         }
         let cardDiv = createCard(card);
@@ -134,7 +178,7 @@ function main() {
     placeNewCardIntoNext();
     placeNewCardIntoNextInterval = setInterval(placeNewCardIntoNext, 3000);
     document.addEventListener('keydown', function(event) {
-        if (!readyToMoveCard) {
+        if (!gameActive || !readyToMoveCard) {
             return;
         }
         if (event.key == "ArrowLeft" || event.key == "ArrowRight") {
@@ -153,15 +197,18 @@ function main() {
                     destinationSection.classList.add("incorrect");
                 }, 10);
                 makeCardDisappear(cardDiv);
+                showFeedback("wrong", -50);
             } else if (moveCardFromHolderToDestination(dest)) {
                 destinationSection.classList.remove("correct");
                 destinationSection.classList.remove("incorrect");
                 setTimeout(function() {
                     destinationSection.classList.add("correct");
                 }, 10);
+                showFeedback("correct", Math.round(90 - (Date.now() - lastCardArrivalInHolderTime) / 100));
             }
         }
     });
+    gameActive = true;
 }
 
 main();
