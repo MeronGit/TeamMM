@@ -160,16 +160,18 @@ function main() {
     let placeNewCardIntoNextInterval;
     let placeNewCardIntoNext = function() {
         if (nextCardsElem.children.length > 1) {
-            alert("Game over!");
             clearInterval(placeNewCardIntoNextInterval);
             gameActive = false;
+            document.body.className = "gameEnded gameOver";
             return;
         }
         let card = cards[cardIndex++];
         if (!card) {
-            alert("You WON!");
-            clearInterval(placeNewCardIntoNextInterval);
-            gameActive = false;
+            if (!getCardFromHolder() && nextCardsElem.children.length == 0) {
+                clearInterval(placeNewCardIntoNextInterval);
+                gameActive = false;
+                document.body.className = "gameEnded gameWon";
+            }
             return;
         }
         let cardDiv = createCard(card);
@@ -204,7 +206,8 @@ function main() {
                 setTimeout(function() {
                     destinationSection.classList.add("correct");
                 }, 10);
-                showFeedback("correct", Math.round(90 - (Date.now() - lastCardArrivalInHolderTime) / 100));
+                showFeedback("correct", Math.max(5,
+                    Math.round(90 - (Date.now() - lastCardArrivalInHolderTime) / 100)));
             }
         }
     });

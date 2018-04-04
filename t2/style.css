@@ -90,7 +90,15 @@ section.bottom {
 #scoreSection div.livesLine {
   font-size: 1.5rem;
   font-weight: bold;
-  margin-top: 30px;
+  margin-top: 27px;
+  text-align: center;
+}
+div.heart {
+  background-image: url('images/icons/heart.png');
+  background-size: contain;
+  display: inline-block;
+  width: 32px;
+  height: 32px;
 }
 
 #currentCardHolder {
@@ -396,4 +404,54 @@ section.bottom .logoCard:nth-child(4) {
 }
 #questionArea .answer:hover .dot {
   background-color: gray;
+}
+
+@keyframes disappearToRight {
+  0% {
+    opacity: 1.0;
+    transform: translateX(0px);
+  }
+  70%, 100% {
+    opacity: 0.0;
+    transform: translateX(300px);
+  }
+}
+
+@keyframes appearFromLeft {
+  0% {
+    opacity: 0.0;
+    transform: translateX(-300px);
+  }
+  100% {
+    opacity: 1.0;
+    transform: translateX(0px);
+  }
+}
+
+.gameEndedMsg {
+  display: none;
+  font-size: 3em;
+  margin-top: 200px;
+  text-align: center;
+}
+
+body.gameEnded {
+  overflow-x: hidden;
+}
+
+body.gameEnded section,
+body.gameEnded #currentCardHolder,
+body.gameEnded #feedbackArea {
+  animation: 1.5s disappearToRight forwards;
+}
+
+body.gameWon #gameWonMsg {
+  color: #1cea8f;
+  display: block;
+  animation: 1.5s appearFromLeft backwards;
+}
+body.gameOver #gameOverMsg {
+  color: #ff5b5b;
+  display: block;
+  animation: 1.5s appearFromLeft backwards;
 }

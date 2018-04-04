@@ -22,62 +22,22 @@
         0
       </div>
       <div class="livesLine">
-        Lives: <span id="lives">3</span>
+        <!--Lives: <span id="lives">3</span>-->
+        <div class="heart"></div>
+        <div class="heart"></div>
+        <div class="heart"></div>
       </div>
     </section>
     <section class="bottom" id="frontEndSection">
       <h2>Front end</h2>
       <div id="frontEndCards">
-        <!--
-        <div class="logoCard">
-          <div class="logo" style="background-image: url('images/logos/meteor.png')">
-          </div>
-          <div class="name">
-            Meteor
-          </div>
-        </div>
-        <div class="logoCard">
-          <div class="logo" style="background-image: url('images/logos/react.png')">
-          </div>
-          <div class="name">
-            React
-          </div>
-        </div>
-        <div class="logoCard">
-          <div class="logo" style="background-image: url('images/logos/vue.png')">
-          </div>
-          <div class="name">
-            Vue
-          </div>
-        </div>
-        <div class="logoCard">
-          <div class="logo" style="background-image: url('images/logos/angular.png')">
-          </div>
-          <div class="name">
-            Angular
-          </div>
-        </div>
-        -->
       </div>
     </section>
     <div id="feedbackArea">
-      <!--<div class="feedback correct">
-        <div id="outcome">Correct</div>
-        <div id="scoreChange">+5 points</div>
-      </div>-->
     </div>
     <section class="bottom" id="backEndSection">
       <h2>Back end</h2>
       <div id="backEndCards">
-        <!--
-        <div class="logoCard">
-          <div class="logo" style="background-image: url('images/logos/python.png')">
-          </div>
-          <div class="name">
-            Python
-          </div>
-        </div>
-        -->
       </div>
     </section>
     <div id="questionArea" style="display: none">
@@ -97,5 +57,12 @@
     </div>
     <script src="cards.js"></script>
     <script src="game.js"></script>
+
+    <div class="gameEndedMsg" id="gameWonMsg">
+      Game won!
+    </div>
+    <div class="gameEndedMsg" id="gameOverMsg">
+      Game over!
+    </div>
   </body>
 </html>
