@@ -1,4 +1,7 @@
 
+let readyToMoveCard = false;
+let lastCardMoveInNextTime;
+
 function createCard(params) {
     let name = params.name;
     let logoName = params.logoName;
@@ -21,18 +24,27 @@ function createCard(params) {
 function addCardToNext(cardDiv) {
     let nextCardsDiv = document.getElementById("nextCards");
     nextCardsDiv.appendChild(cardDiv);
+    lastCardMoveInNextTime = Date.now();
+    setTimeout(function() {
+        moveCardToHolder();
+    }, 1000);
 }
 
 function moveCardToHolder() {
     let holderDiv = document.getElementById("currentCardHolder");
+    let timeLeft = 1000 - (Date.now() - lastCardMoveInNextTime);
+    if (timeLeft > 0) {
+        setTimeout(moveCardToHolder, timeLeft);
+        return;
+    }
     if (holderDiv.firstElementChild) {
-        console.log("moveCardToHolder - there is already a card");
         return;
     }
     let cardDiv = document.getElementById("nextCards").firstElementChild;
     if (!cardDiv) {
         return;
     }
+    readyToMoveCard = false;
     cardDiv.classList.remove("moveToFirst");
     cardDiv.parentNode.removeChild(cardDiv);
     holderDiv.appendChild(cardDiv);
@@ -40,14 +52,22 @@ function moveCardToHolder() {
     if (nextCardsDiv.children.length > 0) {
         let newFirstCardDiv = nextCardsDiv.firstElementChild;
         newFirstCardDiv.classList.add("moveToFirst");
+        lastCardMoveInNextTime = Date.now();
     }
+    setTimeout(function() {
+        readyToMoveCard = true;
+    }, 1000);
 }
 
 function makeCardDisappear(cardDiv) {
+    readyToMoveCard = false;
     cardDiv.classList.add("disappear");
     setTimeout(function() {
         cardDiv.parentNode.removeChild(cardDiv);
     }, 500);
+    setTimeout(function () {
+        moveCardToHolder();
+    }, 600);
 }
 
 function getCardFromHolder() {
@@ -63,6 +83,7 @@ function moveCardFromHolderToDestination(destName) {
     if (!cardDiv) {
         return false;
     }
+    readyToMoveCard = false;
     let destinationSection = document.getElementById(destName + "Section");
     destinationSection.classList.add("makeRoom");
     let movingClassName = "moveTo" + capitalizeStr(destName);
@@ -75,6 +96,7 @@ function moveCardFromHolderToDestination(destName) {
         destinationSection.classList.remove("makeRoom");
         let destinationCards = document.getElementById(destName + "Cards");
         destinationCards.insertBefore(cardDiv, destinationCards.firstElementChild);
+        moveCardToHolder();
     }, 1010);
     return true;
 }
@@ -92,7 +114,6 @@ function main() {
     let nextCardsElem = document.getElementById("nextCards");
     let cardIndex = 0;
     let placeNewCardIntoNextInterval;
-    let readyToMoveCard = true;
     let placeNewCardIntoNext = function() {
         if (nextCardsElem.children.length > 1) {
             alert("Game over!");
@@ -109,11 +130,6 @@ function main() {
         }
         let cardDiv = createCard(card);
         addCardToNext(cardDiv);
-        setTimeout(function() {
-            if (!document.getElementById("currentCardHolder").firstElementChild) {
-                moveCardToHolder();
-            }
-        }, 1000);
     }
     placeNewCardIntoNext();
     placeNewCardIntoNextInterval = setInterval(placeNewCardIntoNext, 3000);
@@ -131,31 +147,18 @@ function main() {
             let correctType = getTypeForCardByName(name);
             let destinationSection = document.getElementById(dest + "Section");
             if (dest != correctType) {
-                let cardHolder = document.getElementById("currentCardHolder");
-                cardHolder.classList.remove("incorrect");
+                destinationSection.classList.remove("correct");
+                destinationSection.classList.remove("incorrect");
                 setTimeout(function() {
-                    cardHolder.classList.add("incorrect");
+                    destinationSection.classList.add("incorrect");
                 }, 10);
-                readyToMoveCard = false;
                 makeCardDisappear(cardDiv);
-                setTimeout(function() {
-                    moveCardToHolder();
-                }, 600);
-                setTimeout(function() {
-                    readyToMoveCard = true;
-                }, 1600);
             } else if (moveCardFromHolderToDestination(dest)) {
                 destinationSection.classList.remove("correct");
+                destinationSection.classList.remove("incorrect");
                 setTimeout(function() {
                     destinationSection.classList.add("correct");
                 }, 10);
-                readyToMoveCard = false;
-                setTimeout(function() {
-                    moveCardToHolder();
-                }, 1010);
-                setTimeout(function() {
-                    readyToMoveCard = true;
-                }, 2000);
             }
         }
     });

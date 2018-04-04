@@ -1,4 +1,4 @@
-moveToHolder@font-face {
+@font-face {
   font-family: 'LatoWeb';
   src: url('fonts/Lato-Regular.eot'); /* IE9 Compat Modes */
   src: url('fonts/Lato-Regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
@@ -230,13 +230,9 @@ section.bottom {
   100% { border-color: #2f386d; }
 }
 @keyframes indicateIncorrect {
-  0%   { border-color: white; }
+  0%   { border-color: #2f386d; }
   30%  { border-color: #ff5b5b; }
-  100% { border-color: white; }
-}
-
-#currentCardHolder.incorrect {
-  animation: 1s indicateIncorrect !important;
+  100% { border-color: #2f386d; }
 }
 
 .logoCard {
@@ -275,6 +271,9 @@ section .logoCard:nth-child(n+5) {
 }
 section.correct {
   animation: indicateCorrect 1s;
+}
+section.incorrect {
+  animation: indicateIncorrect 1s;
 }
 #nextSection .logoCard {
   float: right;
