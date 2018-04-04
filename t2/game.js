@@ -3,6 +3,7 @@ let gameActive = false;
 let readyToMoveCard = false;
 let lastCardMoveInNextTime;
 let lastCardArrivalInHolderTime;
+let placeNewCardIntoNextInterval;
 let score = 0;
 
 /**
@@ -134,6 +135,36 @@ function incrementScore(delta) {
     document.getElementById("score").textContent = score;
 }
 
+function gameOver() {
+    clearInterval(placeNewCardIntoNextInterval);
+    gameActive = false;
+    document.body.className = "gameEnded gameOver";
+}
+
+function gameWon() {
+    clearInterval(placeNewCardIntoNextInterval);
+    gameActive = false;
+    document.body.className = "gameEnded gameWon";
+}
+
+function decreaseLives() {
+    let hearts = document.getElementById("livesLine").children;
+    let anyLivesLeft = false;
+    for (let i=hearts.length - 1; i >= 0; i--) {
+        if (!hearts[i].classList.contains("gone")) {
+            hearts[i].classList.add("gone");
+            anyLivesLeft = i != 0;
+            break;
+        }
+    }
+    if (!anyLivesLeft) {
+        setTimeout(function() {
+            gameOver();
+        }, 1000);
+    }
+    return anyLivesLeft;
+}
+
 function showFeedback(outcome, scoreChange) {
     let feedbackDiv = document.createElement("div");
     feedbackDiv.className = "feedback " + outcome;
@@ -148,6 +179,9 @@ function showFeedback(outcome, scoreChange) {
     feedbackDiv.appendChild(scoreChangeDiv);
     document.getElementById("feedbackArea").appendChild(feedbackDiv);
     incrementScore(scoreChange);
+    if (outcome == "wrong") {
+        decreaseLives();
+    }
     setTimeout(function() {
         feedbackDiv.parentNode.removeChild(feedbackDiv);
     }, 1500);
@@ -157,20 +191,15 @@ function main() {
     shuffle(cards);
     let nextCardsElem = document.getElementById("nextCards");
     let cardIndex = 0;
-    let placeNewCardIntoNextInterval;
     let placeNewCardIntoNext = function() {
         if (nextCardsElem.children.length > 1) {
-            clearInterval(placeNewCardIntoNextInterval);
-            gameActive = false;
-            document.body.className = "gameEnded gameOver";
+            decreaseLives();
             return;
         }
         let card = cards[cardIndex++];
         if (!card) {
             if (!getCardFromHolder() && nextCardsElem.children.length == 0) {
-                clearInterval(placeNewCardIntoNextInterval);
-                gameActive = false;
-                document.body.className = "gameEnded gameWon";
+                gameWon();
             }
             return;
         }

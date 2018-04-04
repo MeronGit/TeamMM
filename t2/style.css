@@ -87,7 +87,7 @@ section.bottom {
   font-size: 3rem;
   font-weight: bold;
 }
-#scoreSection div.livesLine {
+#livesLine {
   font-size: 1.5rem;
   font-weight: bold;
   margin-top: 27px;
@@ -99,6 +99,10 @@ div.heart {
   display: inline-block;
   width: 32px;
   height: 32px;
+  transition: transform 1s;
+}
+div.heart.gone {
+  transform: translateY(50px);
 }
 
 #currentCardHolder {
