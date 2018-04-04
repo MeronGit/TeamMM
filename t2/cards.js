@@ -18,6 +18,13 @@ let cards = [
     { name: "Milligram", type: "frontEnd"},
     { name: "Semantic UI", type: "frontEnd"},
     { name: "Skeleton", type: "frontEnd"},
-    { name: "UIkit", type: "frontEnd"}
+    { name: "UIkit", type: "frontEnd"},
+    { name: "Laravel", type: "backEnd"},
+    { name: "Rails", type: "backEnd"},
+    { name: "Symfony", type: "backEnd"},
+    { name: "Yii", type: "backEnd"},
+    { name: "Phalcon", type: "backEnd"},
+    { name: "Backbone.js", logoName:"backbonejs", type: "backEnd"},
+    { name: "FuelPHP", type: "backEnd"}
     //{ name: "", type: ""}
 ];
