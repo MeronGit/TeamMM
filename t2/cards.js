@@ -10,5 +10,14 @@ let cards = [
     { name: "Bootstrap", type: "frontEnd"},
     { name: "jQuery", type: "frontEnd"},
     { name: "PHP", type: "backEnd"},
-    { name: "Ruby", type: "backEnd"}
+    { name: "Ruby", type: "backEnd"},
+    { name: "Bulma", type: "frontEnd"},
+    { name: "Foundation", type: "frontEnd"},
+    { name: "Material UI", type: "frontEnd"},
+    { name: "Materialize", type: "frontEnd"},
+    { name: "Milligram", type: "frontEnd"},
+    { name: "Semantic UI", type: "frontEnd"},
+    { name: "Skeleton", type: "frontEnd"},
+    { name: "UIkit", type: "frontEnd"}
+    //{ name: "", type: ""}
 ];
