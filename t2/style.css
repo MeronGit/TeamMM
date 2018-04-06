@@ -36,7 +36,7 @@ nav a:link, nav a:visited {
   text-decoration: none;
 }
 nav a:hover, nav a:active {
-  background-color: #9d9bc2;
+  background-color: black;
   color: white;
 }
 
@@ -432,21 +432,48 @@ section.bottom .logoCard:nth-child(4) {
   }
 }
 
+@keyframes gameEndedScoreMovement {
+  0% {
+    transform: translate(0px, 0px);
+  }
+  100% {
+    transform: translate(-275px, 230px);
+  }
+}
+
+@keyframes playAgainButtonAppear {
+  from {
+    visibility: visible;
+    transform: translateY(0px);
+  }
+  to   {
+    visibility: visible;
+    transform: translateY(70px);
+  }
+}
+
 .gameEndedMsg {
   display: none;
   font-size: 3em;
   margin-top: 200px;
   text-align: center;
+  position: relative;
+  z-index: 20;
 }
 
 body.gameEnded {
   overflow-x: hidden;
 }
 
-body.gameEnded section,
+body.gameEnded section:not(#scoreSection),
 body.gameEnded #currentCardHolder,
 body.gameEnded #feedbackArea {
   animation: 1.5s disappearToRight forwards;
+}
+
+body.gameEnded #scoreSection {
+  animation: 1.5s gameEndedScoreMovement forwards;
+  z-index: 15;
 }
 
 body.gameWon #gameWonMsg {
@@ -458,4 +485,27 @@ body.gameOver #gameOverMsg {
   color: #ff5b5b;
   display: block;
   animation: 1.5s appearFromLeft backwards;
+}
+
+#playAgainButton {
+  display: none;
+  visibility: hidden;
+}
+
+body.gameEnded #playAgainButton {
+  display: block;
+  border-radius: 15px;
+  padding: 10px 0px;
+  text-align: center;
+  font-size: 1.1rem;
+  width: 200px;
+  margin: 170px auto 0px;
+  background-color: #141938;
+  color: #1cea8f;
+  animation: 1s playAgainButtonAppear 1.5s forwards;
+  cursor: pointer;
+}
+body.gameEnded #playAgainButton:hover {
+  background-color: black;
+  color: white;
 }
