@@ -1,6 +1,6 @@
 
 let gameActive = false;
-let readyToMoveCard = false;
+let readyToTakeInput = false;
 let lastCardMoveInNextTime;
 let lastCardArrivalInHolderTime;
 let placeNewCardIntoNextInterval;
@@ -40,6 +40,17 @@ function createCard(params) {
     return cardDiv;
 }
 
+function createQuestionCard(index) {
+    let cardDiv = document.createElement("div");
+    cardDiv.className = "logoCard questionCard";
+    cardDiv.dataset.questionIndex = index;
+    let questionMarkDiv = document.createElement("div");
+    questionMarkDiv.className = "questionMark";
+    questionMarkDiv.textContent = "?";
+    cardDiv.appendChild(questionMarkDiv);
+    return cardDiv;
+}
+
 function addCardToNext(cardDiv) {
     let nextCardsDiv = document.getElementById("nextCards");
     nextCardsDiv.appendChild(cardDiv);
@@ -63,7 +74,7 @@ function moveCardToHolder() {
     if (!cardDiv) {
         return;
     }
-    readyToMoveCard = false;
+    readyToTakeInput = false;
     cardDiv.classList.remove("moveToFirst");
     cardDiv.parentNode.removeChild(cardDiv);
     holderDiv.appendChild(cardDiv);
@@ -74,20 +85,27 @@ function moveCardToHolder() {
         lastCardMoveInNextTime = Date.now();
     }
     setTimeout(function() {
-        readyToMoveCard = true;
         lastCardArrivalInHolderTime = Date.now();
+        if (cardDiv.classList.contains("questionCard")) {
+            setUpQuestion(questions[cardDiv.dataset.questionIndex]);
+        } else {
+            readyToTakeInput = true;
+        }
     }, 1000);
 }
 
-function makeCardDisappear(cardDiv) {
-    readyToMoveCard = false;
+function makeCardDisappear(cardDiv, additionalHolderTimeout) {
+    readyToTakeInput = false;
     cardDiv.classList.add("disappear");
     setTimeout(function() {
         cardDiv.parentNode.removeChild(cardDiv);
     }, 500);
+    if (!additionalHolderTimeout) {
+        additionalHolderTimeout = 0;
+    }
     setTimeout(function () {
         moveCardToHolder();
-    }, 600);
+    }, 600 + additionalHolderTimeout);
 }
 
 function getCardFromHolder() {
@@ -103,7 +121,7 @@ function moveCardFromHolderToDestination(destName) {
     if (!cardDiv) {
         return false;
     }
-    readyToMoveCard = false;
+    readyToTakeInput = false;
     let destinationSection = document.getElementById(destName + "Section");
     destinationSection.classList.add("makeRoom");
     let movingClassName = "moveTo" + capitalizeStr(destName);
@@ -187,35 +205,30 @@ function showFeedback(outcome, scoreChange) {
     }, 1500);
 }
 
+let questionTimeout;
+
 function answerQuestion(answerNo) {
     let questionArea = document.getElementById("questionArea");
     if (questionArea.className == "disappear") {
         return;
     }
+    let cardDiv = getCardFromHolder();
+    cardDiv.classList.add("paused");
     let answerElem = document.getElementById("answer" + answerNo);
     let questionTitle = document.getElementById("questionTitle").textContent;
     let question = questions.find(q => q.question == questionTitle);
     answerElem.classList.add("chosen");
     questionArea.className = "disappear";
     let isCorrect = answerElem.textContent == question.answers[0];
+    clearTimeout(questionTimeout);
+    makeCardDisappear(cardDiv, 2500);
     setTimeout(function() {
         if (isCorrect) {
             showFeedback("correct", 200);
         } else {
             showFeedback("wrong", -100);
         }
-    }, 2000);
-}
-
-function checkKeydownForAnswer(event) {
-    let keymap = {
-        "ArrowLeft": 0,
-        "ArrowDown": 1,
-        "ArrowRight": 2
-    };
-    if (event.key in keymap) {
-        answerQuestion(keymap[event.key]);
-    }
+    }, 2500);
 }
 
 function setUpQuestion(data) {
@@ -245,65 +258,106 @@ function setUpQuestion(data) {
     setTimeout(function() {
         questionArea.className = "appear";
     }, 10);
+    setTimeout(function() {
+        readyToTakeInput = true;
+    }, 1000);
+    questionTimeout = setTimeout(function() {
+        questionArea.className = "disappear";
+        setTimeout(function() {
+            decreaseLives();
+        }, 2500);
+    }, 8500);
+}
+
+function checkKeydownForCardCategorization(event) {
+    if (event.key == "ArrowLeft" || event.key == "ArrowRight") {
+        let dest = event.key == "ArrowLeft" ? "frontEnd" : "backEnd";
+        let cardDiv = getCardFromHolder();
+        if (!cardDiv) {
+            return;
+        }
+        let name = cardDiv.getElementsByClassName("name")[0].textContent;
+        let correctType = getTypeForCardByName(name);
+        let destinationSection = document.getElementById(dest + "Section");
+        if (dest != correctType) {
+            destinationSection.classList.remove("correct");
+            destinationSection.classList.remove("incorrect");
+            setTimeout(function() {
+                destinationSection.classList.add("incorrect");
+            }, 10);
+            makeCardDisappear(cardDiv);
+            showFeedback("wrong", -50);
+        } else if (moveCardFromHolderToDestination(dest)) {
+            destinationSection.classList.remove("correct");
+            destinationSection.classList.remove("incorrect");
+            setTimeout(function() {
+                destinationSection.classList.add("correct");
+            }, 10);
+            showFeedback("correct", Math.max(5,
+                Math.round(90 - (Date.now() - lastCardArrivalInHolderTime) / 100)));
+        }
+    }
+}
+
+function checkKeydownForQuestionAnswer(event) {
+    console.log(event);
+    let keymap = {
+        "ArrowLeft": 0,
+        "ArrowDown": 1,
+        "ArrowRight": 2
+    };
+    if (event.key in keymap) {
+        answerQuestion(keymap[event.key]);
+    }
 }
 
 function main() {
     shuffle(cards);
+    shuffle(questions);
     let nextCardsElem = document.getElementById("nextCards");
     let cardIndex = 0;
+    let questionIndex = 0;
     let placeNewCardIntoNext = function() {
+        let cardFromHolder = getCardFromHolder();
+        if (cardFromHolder && cardFromHolder.classList.contains("questionCard")) {
+            return;
+        }
         if (nextCardsElem.children.length > 1) {
             decreaseLives();
             return;
         }
-        let card = cards[cardIndex++];
-        if (!card) {
-            if (!getCardFromHolder() && nextCardsElem.children.length == 0) {
-                gameWon();
+        let cardDiv;
+        if (questionIndex < questions.length && cardIndex == (questionIndex+1)*4) {
+            cardDiv = createQuestionCard(questionIndex++);
+        } else {
+            let card = cards[cardIndex++];
+            if (!card) {
+                if (!getCardFromHolder() && nextCardsElem.children.length == 0) {
+                    gameWon();
+                }
+                return;
             }
-            return;
+            cardDiv = createCard(card);
         }
-        let cardDiv = createCard(card);
         addCardToNext(cardDiv);
     }
     placeNewCardIntoNext();
     placeNewCardIntoNextInterval = setInterval(placeNewCardIntoNext, 3000);
     document.addEventListener('keydown', function(event) {
-        if (!gameActive || !readyToMoveCard) {
+        if (!gameActive || !readyToTakeInput) {
             return;
         }
-        if (event.key == "ArrowLeft" || event.key == "ArrowRight") {
-            let dest = event.key == "ArrowLeft" ? "frontEnd" : "backEnd";
-            let cardDiv = getCardFromHolder();
-            if (!cardDiv) {
-                return;
-            }
-            let name = cardDiv.getElementsByClassName("name")[0].textContent;
-            let correctType = getTypeForCardByName(name);
-            let destinationSection = document.getElementById(dest + "Section");
-            if (dest != correctType) {
-                destinationSection.classList.remove("correct");
-                destinationSection.classList.remove("incorrect");
-                setTimeout(function() {
-                    destinationSection.classList.add("incorrect");
-                }, 10);
-                makeCardDisappear(cardDiv);
-                showFeedback("wrong", -50);
-            } else if (moveCardFromHolderToDestination(dest)) {
-                destinationSection.classList.remove("correct");
-                destinationSection.classList.remove("incorrect");
-                setTimeout(function() {
-                    destinationSection.classList.add("correct");
-                }, 10);
-                showFeedback("correct", Math.max(5,
-                    Math.round(90 - (Date.now() - lastCardArrivalInHolderTime) / 100)));
+        let cardFromHolder = getCardFromHolder();
+        if (cardFromHolder) {
+            console.log(cardFromHolder);
+            if (cardFromHolder.classList.contains("questionCard")) {
+                checkKeydownForQuestionAnswer(event);
+            } else {
+                checkKeydownForCardCategorization(event);
             }
         }
     });
     gameActive = true;
 }
 
-//main();
-
-//setUpQuestion(questions[0]);
-//document.body.addEventListener('keydown', checkKeydownForAnswer);
+main();

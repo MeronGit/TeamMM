@@ -110,8 +110,9 @@ div.heart.gone {
 #currentCardHolder {
   text-align: center;
 
-  border: 1px dashed white;
+  background-color: #19224a;
   border-radius: 40px;
+  box-shadow: 0px 0px 10px 0px black inset;
 
   width: 250px;
   height: 260px;
@@ -229,6 +230,10 @@ div.heart.gone {
   from { font-size: 2em; }
   to   { font-size: 0.8em; }
 }
+@keyframes resizeToHolderQuestionMark {
+  from { font-size: 4rem; }
+  to   { font-size: 14.5rem; }
+}
 
 @keyframes makeRoom1 {
   from { transform: translateX(0); }
@@ -338,6 +343,25 @@ section.bottom .logoCard:nth-child(4) {
   font-weight: bold;
 }
 
+.questionCard {
+  background-color: #1839c7;
+}
+.questionCard .questionMark {
+  background-color: #ffdd78;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  font-size: 4rem;
+}
+.questionCard.paused .questionMark {
+  animation-play-state: paused !important;
+}
+
+@keyframes indicateQuestionTimeLimit {
+  from { background-position-y: -66px; }
+  to   { background-position-y: -237px; }
+}
+
 #currentCardHolder .logoCard {
   float: none;
   border-radius: inherit;
@@ -355,6 +379,20 @@ section.bottom .logoCard:nth-child(4) {
 #currentCardHolder .logoCard .name {
   font-size: 2em;
   animation: 1s resizeToHolderName;
+}
+#currentCardHolder .questionCard .questionMark {
+  background-image: linear-gradient(to bottom,
+    #ffdd78 0px,
+    #ffdd78 278px,
+    black   278px,
+    black   556px
+  );
+  background-size: 1px 556px;
+  background-position: 0px 0px;
+  background-repeat: repeat-x;
+  font-size: 14.5rem;
+  animation: 1s resizeToHolderQuestionMark,
+             6s indicateQuestionTimeLimit 2.5s linear forwards;
 }
 .logoCard.moveToFrontEnd, .logoCard.moveToBackEnd {
   position: relative;
@@ -421,7 +459,7 @@ section.bottom .logoCard:nth-child(4) {
 }
 #questionArea.appear {
   display: block;
-  animation: 1s questionAppear 1s backwards;
+  animation: 1s questionAppear backwards;
 }
 #questionArea.disappear {
   display: block;
