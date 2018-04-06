@@ -21,6 +21,16 @@ function shuffle(a) {
     }
 }
 
+function setReadyToTakeInput(value) {
+    readyToTakeInput = value;
+    let cardHolder = document.getElementById("currentCardHolder");
+    if (readyToTakeInput) {
+        cardHolder.className = "active";
+    } else {
+        cardHolder.className = "";
+    }
+}
+
 function createCard(params) {
     let name = params.name;
     let logoName = params.logoName;
@@ -51,6 +61,16 @@ function createQuestionCard(index) {
     return cardDiv;
 }
 
+function resetNextCardLoader(keepRunning) {
+    let loader = document.getElementById("nextLoader");
+    loader.className = "";
+    if (keepRunning) {
+        setTimeout(function() {
+            loader.className = "running";
+        }, 10);
+    }
+}
+
 function addCardToNext(cardDiv) {
     let nextCardsDiv = document.getElementById("nextCards");
     nextCardsDiv.appendChild(cardDiv);
@@ -74,7 +94,7 @@ function moveCardToHolder() {
     if (!cardDiv) {
         return;
     }
-    readyToTakeInput = false;
+    setReadyToTakeInput(false);
     cardDiv.classList.remove("moveToFirst");
     cardDiv.parentNode.removeChild(cardDiv);
     holderDiv.appendChild(cardDiv);
@@ -89,23 +109,20 @@ function moveCardToHolder() {
         if (cardDiv.classList.contains("questionCard")) {
             setUpQuestion(questions[cardDiv.dataset.questionIndex]);
         } else {
-            readyToTakeInput = true;
+            setReadyToTakeInput(true);
         }
     }, 1000);
 }
 
-function makeCardDisappear(cardDiv, additionalHolderTimeout) {
-    readyToTakeInput = false;
+function makeCardDisappear(cardDiv, additionalTimeout) {
+    setReadyToTakeInput(false);
     cardDiv.classList.add("disappear");
     setTimeout(function() {
         cardDiv.parentNode.removeChild(cardDiv);
-    }, 500);
-    if (!additionalHolderTimeout) {
-        additionalHolderTimeout = 0;
-    }
+    }, 500 + (additionalTimeout || 0));
     setTimeout(function () {
         moveCardToHolder();
-    }, 600 + additionalHolderTimeout);
+    }, 600 + (additionalTimeout || 0));
 }
 
 function getCardFromHolder() {
@@ -121,7 +138,7 @@ function moveCardFromHolderToDestination(destName) {
     if (!cardDiv) {
         return false;
     }
-    readyToTakeInput = false;
+    setReadyToTakeInput(false);
     let destinationSection = document.getElementById(destName + "Section");
     destinationSection.classList.add("makeRoom");
     let movingClassName = "moveTo" + capitalizeStr(destName);
@@ -259,13 +276,14 @@ function setUpQuestion(data) {
         questionArea.className = "appear";
     }, 10);
     setTimeout(function() {
-        readyToTakeInput = true;
+        setReadyToTakeInput(true);
     }, 1000);
     questionTimeout = setTimeout(function() {
         questionArea.className = "disappear";
         setTimeout(function() {
             decreaseLives();
         }, 2500);
+        makeCardDisappear(getCardFromHolder(), 2500);
     }, 8500);
 }
 
@@ -300,7 +318,6 @@ function checkKeydownForCardCategorization(event) {
 }
 
 function checkKeydownForQuestionAnswer(event) {
-    console.log(event);
     let keymap = {
         "ArrowLeft": 0,
         "ArrowDown": 1,
@@ -320,6 +337,7 @@ function main() {
     let placeNewCardIntoNext = function() {
         let cardFromHolder = getCardFromHolder();
         if (cardFromHolder && cardFromHolder.classList.contains("questionCard")) {
+            resetNextCardLoader(false);
             return;
         }
         if (nextCardsElem.children.length > 1) {
@@ -340,6 +358,7 @@ function main() {
             cardDiv = createCard(card);
         }
         addCardToNext(cardDiv);
+        resetNextCardLoader(true);
     }
     placeNewCardIntoNext();
     placeNewCardIntoNextInterval = setInterval(placeNewCardIntoNext, 3000);

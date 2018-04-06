@@ -112,13 +112,23 @@ div.heart.gone {
 
   background-color: #19224a;
   border-radius: 40px;
-  box-shadow: 0px 0px 10px 0px black inset;
+  box-shadow: 0px 0px  0px 0px lightblue,
+              0px 0px 10px 0px black inset;
 
-  width: 250px;
-  height: 260px;
+  width: 254px;
+  height: 262px;
 
   position: absolute;
   left: 250px;
+
+  transition: none;
+}
+
+#currentCardHolder.active {
+  box-shadow: 0px 0px 30px 5px lightblue,
+              0px 0px 10px 0px black inset;
+
+  transition: box-shadow .5s;
 }
 
 @keyframes feedbackAnimation {
@@ -182,8 +192,8 @@ div.heart.gone {
   to {
     border-radius: 40px;
     margin: 0px;
-    width: 100%;
-    height: 100%;
+    width: 250px;
+    height: 260px;
     transform: translate(0, 0);
   }
 }
@@ -191,8 +201,8 @@ div.heart.gone {
   from {
     border-radius: 40px;
     margin: 0px;
-    width: 100%;
-    height: 100%;
+    width: 250px;
+    height: 260px;
   }
   to {
     border-radius: 10px;
@@ -321,6 +331,36 @@ section.incorrect {
   float: right;
   animation: 1s slideIntoNext backwards;
 }
+
+@keyframes animateLoader {
+  from { padding: 16px; }
+  to   { padding: 0px; }
+}
+
+#nextLoader {
+  background-color: gray;
+
+  border-radius: 100%;
+
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  position: absolute;
+  bottom: 20px;
+  left: 85px;
+  padding: 16px;
+  box-sizing: border-box;
+}
+#nextLoader.running {
+  animation: 3s animateLoader linear forwards;
+}
+#nextLoader div {
+  background-color: white;
+
+  border-radius: 100%;
+  width: 100%;
+  height: 100%;
+}
 section.bottom .logoCard {
   float: left;
 }
@@ -366,8 +406,8 @@ section.bottom .logoCard:nth-child(4) {
   float: none;
   border-radius: inherit;
   margin: 0px;
-  width: 100%;
-  height: 100%;
+  width: 250px;
+  height: 260px;
   animation: 1s moveToHolder backwards;
   transform-origin: 0 0;
 }
@@ -584,6 +624,10 @@ body.gameEnded #feedbackArea {
 body.gameEnded #scoreSection {
   animation: 1.5s gameEndedScoreMovement forwards;
   z-index: 15;
+}
+
+body.gameOver #questionArea {
+  display: none !important;
 }
 
 body.gameWon #gameWonMsg {
