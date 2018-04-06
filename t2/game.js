@@ -187,6 +187,66 @@ function showFeedback(outcome, scoreChange) {
     }, 1500);
 }
 
+function answerQuestion(answerNo) {
+    let questionArea = document.getElementById("questionArea");
+    if (questionArea.className == "disappear") {
+        return;
+    }
+    let answerElem = document.getElementById("answer" + answerNo);
+    let questionTitle = document.getElementById("questionTitle").textContent;
+    let question = questions.find(q => q.question == questionTitle);
+    answerElem.classList.add("chosen");
+    questionArea.className = "disappear";
+    let isCorrect = answerElem.textContent == question.answers[0];
+    setTimeout(function() {
+        if (isCorrect) {
+            showFeedback("correct", 200);
+        } else {
+            showFeedback("wrong", -100);
+        }
+    }, 2000);
+}
+
+function checkKeydownForAnswer(event) {
+    let keymap = {
+        "ArrowLeft": 0,
+        "ArrowDown": 1,
+        "ArrowRight": 2
+    };
+    if (event.key in keymap) {
+        answerQuestion(keymap[event.key]);
+    }
+}
+
+function setUpQuestion(data) {
+    let questionArea = document.getElementById("questionArea");
+    questionArea.className = "";
+    questionArea.innerHTML = "";
+    let title = document.createElement("h2");
+    title.id = "questionTitle";
+    title.textContent = data.question;
+    questionArea.appendChild(title);
+    let answers = data.answers.slice();
+    shuffle(answers);
+    for (let i in answers) {
+        let answer = document.createElement("div");
+        answer.className = "answer";
+        answer.id = "answer" + parseInt(i);
+        let dot = document.createElement("div");
+        dot.className = "dot";
+        let answerText = document.createTextNode(answers[i]);
+        answer.appendChild(dot);
+        answer.appendChild(answerText);
+        answer.addEventListener('click', function() {
+            answerQuestion(i);
+        });
+        questionArea.appendChild(answer);
+    }
+    setTimeout(function() {
+        questionArea.className = "appear";
+    }, 10);
+}
+
 function main() {
     shuffle(cards);
     let nextCardsElem = document.getElementById("nextCards");
@@ -243,4 +303,7 @@ function main() {
     gameActive = true;
 }
 
-main();
+//main();
+
+//setUpQuestion(questions[0]);
+//document.body.addEventListener('keydown', checkKeydownForAnswer);

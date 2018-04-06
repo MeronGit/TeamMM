@@ -18,6 +18,8 @@ body {
 
   margin: 0px auto;
   width: 750px;
+
+  perspective: 600px;
 }
 
 nav {
@@ -375,6 +377,34 @@ section.bottom .logoCard:nth-child(4) {
   animation: 1s resizeFromHolderName forwards !important;
 }
 
+@keyframes questionAppear {
+  0%   { transform: rotateX(-46deg) scaleX(0); }
+  40%  { transform: rotateX(-46deg) scaleX(1); }
+  100% { transform: rotateX(0deg); }
+}
+@keyframes questionDisappear {
+  0%   { transform: rotateX(0deg); }
+  40%  { transform: rotateX(-46deg) scaleX(1); }
+  100% { transform: rotateX(-46deg) scaleX(0); }
+}
+@keyframes chosenAnswerToLeft {
+  from { opacity: 1.0; transform: translateX(0px); }
+  to   { opacity: 0.0; transform: translateX(-100px); }
+}
+@keyframes chosenAnswerToDown {
+  from { opacity: 1.0; transform: translateY(0px); }
+  to   { opacity: 0.0; transform: translateY(100px); }
+}
+@keyframes chosenAnswerToRight {
+  from { opacity: 1.0; transform: translateX(0px); }
+  to   { opacity: 0.0; transform: translateX(100px); }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1.0; }
+  to   { opacity: 0.0; }
+}
+
 #questionArea {
   background-color: white;
   color: black;
@@ -385,6 +415,23 @@ section.bottom .logoCard:nth-child(4) {
   top: 350px;
   height: 250px;
   width: 100%;
+  transform-origin: bottom;
+  display: none;
+  overflow: hidden;
+}
+#questionArea.appear {
+  display: block;
+  animation: 1s questionAppear 1s backwards;
+}
+#questionArea.disappear {
+  display: block;
+  animation: 1s questionDisappear 1.5s forwards;
+}
+#questionArea.disappear > .answer:not(.chosen) {
+  animation: 1s fadeOut forwards;
+}
+#questionArea.disappear > h2 {
+  animation: 1s fadeOut .5s forwards;
 }
 #questionArea h2 {
   text-align: center;
@@ -399,16 +446,41 @@ section.bottom .logoCard:nth-child(4) {
   font-weight: bold;
 }
 #questionArea .answer .dot {
-  background-color: black;
+  background-color: gray;
   border-radius: 100%;
   margin-right: 10px;
   float: left;
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 1.6rem;
+  height: 1.6rem;
 }
-#questionArea .answer:hover .dot {
-  background-color: gray;
+#questionArea .answer:hover .dot,
+#questionArea .answer.chosen .dot {
+  background-color: black;
 }
+#questionArea .dot::before {
+  color: white;
+}
+#answer0 .dot::before {
+  content: "⇦";
+  margin: -5px 2px;
+}
+#answer1 .dot::before {
+  content: "⇩";
+  margin-left: 6px;
+}
+#answer2 .dot::before {
+  content: "⇨";
+  margin: -5px 2px;
+}
+.answer.chosen {
+  animation-delay: .5s;
+  animation-duration: 1s;
+  animation-fill-mode: forwards;
+  font-weight: bold;
+}
+#answer0.chosen { animation-name: chosenAnswerToLeft; }
+#answer1.chosen { animation-name: chosenAnswerToDown; }
+#answer2.chosen { animation-name: chosenAnswerToRight; }
 
 @keyframes disappearToRight {
   0% {
