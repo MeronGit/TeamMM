@@ -107,6 +107,24 @@ div.heart.gone {
   transform: translateY(50px);
 }
 
+div.arrow {
+  background-image: url('images/icons/arrow.png');
+  /*background-image: url('images/icons/arrow_v2.png');*/
+  margin-top: 50px;
+  background-size: contain;
+  display: inline-block;
+  width: 70px;
+  height: 70px;
+}
+
+div.arrow.left {
+  transform: rotate(180deg);
+}
+
+div.arrow.right{
+  transform: rotate(0deg);
+}
+
 #currentCardHolder {
   text-align: center;
 
