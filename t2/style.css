@@ -42,6 +42,109 @@ nav a:hover, nav a:active {
   color: white;
 }
 
+@keyframes fadeIn {
+  from { opacity: 0.0; }
+  to   { opacity: 1.0; }
+}
+@keyframes titleStartPartAppear {
+  from { opacity: 0.0; transform: translateX(70px); }
+  20%  { opacity: 0.0; }
+  to   { opacity: 1.0; transform: translateX(0px);  }
+}
+@keyframes titleEndPartAppear {
+  from { opacity: 0.0; transform: translateX(-70px); }
+  20%  { opacity: 0.0; }
+  to   { opacity: 1.0; transform: translateX(0px);  }
+}
+@keyframes startButtonAppear {
+  0% {
+    font-size: .1rem;
+    transform: translateY(-60px) rotate(90deg) ;
+    text-shadow: 0px 0px 0px white;
+  }
+  60% {
+    font-size: 3.5rem;
+    transform: translateY(0px) rotate(90deg);
+    text-shadow: 0px 0px 0px white;
+  }
+  100% {
+    font-size: 3.5rem;
+    transform: translateY(0px) rotate(0deg) ;
+    text-shadow: 0px 0px 50px white;
+  }
+}
+
+body.initial {
+  overflow-x: hidden;
+}
+body.initial > :not(#initialView) {
+  display: none;
+}
+#initialView {
+  display: none;
+  text-align: center;
+  width: 100%;
+  position: absolute;
+  top: 170px;
+}
+body.initial #initialView {
+  display: block;
+}
+#initialView h1 {
+  color: white;
+}
+#initialView h1 div {
+  background-color: #1b2552;
+  display: inline-block;
+  position: relative;
+}
+#initialView h1 div.middle {
+  color: #1cea8f;
+  font-size: 3rem;
+  z-index: 20;
+  animation: 1s fadeIn backwards;
+}
+#initialView h1 div.start,
+#initialView h1 div.end {
+  font-size: 2rem;
+}
+body.initial h1 div.start {
+  animation: 1s titleStartPartAppear .5s backwards;
+}
+body.initial h1 div.end {
+  animation: 1s titleEndPartAppear .5s backwards;
+}
+body.initial #startButton {
+  color: white;
+  font-size: 3.5rem;
+  text-shadow: 0px 0px 50px white;
+  animation: 1s startButtonAppear 1.2s backwards;
+  transition: 1s all;
+  cursor: pointer;
+}
+body.initial #startButton:hover {
+  color: #1cea8f;
+  transform: scale(1.3);
+  text-shadow: 0px 0px 75px #1cea8f;
+}
+body.initial #startButton:active {
+  transform: scale(0.9);
+  transition: 0.5s all;
+}
+
+body.initial.transitionToInGame #initialView {
+  animation: 1.5s disappearToLeft forwards;
+}
+body.initial.transitionToInGame > nav {
+  display: block !important;
+}
+body.initial.transitionToInGame section,
+body.initial.transitionToInGame #currentCardHolder,
+body.initial.transitionToInGame #feedbackArea {
+  display: block !important;
+  animation: 1.5s appearFromRight forwards;
+}
+
 section {
   background-color: #111423;
   border: 2px none green;
@@ -463,7 +566,7 @@ section.bottom .logoCard:nth-child(4) {
 }
 .logoCard.moveToFrontEnd, .logoCard.moveToBackEnd {
   position: relative;
-  z-index: 10;
+  z-index: 25;
 }
 .logoCard.moveToFrontEnd {
   animation: 1s resizeFromHolder forwards,
@@ -523,6 +626,7 @@ section.bottom .logoCard:nth-child(4) {
   transform-origin: bottom;
   display: none;
   overflow: hidden;
+  z-index: 40;
 }
 #questionArea.appear {
   display: block;
@@ -587,6 +691,18 @@ section.bottom .logoCard:nth-child(4) {
 #answer1.chosen { animation-name: chosenAnswerToDown; }
 #answer2.chosen { animation-name: chosenAnswerToRight; }
 
+@keyframes disappearToLeft {
+  0% {
+    opacity: 1.0;
+    transform: translateX(0px);
+    visibility: visible;
+  }
+   100% {
+    opacity: 0.0;
+    transform: translateX(-400px);
+    visibility: hidden;
+  }
+}
 @keyframes disappearToRight {
   0% {
     opacity: 1.0;
@@ -608,6 +724,16 @@ section.bottom .logoCard:nth-child(4) {
     transform: translateX(0px);
   }
 }
+@keyframes appearFromRight {
+  0% {
+    opacity: 0.0;
+    transform: translateX(300px);
+  }
+  100% {
+    opacity: 1.0;
+    transform: translateX(0px);
+  }
+}
 
 @keyframes gameEndedScoreMovement {
   0% {
@@ -615,6 +741,15 @@ section.bottom .logoCard:nth-child(4) {
   }
   100% {
     transform: translate(-275px, 170px);
+  }
+}
+
+@keyframes scoreMovementFromGameEndedToInGame {
+  0% {
+    transform: translate(-275px, 170px);
+  }
+  100% {
+    transform: translate(0px, 0px);
   }
 }
 
@@ -626,6 +761,17 @@ section.bottom .logoCard:nth-child(4) {
   to   {
     visibility: visible;
     transform: translateY(70px);
+  }
+}
+
+@keyframes playAgainButtonDisappear {
+  from {
+    visibility: visible;
+    transform: translateY(70px);
+  }
+  to   {
+    visibility: hidden;
+    transform: translateY(0px);
   }
 }
 
@@ -689,4 +835,20 @@ body.gameEnded #playAgainButton {
 body.gameEnded #playAgainButton:hover {
   background-color: black;
   color: white;
+}
+
+body.gameEnded.transitionToInGame .gameEndedMsg {
+  animation: 1.5s disappearToLeft 1s forwards !important;
+}
+body.gameEnded.transitionToInGame #playAgainButton {
+  animation: 1s playAgainButtonDisappear both;
+}
+body.gameEnded.transitionToInGame #scoreSection {
+  animation: 1.5s scoreMovementFromGameEndedToInGame 1s both;
+  z-index: 15;
+}
+body.gameEnded.transitionToInGame section:not(#scoreSection),
+body.gameEnded.transitionToInGame #currentCardHolder,
+body.gameEnded.transitionToInGame #feedbackArea {
+  animation: 1.5s appearFromRight 1s both;
 }

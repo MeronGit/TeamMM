@@ -344,46 +344,90 @@ function removeElementsByClass(className){
     }
 }
 
-function main() {
+let cardIndex;
+let questionIndex;
+
+function placeNewCardIntoNext() {
+    let nextCardsElem = document.getElementById("nextCards");
+
+    if (!gameActive) {
+        return;
+    }
+    let cardFromHolder = getCardFromHolder();
+    if (cardFromHolder && cardFromHolder.classList.contains("questionCard")) {
+        return;
+    }
+    if (nextCardsElem.children.length > 1) {
+        decreaseLives();
+        return;
+    }
+    let cardDiv;
+    if (questionIndex < questions.length && cardIndex == (questionIndex+1)*4) {
+        cardDiv = createQuestionCard(questionIndex++);
+    } else {
+        let card = cards[cardIndex++];
+        if (!card) {
+            if (!getCardFromHolder() && nextCardsElem.children.length == 0) {
+                gameWon();
+            }
+            return;
+        }
+        cardDiv = createCard(card);
+    }
+    resetNextCardLoader(true);
+    addCardToNext(cardDiv);
+}
+
+function startGame() {
+    document.getElementById("nextCards").innerHTML = "";
+    let idsToClear = ["currentCardHolder", "frontEndCards",
+                      "backEndCards", "questionArea"];
+    for (let id of idsToClear) {
+        let elem = document.getElementById(id);
+        elem.className = "";
+        elem.textContent = "";
+    }
+    document.getElementById("frontEndSection").className = "bottom";
+    document.getElementById("backEndSection").className = "bottom";
+    clearTimeout(questionTimeout);
+    questionArea.className = "";
+    questionArea.innerHTML = "";
+    document.body.classList.add("transitionToInGame");
+    score = 0;
+    document.getElementById("score").textContent = 0;
+    for (let heartDiv of document.getElementsByClassName("heart")) {
+        heartDiv.classList.remove("gone");
+    }
     shuffle(cards);
     shuffle(questions);
-    let nextCardsElem = document.getElementById("nextCards");
-    let cardIndex = 0;
-    let questionIndex = 0;
-    let placeNewCardIntoNext = function() {
-        let cardFromHolder = getCardFromHolder();
-        if (cardFromHolder && cardFromHolder.classList.contains("questionCard")) {
-            return;
-        }
-        if (nextCardsElem.children.length > 1) {
-            decreaseLives();
-            return;
-        }
-        let cardDiv;
-        if (questionIndex < questions.length && cardIndex == (questionIndex+1)*4) {
-            cardDiv = createQuestionCard(questionIndex++);
-        } else {
-            let card = cards[cardIndex++];
-            if (!card) {
-                if (!getCardFromHolder() && nextCardsElem.children.length == 0) {
-                    gameWon();
-                }
-                return;
-            }
-            cardDiv = createCard(card);
-        }
-        resetNextCardLoader(true);
-        addCardToNext(cardDiv);
+    cardIndex = 0;
+    questionIndex = 0;
+    readyToTakeInput = false;
+    let delay = 1500;
+    if (document.body.classList.contains("gameEnded")) {
+        delay = 2500;
     }
-    placeNewCardIntoNext();
-    placeNewCardIntoNextInterval = setInterval(placeNewCardIntoNext, 3000);
+    setTimeout(function() {
+        document.body.className = "";
+        gameActive = true;
+        placeNewCardIntoNext();
+        placeNewCardIntoNextInterval = setInterval(placeNewCardIntoNext, 3000);
+    }, delay);
+}
+
+function main() {
     document.addEventListener('keydown', function(event) {
+        let classList = document.body.classList;
+        if ((classList.contains("initial") || classList.contains("gameEnded")) &&
+                !classList.contains("transitionToInGame")) {
+            startGame();
+            return;
+        }
         if (!gameActive || !readyToTakeInput) {
             return;
         }
         let cardFromHolder = getCardFromHolder();
         if (cardFromHolder) {
-            console.log(cardFromHolder);
             if (cardFromHolder.classList.contains("questionCard")) {
                 checkKeydownForQuestionAnswer(event);
             } else {
@@ -392,7 +436,9 @@ function main() {
             removeElementsByClass("arrow");
         }
     });
-    gameActive = true;
+
+    document.getElementById("startButton").addEventListener("click", startGame);
+    document.getElementById("playAgainButton").addEventListener("click", startGame);
 }
 
 main();

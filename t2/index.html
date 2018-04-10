@@ -5,10 +5,15 @@
     <title>t2 - TeamMM</title>
     <link rel="stylesheet" href="style.css" />
   </head>
-  <body>
+  <body class="initial">
     <nav>
       <a href="#">Quit</a>
     </nav>
+    <div id="initialView">
+      <h1><div class="start">The</div> <div class="middle">Middle</div> <div class="end">End</div></h1>
+      <div id="startButton">&#9658;</div>
+    </div>
+
     <section id="nextSection" class="top">
       <h2>Next</h2>
       <div id="nextCards">
@@ -48,9 +53,6 @@
     </section>
     <div id="questionArea">
     </div>
-    <script src="cards.js"></script>
-    <script src="questions.js"></script>
-    <script src="game.js"></script>
 
     <div class="gameEndedMsg" id="gameWonMsg">
       Game won!
@@ -61,5 +63,9 @@
     <div id="playAgainButton">
       Play again
     </div>
+
+    <script src="cards.js"></script>
+    <script src="questions.js"></script>
+    <script src="game.js"></script>
   </body>
 </html>
