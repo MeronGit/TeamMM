@@ -6,6 +6,13 @@ let lastCardArrivalInHolderTime;
 let placeNewCardIntoNextInterval;
 let score = 0;
 
+
+function playSound(name) {
+    let audioElem = document.getElementById("sound_" + name);
+    audioElem.currentTime = 0;
+    audioElem.play();
+}
+
 /**
  * Shuffles array in place.
  * From: https://stackoverflow.com/a/6274381/2655932
@@ -67,7 +74,7 @@ function resetNextCardLoader(keepRunning) {
     if (keepRunning) {
         setTimeout(function() {
             loader.className = "running";
-        }, 10);
+        }, 25);
     }
 }
 
@@ -182,12 +189,14 @@ function gameOver() {
     clearInterval(placeNewCardIntoNextInterval);
     gameActive = false;
     document.body.className = "gameEnded gameOver";
+    playSound("game_over");
 }
 
 function gameWon() {
     clearInterval(placeNewCardIntoNextInterval);
     gameActive = false;
     document.body.className = "gameEnded gameWon";
+    playSound("game_won");
 }
 
 function decreaseLives() {
@@ -223,6 +232,7 @@ function showFeedback(outcome, scoreChange) {
     feedbackDiv.appendChild(scoreChangeDiv);
     document.getElementById("feedbackArea").appendChild(feedbackDiv);
     incrementScore(scoreChange);
+    playSound(outcome);
     if (outcome == "wrong") {
         decreaseLives();
     }
