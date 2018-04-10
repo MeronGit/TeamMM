@@ -94,6 +94,9 @@ function moveCardToHolder() {
     if (!cardDiv) {
         return;
     }
+    if (cardDiv.classList.contains("questionCard")) {
+        resetNextCardLoader(false);
+    }
     setReadyToTakeInput(false);
     cardDiv.classList.remove("moveToFirst");
     cardDiv.parentNode.removeChild(cardDiv);
@@ -167,7 +170,12 @@ function getTypeForCardByName(name) {
 
 function incrementScore(delta) {
     score += delta;
-    document.getElementById("score").textContent = score;
+    let scoreElem = document.getElementById("score");
+    scoreElem.textContent = score;
+    scoreElem.className = "";
+    setTimeout(function() {
+        scoreElem.className = "changed";
+    }, 10);
 }
 
 function gameOver() {
@@ -192,6 +200,7 @@ function decreaseLives() {
             break;
         }
     }
+    resetNextCardLoader(true);
     if (!anyLivesLeft) {
         setTimeout(function() {
             gameOver();
@@ -344,7 +353,6 @@ function main() {
     let placeNewCardIntoNext = function() {
         let cardFromHolder = getCardFromHolder();
         if (cardFromHolder && cardFromHolder.classList.contains("questionCard")) {
-            resetNextCardLoader(false);
             return;
         }
         if (nextCardsElem.children.length > 1) {
@@ -364,8 +372,8 @@ function main() {
             }
             cardDiv = createCard(card);
         }
-        addCardToNext(cardDiv);
         resetNextCardLoader(true);
+        addCardToNext(cardDiv);
     }
     placeNewCardIntoNext();
     placeNewCardIntoNextInterval = setInterval(placeNewCardIntoNext, 3000);
