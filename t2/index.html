@@ -6,8 +6,17 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body class="initial">
-    <nav>
-      <a href="#">Quit</a>
+    <div id="quitConfirm">
+      <span class="question">Are you sure?</span>
+      <a href="#" id="confirmQuitLink">Quit</a>
+      <a href="#" id="cancelQuitLink">Cancel</a>
+    </div>
+    <nav id="navbar">
+      <a href="#" id="showQuitConfirmLink">Quit</a>
+      <a href="#" id="toggleSoundLink" class="enabled">
+        <span class="soundIcon enabled">🔊</span>
+        <span class="soundIcon disabled">🔇</span>
+      </a>
     </nav>
     <div id="initialView">
       <h1><div class="start">The</div> <div class="middle">Middle</div> <div class="end">End</div></h1>

@@ -20,6 +20,14 @@ body {
   width: 750px;
 
   perspective: 600px;
+
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
 }
 
 nav {
@@ -40,6 +48,42 @@ nav a:link, nav a:visited {
 nav a:hover, nav a:active {
   background-color: black;
   color: white;
+}
+
+#quitConfirm {
+  border-radius: 0px 0px 15px 15px;
+  color: lightgray;
+  position: absolute;
+  text-align: center;
+  background-color: #141938;
+  width: 100%;
+  padding: 4px;
+  transform: translateY(-100%);
+  transition: .5s transform;
+}
+#quitConfirm.show {
+  transform: translateY(0);
+}
+#quitConfirm a:link, #quitConfirm a:visited {
+  border-radius: 5px;
+  display: inline-block;
+  color: white;
+  text-decoration: none;
+  padding: 8px 5px;
+}
+#quitConfirm a:hover, #quitConfirm a:active {
+  background-color: black;
+}
+
+.soundIcon {
+  display: none;
+}
+#toggleSoundLink {
+  width: 16px;
+}
+#toggleSoundLink.enabled .enabled,
+#toggleSoundLink.disabled .disabled {
+  display: inline;
 }
 
 @keyframes fadeIn {
@@ -192,6 +236,10 @@ section.bottom {
   width: 200px;
   height: 250px;
   top: 350px;
+}
+section.bottom:hover {
+  border: 2px solid #515eab;
+
 }
 #frontEndCards, #backEndCards {
   margin-right: 2px;

@@ -6,9 +6,13 @@ let lastCardMoveInNextTime;
 let lastCardArrivalInHolderTime;
 let placeNewCardIntoNextInterval;
 let score = 0;
+let soundEnabled = true;
 
 
 function playSound(name) {
+    if (!soundEnabled) {
+        return;
+    }
     let audioElem = document.getElementById("sound_" + name);
     audioElem.currentTime = 0;
     audioElem.play();
@@ -191,6 +195,7 @@ function gameOver() {
     clearInterval(placeNewCardIntoNextInterval);
     gameActive = false;
     document.body.className = "gameEnded gameOver";
+    document.getElementById("quitConfirm").className = "";
     playSound("game_over");
 }
 
@@ -198,6 +203,7 @@ function gameWon() {
     clearInterval(placeNewCardIntoNextInterval);
     gameActive = false;
     document.body.className = "gameEnded gameWon";
+    document.getElementById("quitConfirm").className = "";
     playSound("game_won");
 }
 
@@ -303,6 +309,7 @@ function setUpQuestion(data) {
         questionArea.className = "disappear";
         setTimeout(function() {
             decreaseLives();
+            playSound("wrong");
         }, 2500);
         makeCardDisappear(getCardFromHolder(), 2500);
     }, 8500);
@@ -320,48 +327,58 @@ function makeArrowsDisappear() {
     }, 500);
 }
 
-function checkKeydownForCardCategorization(event) {
-    if (event.key == "ArrowLeft" || event.key == "ArrowRight") {
-        let dest = event.key == "ArrowLeft" ? "frontEnd" : "backEnd";
-        let cardDiv = getCardFromHolder();
-        if (!cardDiv) {
-            return;
-        }
-        if (needsToInstructPlayer) {
-            needsToInstructPlayer = false;
-            /*
+function categorizeHolderCard(dest) {
+    if (!gameActive || !readyToTakeInput) {
+        return;
+    }
+    let cardDiv = getCardFromHolder();
+    if (!cardDiv) {
+        return;
+    }
+    if (needsToInstructPlayer) {
+        needsToInstructPlayer = false;
+        if (!hasInstructionStarted) {
             clearTimeout(instructionTimeout);
             let instructionCard = document.getElementById("instructionCard");
             if (instructionCard) {
                 instructionCard.parentNode.removeChild(instructionCard);
             }
-            */
         }
-        makeArrowsDisappear();
-        let name = cardDiv.getElementsByClassName("name")[0].textContent;
-        let correctType = getTypeForCardByName(name);
-        let destinationSection = document.getElementById(dest + "Section");
-        if (dest != correctType) {
-            destinationSection.classList.remove("correct");
-            destinationSection.classList.remove("incorrect");
-            setTimeout(function() {
-                destinationSection.classList.add("incorrect");
-            }, 10);
-            makeCardDisappear(cardDiv);
-            showFeedback("wrong", -50);
-        } else if (moveCardFromHolderToDestination(dest)) {
-            destinationSection.classList.remove("correct");
-            destinationSection.classList.remove("incorrect");
-            setTimeout(function() {
-                destinationSection.classList.add("correct");
-            }, 10);
-            showFeedback("correct", Math.max(5,
-                Math.round(90 - (Date.now() - lastCardArrivalInHolderTime) / 100)));
-        }
+    }
+    makeArrowsDisappear();
+    let name = cardDiv.getElementsByClassName("name")[0].textContent;
+    let correctType = getTypeForCardByName(name);
+    let destinationSection = document.getElementById(dest + "Section");
+    if (dest != correctType) {
+        destinationSection.classList.remove("correct");
+        destinationSection.classList.remove("incorrect");
+        setTimeout(function() {
+            destinationSection.classList.add("incorrect");
+        }, 10);
+        makeCardDisappear(cardDiv);
+        showFeedback("wrong", -50);
+    } else if (moveCardFromHolderToDestination(dest)) {
+        destinationSection.classList.remove("correct");
+        destinationSection.classList.remove("incorrect");
+        setTimeout(function() {
+            destinationSection.classList.add("correct");
+        }, 10);
+        showFeedback("correct", Math.max(5,
+            Math.round(90 - (Date.now() - lastCardArrivalInHolderTime) / 100)));
+    }
+}
+
+function checkKeydownForCardCategorization(event) {
+    if (event.key == "ArrowLeft" || event.key == "ArrowRight") {
+        let dest = event.key == "ArrowLeft" ? "frontEnd" : "backEnd";
+        categorizeHolderCard(dest);
     }
 }
 
 function checkKeydownForQuestionAnswer(event) {
+    if (!gameActive || !readyToTakeInput) {
+        return;
+    }
     let keymap = {
         "ArrowLeft": 0,
         "ArrowDown": 1,
@@ -388,6 +405,7 @@ function placeNewCardIntoNext() {
     }
     if (nextCardsElem.children.length > 1) {
         decreaseLives();
+        playSound("wrong");
         return;
     }
     let cardDiv;
@@ -430,13 +448,19 @@ function instructPlayer() {
     document.getElementById("currentCardHolder").appendChild(instructionCardDiv);
 
     setTimeout(function() {
+        if (!instructionDiv.parentNode) {
+            return;
+        }
         instructionCardDiv.parentNode.removeChild(instructionCardDiv);
     }, 3500);
 }
 
 let instructionTimeout;
+let hasInstructionStarted = false;
 
 function startGame() {
+    hasInstructionStarted = true;
+    document.getElementById("quitConfirm").className = "";
     document.getElementById("nextCards").innerHTML = "";
     let idsToClear = ["currentCardHolder", "frontEndCards",
                       "backEndCards", "questionArea"];
@@ -452,6 +476,7 @@ function startGame() {
     }
     document.getElementById("frontEndSection").className = "bottom";
     document.getElementById("backEndSection").className = "bottom";
+    resetNextCardLoader(false);
     clearTimeout(questionTimeout);
     questionArea.className = "";
     questionArea.innerHTML = "";
@@ -467,6 +492,7 @@ function startGame() {
     questionIndex = 0;
     readyToTakeInput = false;
     needsToInstructPlayer = true;
+    hasInstructionStarted = false;
     let delay = 1500;
     if (document.body.classList.contains("gameEnded")) {
         delay = 2500;
@@ -496,9 +522,6 @@ function main() {
             startGame();
             return;
         }
-        if (!gameActive || !readyToTakeInput) {
-            return;
-        }
         let cardFromHolder = getCardFromHolder();
         if (cardFromHolder) {
             if (cardFromHolder.classList.contains("questionCard")) {
@@ -508,6 +531,34 @@ function main() {
             }
         }
     });
+
+    document.getElementById("frontEndSection").addEventListener("click", function() {
+        categorizeHolderCard("frontEnd");
+    });
+    document.getElementById("backEndSection").addEventListener("click", function() {
+        categorizeHolderCard("backEnd");
+    });
+
+    document.getElementById("showQuitConfirmLink").addEventListener("click", function() {
+        document.getElementById("quitConfirm").className = "show";
+    });
+    document.getElementById("confirmQuitLink").addEventListener("click", function() {
+        gameActive = false;
+        document.body.className = "initial";
+    });
+    document.getElementById("cancelQuitLink").addEventListener("click", function() {
+        document.getElementById("quitConfirm").className = "";
+    });
+
+    let toggleSoundLink = document.getElementById("toggleSoundLink");
+    toggleSoundLink.addEventListener("click", function() {
+        soundEnabled = !soundEnabled;
+        if (soundEnabled) {
+            toggleSoundLink.className = "enabled";
+        } else {
+            toggleSoundLink.className = "disabled";
+        }
+    })
 
     document.getElementById("startButton").addEventListener("click", startGame);
     document.getElementById("playAgainButton").addEventListener("click", startGame);
