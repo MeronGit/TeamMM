@@ -448,7 +448,7 @@ function instructPlayer() {
     document.getElementById("currentCardHolder").appendChild(instructionCardDiv);
 
     setTimeout(function() {
-        if (!instructionDiv.parentNode) {
+        if (!instructionCardDiv.parentNode) {
             return;
         }
         instructionCardDiv.parentNode.removeChild(instructionCardDiv);
