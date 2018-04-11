@@ -396,6 +396,11 @@ function startGame() {
         let elem = document.getElementById(id);
         elem.className = "";
         elem.textContent = "";
+        if (id == "frontEndCards") {
+            elem.innerHTML = "<div class='arrow left'></div>";
+        } else if (id == "backEndCards") {
+            elem.innerHTML = "<div class='arrow right'></div>";
+        }
     }
     document.getElementById("frontEndSection").className = "bottom";
     document.getElementById("backEndSection").className = "bottom";
@@ -430,6 +435,13 @@ function main() {
         let classList = document.body.classList;
         if ((classList.contains("initial") || classList.contains("gameEnded")) &&
                 !classList.contains("transitionToInGame")) {
+            if (classList.contains("initial")) {
+                let startButton = document.getElementById("startButton");
+                startButton.classList.add("active");
+                setTimeout(function() {
+                    startButton.classList.remove("active");
+                }, 1000);
+            }
             startGame();
             return;
         }
