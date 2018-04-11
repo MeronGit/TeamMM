@@ -1,6 +1,7 @@
 
 let gameActive = false;
 let readyToTakeInput = false;
+let needsToInstructPlayer = true;
 let lastCardMoveInNextTime;
 let lastCardArrivalInHolderTime;
 let placeNewCardIntoNextInterval;
@@ -94,7 +95,8 @@ function moveCardToHolder() {
         setTimeout(moveCardToHolder, timeLeft);
         return;
     }
-    if (holderDiv.firstElementChild) {
+    let currentCardDiv = holderDiv.firstElementChild;
+    if (holderDiv.firstElementChild && currentCardDiv.id != "instructionCard") {
         return;
     }
     let cardDiv = document.getElementById("nextCards").firstElementChild;
@@ -107,7 +109,7 @@ function moveCardToHolder() {
     setReadyToTakeInput(false);
     cardDiv.classList.remove("moveToFirst");
     cardDiv.parentNode.removeChild(cardDiv);
-    holderDiv.appendChild(cardDiv);
+    holderDiv.insertBefore(cardDiv, holderDiv.firstElementChild);
     let nextCardsDiv = document.getElementById("nextCards");
     if (nextCardsDiv.children.length > 0) {
         let newFirstCardDiv = nextCardsDiv.firstElementChild;
@@ -306,6 +308,18 @@ function setUpQuestion(data) {
     }, 8500);
 }
 
+function makeArrowsDisappear() {
+    let arrowElems = document.getElementsByClassName("arrow");
+    for (let arrowElem of arrowElems) {
+        arrowElem.classList.add("disappear");
+    }
+    setTimeout(function() {
+        for (let arrowElem of arrowElems) {
+            arrowElem.parentNode.removeChild(arrowElem);
+        }
+    }, 500);
+}
+
 function checkKeydownForCardCategorization(event) {
     if (event.key == "ArrowLeft" || event.key == "ArrowRight") {
         let dest = event.key == "ArrowLeft" ? "frontEnd" : "backEnd";
@@ -313,6 +327,17 @@ function checkKeydownForCardCategorization(event) {
         if (!cardDiv) {
             return;
         }
+        if (needsToInstructPlayer) {
+            needsToInstructPlayer = false;
+            /*
+            clearTimeout(instructionTimeout);
+            let instructionCard = document.getElementById("instructionCard");
+            if (instructionCard) {
+                instructionCard.parentNode.removeChild(instructionCard);
+            }
+            */
+        }
+        makeArrowsDisappear();
         let name = cardDiv.getElementsByClassName("name")[0].textContent;
         let correctType = getTypeForCardByName(name);
         let destinationSection = document.getElementById(dest + "Section");
@@ -347,20 +372,14 @@ function checkKeydownForQuestionAnswer(event) {
     }
 }
 
-function removeElementsByClass(className){
-    var elements = document.getElementsByClassName(className);
-    while(elements.length > 0){
-        elements[0].parentNode.removeChild(elements[0]);
-    }
-}
-
 let cardIndex;
 let questionIndex;
 
 function placeNewCardIntoNext() {
     let nextCardsElem = document.getElementById("nextCards");
 
-    if (!gameActive) {
+    if (!gameActive || needsToInstructPlayer &&
+            (nextCardsElem.children.length > 0 || getCardFromHolder())) {
         return;
     }
     let cardFromHolder = getCardFromHolder();
@@ -384,9 +403,38 @@ function placeNewCardIntoNext() {
         }
         cardDiv = createCard(card);
     }
-    resetNextCardLoader(true);
+    if (!needsToInstructPlayer) {
+        resetNextCardLoader(true);
+    }
     addCardToNext(cardDiv);
 }
+
+function instructPlayer() {
+    if (document.getElementById("instructionCard")) {
+        return;
+    }
+
+    let instructionCardDiv = document.createElement("div");
+    instructionCardDiv.className = "logoCard";
+    instructionCardDiv.id = "instructionCard";
+    let holderCardDiv = getCardFromHolder();
+    let name = holderCardDiv.getElementsByClassName("name")[0].textContent;
+    let holderCardType = getTypeForCardByName(name);
+    if (holderCardType == "frontEnd") {
+        document.getElementById("leftArrow").classList.add("animatePress");
+        instructionCardDiv.classList.add("moveToFrontEnd");
+    } else {
+        document.getElementById("rightArrow").classList.add("animatePress");
+        instructionCardDiv.classList.add("moveToBackEnd");
+    }
+    document.getElementById("currentCardHolder").appendChild(instructionCardDiv);
+
+    setTimeout(function() {
+        instructionCardDiv.parentNode.removeChild(instructionCardDiv);
+    }, 3500);
+}
+
+let instructionTimeout;
 
 function startGame() {
     document.getElementById("nextCards").innerHTML = "";
@@ -397,9 +445,9 @@ function startGame() {
         elem.className = "";
         elem.textContent = "";
         if (id == "frontEndCards") {
-            elem.innerHTML = "<div class='arrow left'></div>";
+            elem.innerHTML = "<div class='arrow' id='leftArrow'></div>";
         } else if (id == "backEndCards") {
-            elem.innerHTML = "<div class='arrow right'></div>";
+            elem.innerHTML = "<div class='arrow' id='rightArrow'></div>";
         }
     }
     document.getElementById("frontEndSection").className = "bottom";
@@ -418,6 +466,7 @@ function startGame() {
     cardIndex = 0;
     questionIndex = 0;
     readyToTakeInput = false;
+    needsToInstructPlayer = true;
     let delay = 1500;
     if (document.body.classList.contains("gameEnded")) {
         delay = 2500;
@@ -427,6 +476,8 @@ function startGame() {
         gameActive = true;
         placeNewCardIntoNext();
         placeNewCardIntoNextInterval = setInterval(placeNewCardIntoNext, 3000);
+
+        instructionTimeout = setTimeout(instructPlayer, 4000);
     }, delay);
 }
 
@@ -455,7 +506,6 @@ function main() {
             } else {
                 checkKeydownForCardCategorization(event);
             }
-            removeElementsByClass("arrow");
         }
     });
 

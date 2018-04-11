@@ -241,11 +241,13 @@ div.heart.gone {
   50%, 70%  { transform: scale(0.9) translateY(10px); opacity: 0.7; }
   100% { transform: scale(1.0) translateY(0); opacity: 1.0; }
 }
+@keyframes arrowDisappear {
+  from { opacity: 1.0; transform: translateY(0px);  }
+  to   { opacity: 0.0; transform: translateY(50px); }
+}
 
 div.arrow {
-
-  /*background-image: url('images/icons/arrow_v2.png');*/
-  margin-top: 50px;
+  margin-top: 100px;
   background-size: contain;
   display: inline-block;
   width: 70px;
@@ -256,11 +258,15 @@ div.arrow.animatePress {
   animation: .4s animateArrowPress ease-in;
 }
 
-div.arrow.left {
+div.arrow.disappear {
+  animation: .5s arrowDisappear forwards;
+}
+
+#leftArrow {
   background-image: url('images/icons/arrow_left.png');
 }
 
-div.arrow.right{
+#rightArrow {
   background-image: url('images/icons/arrow_right.png');
 }
 
@@ -444,6 +450,11 @@ div.arrow.right{
   100% { border-color: #2f386d; }
 }
 
+@keyframes instructionCardFadeOut {
+  from { opacity: 0.3; }
+  to   { opacity: 0.0; }
+}
+
 .logoCard {
   background-color: white;
   border-radius: 10px;
@@ -487,6 +498,28 @@ section.incorrect {
 #nextSection .logoCard {
   float: right;
   animation: 1s slideIntoNext backwards;
+}
+
+#instructionCard {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  opacity: 0.3;
+  animation: none;
+}
+
+#currentCardHolder #instructionCard {
+  animation: none;
+}
+body > #currentCardHolder #instructionCard.moveToFrontEnd {
+  animation: 1s resizeFromHolder forwards .5s, 1s moveToFrontEnd forwards .5s,
+             1s instructionCardFadeOut 2.5s forwards !important;
+}
+body > #currentCardHolder #instructionCard.moveToBackEnd {
+  animation: 1s resizeFromHolder forwards .5s, 1s moveToBackEnd forwards .5s,
+             1s instructionCardFadeOut 2.5s forwards !important;
 }
 
 @keyframes animateLoader {
