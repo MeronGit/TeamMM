@@ -1,0 +1,103 @@
+$heading-font:     sans-serif;
+$content-font:     serif;
+$background-color: #001e18;
+$heading-color:    #00ffa9;
+//$primary-color:    adjust-hue($heading-color, 50deg);
+//$primary-color:    darken($heading-color, 15);
+$primary-color:    #2fd637;
+$link-color:       white;
+$warning-bg-color: #d8dc39;
+$warning-fg-color: black;
+$fatal-bg-color:   #FF5600;
+$fatal-fg-color:   white;
+
+body {
+  font-family: $content-font;
+  background-color: $background-color;
+  color: $primary-color;
+  width: 500px;
+  margin: 500px * 0.1;
+}
+
+h1, h2, h3 {
+  font-family: $heading-font;
+  color: $heading-color;
+}
+
+h2 {
+  border-bottom: 1px solid lighten($background-color, 10);
+  padding-bottom: 3px;
+}
+
+a:link, a:visited {
+  text-decoration: none;
+  color: white;
+}
+a:hover, a:active {
+  text-decoration: underline;
+}
+
+@mixin lighten-bg {
+  color: white;
+  background-color: lighten($background-color, 15);
+}
+
+nav {
+  ul {
+    list-style-type: none;
+    padding: 2px;
+    @include lighten-bg;
+  }
+  li {
+    display: inline;
+    margin-left: 0;
+  }
+  a {
+    display: inline-block;
+    padding: 5px 15px;
+  }
+  a:hover {
+    background-color: lighten($background-color, 25);
+  }
+}
+
+table {
+  text-align: left;
+
+  th, td {
+    padding: 3px 5px + 2px;
+  }
+
+  border-collapse: collapse;
+  th, td, tr {
+    border: 1px solid lighten($background-color, 15);
+  }
+  th {
+    font-weight: normal;
+    @include lighten-bg;
+  }
+}
+
+%alert {
+  text-align: center;
+  padding: 5px 10px;
+  margin: 5px 0px 10px;
+  letter-spacing: 2px;
+}
+
+.alert-warning {
+  @extend %alert;
+  background-color: $warning-bg-color;
+  color: $warning-fg-color;
+}
+
+.alert-fatal {
+  @extend %alert;
+  background-color: $fatal-bg-color;
+  color: $fatal-fg-color;
+}
+
+footer {
+  margin-top: 1.5 * 10px;
+  font-size: 14pt * 0.8;
+}
