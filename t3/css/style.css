@@ -1,0 +1,5 @@
+
+.twitter-typeahead:nth-child(n+3) {
+  /*display: none !important;*/
+  width: 5px;
+}

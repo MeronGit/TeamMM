@@ -4,7 +4,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title>Hindamisvorm - t3</title>
-    <link rel="stylesheet" href="bootstrap.min.css" />
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/tagsinput.css" />
+    <link rel="stylesheet" href="css/typeaheadjs.css" />
+    <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
     <main role="main" class="container">
@@ -21,14 +24,10 @@
           </label>
           <input type="url" id="homeworkUrl" class="form-control" />
           <small class="form-text text-success mb-2">Plagiaati ei tuvastatud.</small>
-          <label for="student1">
-            Üliõpilane 1:
+          <label for="students">
+            Üliõpilased (kuni 2):
           </label>
-          <input type="text" id="student1" class="form-control mb-2" />
-          <label for="student2">
-            Üliõpilane 2:
-          </label>
-          <input type="text" id="student2" class="form-control mb-2" placeholder="Täita juhul, kui töö tehti kahekesi" />
+          <input type="text" id="students" class="form-control mb-2" />
           <div class="row">
             <div class="col">
               <label>Tähtaeg</label>
@@ -149,5 +148,9 @@
         </div>
       </div>
     </main>
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/typeahead.bundle.min.js"></script>
+    <script src="js/tagsinput.js"></script>
+    <script src="js/main.js"></script>
   </body>
 </html>
