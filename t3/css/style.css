@@ -3,3 +3,8 @@
   /*display: none !important;*/
   width: 5px;
 }
+
+div.total-points {
+  font-size: 2rem;
+  margin-top: -8px;
+}
