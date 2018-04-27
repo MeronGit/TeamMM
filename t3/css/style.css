@@ -1,6 +1,20 @@
+body {
+  margin-top: 25px;
+}
+
+h1 {
+  box-shadow: 0px 10px 10px -10px lightgray;
+}
+
+#app {
+  margin-bottom: 130px;
+}
+
+#footer {
+  box-shadow: 0px -10px 10px -10px lightgray;
+}
 
 .twitter-typeahead:nth-child(n+3) {
-  /*display: none !important;*/
   width: 5px;
 }
 

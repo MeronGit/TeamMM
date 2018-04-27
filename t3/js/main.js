@@ -24,6 +24,8 @@ $(function() {
             event.preventDefault();
         }
     });
+
+    document.body.className = "";
 });
 
 Vue.component('points-label', {

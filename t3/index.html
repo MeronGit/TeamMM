@@ -7,11 +7,16 @@
     <link rel="stylesheet" href="css/bootstrap.min.css" />
     <link rel="stylesheet" href="css/tagsinput.css" />
     <link rel="stylesheet" href="css/typeaheadjs.css" />
+    <link rel="stylesheet" href="fonts/material-icons.css" />
     <link rel="stylesheet" href="css/style.css" />
   </head>
-  <body>
+  <body class="d-none">
     <main id="app" role="main" class="container">
-      <h1>Hindamisvorm</h1>
+      <div class="row">
+        <div class="col">
+          <h1 class="mb-4 pb-2">Hindamisvorm</h1>
+        </div>
+      </div>
       <div class="row">
         <div class="col-lg">
           <h2>Üldinfo</h2>
@@ -28,7 +33,7 @@
             Üliõpilased (kuni 2):
           </label>
           <input type="text" id="students" class="form-control" />
-          <div class="row mt-2">
+          <div class="row mt-4">
             <div class="col">
               <label>Tähtaeg</label>
               <p class="lead">11. aprill, 2018</p>
@@ -38,6 +43,24 @@
               <p class="lead">14 päeva (<points-label :points="dueDatePointsPenalty" suffix="p"></points-label>)</p>
             </div>
           </div>
+          <h3 class="mb-3">Varasemad esitamised</h3>
+          <table class="table table-striped">
+            <tr>
+              <th>Kuupäev</th>
+              <th class="text-center">Punktid</th>
+              <th class="text-center">Vaata</th>
+            </tr>
+            <tr>
+              <td>18. aprill 2018</td>
+              <td class="text-center"><span class="text-success">12</span></td>
+              <td class="text-center"><a href="#"><i class="material-icons">search</i></a></td>
+            </tr>
+            <tr>
+              <td>11. aprill 2018</td>
+              <td class="text-center"><span class="text-danger">8</span></td>
+              <td class="text-center"><a href="#"><i class="material-icons">search</i></a></td>
+            </tr>
+          </table>
         </div>
         <div class="col-lg">
           <h2>Baaspunktid <points-label :points="numBasePoints"></points-label></h2>
@@ -49,17 +72,22 @@
             </label>
             <br/>
           </template>
-          <template v-if="numBasePointsFactors == 4 || numBasePointsFactors == 5">
+          <template v-if="numBasePointsFactors < 6">
             <hr/>
             <div class="alert alert-warning">
               <template v-if="numBasePointsFactors == 5">
                 Üks baaspunkt
               </template>
-              <template v-else>
+              <template v-else-if="numBasePointsFactors == 4">
                 Kaks baaspunkti
+              </template>
+              <template v-else>
+                {{ 6 - numBasePointsFactors }} baaspunkti
               </template>
               on puudu.
             </div>
+          </template>
+          <template v-if="numBasePointsFactors == 4 || numBasePointsFactors == 5">
             <label>
               <input type="radio" name="grace" v-model.number="gracePoints" value="0">
               Ära loe lahendatuks
@@ -93,34 +121,36 @@
           <textarea class="form-control"></textarea>
         </div>
       </div>
-      <div class="row mt-3">
-        <div class="col">
-          <div class="progress mb-2">
-            <div class="progress-bar" role="progressbar"
-                :class="{ 'bg-danger': numTotalPoints < 10, 'bg-success': numTotalPoints >= 10 }"
-                :style="{ width: pointsBarPercentage + '%' }"></div>
+      <div id="footer" class="container pb-3 bg-white" style="width: 100%; position: fixed; bottom: 0px">
+        <div class="row mt-3">
+          <div class="col">
+            <div class="progress mb-2">
+              <div class="progress-bar" role="progressbar"
+                  :class="{ 'bg-danger': numTotalPoints < 10, 'bg-success': numTotalPoints >= 10 }"
+                  :style="{ width: pointsBarPercentage + '%' }"></div>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="row">
-        <div class="col-2">
-          <button class="btn btn-warning">
-            Pikenda<span class="d-none d-md-inline"> tähtaega</span>
-          </button>
-        </div>
-        <div class="col-8 text-center">
-          <div class="total-points">
-            <strong>{{ numTotalPoints }}</strong> / 20
+        <div class="row">
+          <div class="col-2">
+            <button class="btn btn-warning">
+              Pikenda<span class="d-none d-md-inline"> tähtaega</span>
+            </button>
           </div>
-          <div class="min-points-notice"
-              :class="{'text-danger': numTotalPoints < 10, 'text-success': numTotalPoints >= 10 }">
-            Min 10p
+          <div class="col-8 text-center">
+            <div class="total-points">
+              <strong>{{ numTotalPoints }}</strong> / 20
+            </div>
+            <div class="min-points-notice"
+                :class="{'text-danger': numTotalPoints < 10, 'text-success': numTotalPoints >= 10 }">
+              Min 10p
+            </div>
           </div>
-        </div>
-        <div class="col-2">
-          <button class="btn btn-success float-right" :disabled="!canSubmit">
-            Kinnita
-          </button>
+          <div class="col-2">
+            <button class="btn btn-success float-right" :disabled="!canSubmit">
+              Kinnita
+            </button>
+          </div>
         </div>
       </div>
     </main>
