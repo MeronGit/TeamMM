@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
-    <main role="main" class="container">
+    <main id="app" role="main" class="container">
       <h1>Hindamisvorm</h1>
       <div class="row">
         <div class="col-lg">
@@ -35,114 +35,65 @@
             </div>
             <div class="col">
               <label>Hilinemine</label>
-              <p class="lead">14 päeva (<span class="text-danger">-5p</span>)</p>
+              <p class="lead">14 päeva (<span class="text-danger">{{ dueDatePointsPenalty }}p</span>)</p>
             </div>
           </div>
         </div>
         <div class="col-lg">
-          <h2>Baaspunktid</h2>
+          <h2>Baaspunktid <span class="font-weight-normal text-muted">+{{ numBasePoints }}</span></h2>
           <p>10 punkti, kui kõik on lahendatud</p>
-          <label>
-            <input type="checkbox" />
-            Ootejärjekord
-          </label>
-          <br/>
-          <label>
-            <input type="checkbox" />
-            Sortimine (lohistamine või klõps)
-          </label>
-          <br/>
-          <label>
-            <input type="checkbox" />
-            Tähtajaline lisaülesanne
-          </label>
-          <br/>
-          <label>
-            <input type="checkbox" />
-            Elude kaotamine
-          </label>
-          <br/>
-          <label>
-            <input type="checkbox" />
-            Mängu läbikukkumine, punktid, ja kordamine
-          </label>
-          <br/>
-          <label>
-            <input type="checkbox" />
-            Kasutaja tähelepanu juhitakse animatsioonidega
-          </label>
-          <hr/>
-          <p>Üks-kaks baaspunkti on puudu:</p>
-          <label>
-            <input type="radio" name="grace">
-            Loe lahendatuks 10 punkti eest
-          </label>
-          <br/>
-          <label>
-            <input type="radio" name="grace">
-            Loe lahendatuks 5 punkti eest
-          </label>
-          <br/>
-          <label>
-            <input type="radio" name="grace">
-            Ära loe lahendatuks
-          </label>
+          <template v-for="factor in basePointsFactors">
+            <label>
+              <input type="checkbox" v-model="selectedBasePointsFactors" :value="factor" />
+              {{ factor }}
+            </label>
+            <br/>
+          </template>
+          <template v-if="numBasePointsFactors == 4 || numBasePointsFactors == 5">
+            <hr/>
+            <div class="alert alert-warning">
+              <template v-if="numBasePointsFactors == 5">
+                Üks baaspunkt
+              </template>
+              <template v-else>
+                Kaks baaspunkti
+              </template>
+              on puudu.
+            </div>
+            <label>
+              <input type="radio" name="grace" v-model.number="gracePoints" value="0">
+              Ära loe lahendatuks
+            </label>
+            <br/>
+            <label>
+              <input type="radio" name="grace" v-model.number="gracePoints" value="5">
+              Loe lahendatuks 5 punkti eest
+            </label>
+            <br/>
+            <label>
+              <input type="radio" name="grace" v-model.number="gracePoints" value="10">
+              Loe lahendatuks 10 punkti eest
+            </label>
+          </template>
         </div>
         <div class="col-lg">
-          <h2>Lisapunktid</h2>
+          <h2>
+            Lisapunktid
+            <span class="font-weight-normal text-muted">
+              <template v-if="numBonusPoints >= 0">+</template>{{ numBonusPoints }}
+            </span>
+          </h2>
           <p>1 punkt igaühe eest</p>
-          <label>
-            <input type="checkbox" />
-            Ilus kujundus
-          </label>
-          <br/>
-          <label>
-            <input type="checkbox" />
-            Mängu kujundus toetab teemat
-          </label>
-          <br/>
-          <label>
-            <input type="checkbox" />
-            Head ilmumised
-          </label>
-          <br/>
-          <label>
-            <input type="checkbox" />
-            Hea sortimise tagasiside
-          </label>
-          <br/>
-          <label>
-            <input type="checkbox" />
-            Hea lisaülesande "episood"
-          </label>
-          <br/>
-          <label>
-            <input type="checkbox" />
-            Hea läbikukkumiste tagasiside
-          </label>
-          <br/>
-          <label>
-            <input type="checkbox" />
-            Heliline tagasiside
-          </label>
-          <br/>
-          <label>
-            <input type="checkbox" />
-            Mängu õpitavus on hea
-          </label>
-          <br/>
-          <label>
-            <input type="checkbox" />
-            Sorditavaid objekte saab lohistada (<em>drag&amp;drop</em>)
-          </label>
-          <br/>
-          <label>
-            <input type="checkbox" />
-            Töötab ka mobiilil
-          </label>
+          <template v-for="factor in bonusPointsFactors">
+            <label>
+              <input type="checkbox" v-model="selectedBonusPointsFactors" :value="factor" />
+              {{ factor }}
+            </label>
+            <br/>
+          </template>
           <hr/>
           Täiendpunktid:
-          <input type="number" class="form-control mb-2" />
+          <input type="number" class="form-control mb-2" v-model.number="additionalPoints" />
           Märkused:
           <textarea class="form-control"></textarea>
         </div>
@@ -173,6 +124,7 @@
     <script src="js/jquery-3.3.1.min.js"></script>
     <script src="js/typeahead.bundle.min.js"></script>
     <script src="js/tagsinput.js"></script>
+    <script src="js/vue.js"></script>
     <script src="js/main.js"></script>
   </body>
 </html>
