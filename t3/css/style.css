@@ -8,3 +8,7 @@ div.total-points {
   font-size: 2rem;
   margin-top: -8px;
 }
+
+div.min-points-notice {
+  margin-top: -5px;
+}

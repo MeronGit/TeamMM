@@ -26,6 +26,14 @@ $(function() {
     });
 });
 
+Vue.component('points-label', {
+    props: ['points', 'suffix'],
+    template: `
+        <span class="font-weight-normal"
+            :class="{'text-success': points > 0, 'text-muted': points == 0, 'text-danger': points < 0}">
+            <template v-if="points >= 0">+</template>{{ points }}{{ suffix }}</span>`
+});
+
 let vm = new Vue({
     el: "#app",
     data: {
@@ -71,7 +79,25 @@ let vm = new Vue({
             }
         },
         numBonusPoints() {
-            return this.selectedBonusPointsFactors.length + this.additionalPoints;
+            let bonusPoints = this.selectedBonusPointsFactors.length;
+            if (this.additionalPoints !== "") {
+                bonusPoints += this.additionalPoints;
+            }
+            return bonusPoints;
+        },
+        numTotalPoints() {
+            let points = this.dueDatePointsPenalty;
+            if (this.numBasePoints > 0) {
+                points += this.numBasePoints;
+                points += this.numBonusPoints;
+            }
+            return points;
+        },
+        pointsBarPercentage() {
+            return Math.max(0, Math.min(100, (this.numTotalPoints / 20) * 100));
+        },
+        canSubmit() {
+            return this.numTotalPoints >= 10;
         }
     }
 });
