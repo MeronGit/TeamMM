@@ -38,3 +38,9 @@ label .material-icons {
 label:hover .add-note {
   visibility: visible;
 }
+
+@media (hover: none) {
+  .add-note {
+    visibility: visible;
+  }
+}
