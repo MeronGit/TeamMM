@@ -69,6 +69,13 @@
             <label>
               <input type="checkbox" v-model="selectedBasePointsFactors" :value="factor" />
               {{ factor }}
+              <a href="#" class="btn btn-sm"
+                  :class="{ 'btn-primary': factorNotes[factor], 'btn-success add-note': !factorNotes[factor] }"
+                  data-toggle="modal" data-target="#factorNoteModal"
+                  @click="onNoteButton(factor)">
+                <i v-if="factorNotes[factor]" class="material-icons">description</i>
+                <i v-else class="material-icons">note_add</i>
+              </a>
             </label>
             <br/>
           </template>
@@ -76,13 +83,13 @@
             <hr/>
             <div class="alert alert-warning">
               <template v-if="numBasePointsFactors == 5">
-                Üks baaspunkt
+                <strong>Üks</strong> baaspunkt
               </template>
               <template v-else-if="numBasePointsFactors == 4">
-                Kaks baaspunkti
+                <strong>Kaks</strong> baaspunkti
               </template>
               <template v-else>
-                {{ 6 - numBasePointsFactors }} baaspunkti
+                <strong>{{ 6 - numBasePointsFactors }}</strong> baaspunkti
               </template>
               on puudu.
             </div>
@@ -153,10 +160,48 @@
           </div>
         </div>
       </div>
+
+      <div class="modal fade" id="factorNoteModal" tabindex="-1" role="dialog" aria-labelledby="factorNoteModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="factorNoteModal">{{ currentNoteFactorName }}</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Sulge">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <label>Märkused</label>
+              <textarea class="form-control" rows="7" v-model="currentNote">
+              </textarea>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger mr-auto"
+                  id="delPopover"
+                  data-toggle="popover"
+                  title="Kindel?"
+                  data-content="
+                  <button class='btn btn-secondary'
+                      onclick='$(&quot;#delPopover&quot;).popover(&quot;hide&quot;)'>
+                    Loobu
+                  </button>
+                  <button class='btn btn-danger'
+                      onclick='$(&quot;#factorNoteModal&quot;).modal(&quot;hide&quot;); vm.onNoteDeleteButton(event)'>
+                    Jah
+                  </button>">
+                Kustuta
+              </button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Katkesta</button>
+              <button type="button" class="btn btn-success" @click="onNoteSaveButton" data-dismiss="modal">Salvesta</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </main>
     <script src="js/jquery-3.3.1.min.js"></script>
     <script src="js/typeahead.bundle.min.js"></script>
     <script src="js/tagsinput.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
     <script src="js/vue.js"></script>
     <script src="js/main.js"></script>
   </body>

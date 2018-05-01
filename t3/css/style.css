@@ -26,3 +26,15 @@ div.total-points {
 div.min-points-notice {
   margin-top: -5px;
 }
+
+label .material-icons {
+  font-size: 1rem;
+  vertical-align: -16%;
+}
+
+.add-note {
+  visibility: hidden;
+}
+label:hover .add-note {
+  visibility: visible;
+}

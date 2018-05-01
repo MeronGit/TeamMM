@@ -1,7 +1,7 @@
 $(function() {
     const studentNames = new Bloodhound({
         local: ["Magnus Teekivi", "Merli Lall", "Ragnar Rebase",
-                 "Aivar Loopalu", "Britta Pung"],
+                "Aivar Loopalu", "Britta Pung", "J"],
         queryTokenizer: Bloodhound.tokenizers.whitespace,
         datumTokenizer: Bloodhound.tokenizers.whitespace
     });
@@ -24,6 +24,9 @@ $(function() {
             event.preventDefault();
         }
     });
+    $('[data-toggle="popover"]').popover({
+        html: true
+    });
 
     document.body.className = "";
 });
@@ -44,8 +47,8 @@ let vm = new Vue({
             "Sortimine (lohistamine või klõps)",
             "Tähtajaline lisaülesanne",
             "Elude kaotamine",
-            "Mängu läbikukkumine, punktid, ja kordamine",
-            "Kasutaja tähelepanu juhitakse animatsioonidega"
+            "Läbikukkumine, punktid, ja kordamine",
+            "Tähelepanu juhitakse animatsioonidega"
         ],
         bonusPointsFactors: [
             "Ilus kujundus",
@@ -61,6 +64,9 @@ let vm = new Vue({
         ],
         selectedBasePointsFactors: [],
         selectedBonusPointsFactors: [],
+        factorNotes: {},
+        currentNoteFactorName: "",
+        currentNote: "",
         gracePoints: 0,
         additionalPoints: 0,
     },
@@ -100,6 +106,23 @@ let vm = new Vue({
         },
         canSubmit() {
             return this.numTotalPoints >= 10;
+        }
+    },
+    methods: {
+        onNoteButton(factor) {
+            this.currentNoteFactorName = factor;
+            this.currentNote = "";
+            if (this.factorNotes[factor]) {
+                this.currentNote = this.factorNotes[factor];
+            }
+        },
+        onNoteSaveButton(event) {
+            this.factorNotes[this.currentNoteFactorName] = this.currentNote;
+            this.$forceUpdate();
+        },
+        onNoteDeleteButton(event) {
+            delete this.factorNotes[this.currentNoteFactorName];
+            this.$forceUpdate();
         }
     }
 });
