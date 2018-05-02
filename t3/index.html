@@ -70,7 +70,7 @@
               <input type="checkbox" v-model="selectedBasePointsFactors" :value="factor" />
               {{ factor }}
               <a href="#" class="btn btn-sm ml-2"
-                  :class="{ 'btn-primary': factorNotes[factor], 'btn-success add-note': !factorNotes[factor] }"
+                  :class="{ 'btn-primary': factorNotes[factor], 'btn-light add-note': !factorNotes[factor] }"
                   data-toggle="modal" data-target="#factorNoteModal"
                   @click="onNoteButton(factor)">
                 <i v-if="factorNotes[factor]" class="material-icons">description</i>
@@ -119,7 +119,7 @@
               <input type="checkbox" v-model="selectedBonusPointsFactors" :value="factor" />
               {{ factor }}
               <a href="#" class="btn btn-sm ml-2"
-                  :class="{ 'btn-primary': factorNotes[factor], 'btn-success add-note': !factorNotes[factor] }"
+                  :class="{ 'btn-primary': factorNotes[factor], 'btn-light add-note': !factorNotes[factor] }"
                   data-toggle="modal" data-target="#factorNoteModal"
                   @click="onNoteButton(factor)">
                 <i v-if="factorNotes[factor]" class="material-icons">description</i>
