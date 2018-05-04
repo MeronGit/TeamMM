@@ -12,134 +12,136 @@
   </head>
   <body class="d-none">
     <main id="app" role="main" class="container">
-      <div class="row">
-        <div class="col">
-          <h1 class="mb-4 pb-2">Hindamisvorm</h1>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-lg">
-          <h2>Üldinfo</h2>
-          <p>
-            Hindamisel:<br/>
-            <strong class="lead">Kodutöö 2 - Bürokraatia (mäng)</strong>
-          </p>
-          <label for="homeworkUrl">
-            Kodutöö URL:
-          </label>
-          <input type="url" id="homeworkUrl" class="form-control" />
-          <small class="form-text text-success mb-2">Plagiaati ei tuvastatud.</small>
-          <label for="students">
-            Üliõpilased (kuni 2):
-          </label>
-          <input type="text" id="students" class="form-control" />
-          <div class="row mt-4">
-            <div class="col">
-              <label>Tähtaeg</label>
-              <p class="lead">11. aprill, 2018</p>
-            </div>
-            <div class="col">
-              <label>Hilinemine</label>
-              <p class="lead">14 päeva (<points-label :points="dueDatePointsPenalty" suffix="p"></points-label>)</p>
-            </div>
+      <div class="p-2">
+        <div class="row">
+          <div class="col">
+            <h1 class="mb-4 pb-2">Hindamisvorm</h1>
           </div>
-          <h3 class="mb-3">Varasemad esitamised</h3>
-          <table class="table table-striped">
-            <tr>
-              <th>Kuupäev</th>
-              <th class="text-center">Punktid</th>
-              <th class="text-center">Vaata</th>
-            </tr>
-            <tr>
-              <td>18. aprill 2018</td>
-              <td class="text-center"><span class="text-success">12</span></td>
-              <td class="text-center"><a href="#"><i class="material-icons">search</i></a></td>
-            </tr>
-            <tr>
-              <td>11. aprill 2018</td>
-              <td class="text-center"><span class="text-danger">8</span></td>
-              <td class="text-center"><a href="#"><i class="material-icons">search</i></a></td>
-            </tr>
-          </table>
-          <hr class="d-lg-none" />
         </div>
-        <div class="col-lg">
-          <h2 class="mt-4 mt-lg-0">Baaspunktid <points-label :points="numBasePoints"></points-label></h2>
-          <p>10 punkti, kui kõik on lahendatud</p>
-          <template v-for="factor in basePointsFactors">
-            <label class="w-100 bg-light">
-              <input type="checkbox" v-model="selectedBasePointsFactors" :value="factor" />
-              {{ factor }}
-              <a href="#" class="btn btn-sm ml-2 float-right"
-                  :class="{ 'btn-primary': factorNotes[factor], 'btn-light add-note': !factorNotes[factor] }"
-                  data-toggle="modal" data-target="#factorNoteModal"
-                  @click="onNoteButton(factor)">
-                <i v-if="factorNotes[factor]" class="material-icons">description</i>
-                <i v-else class="material-icons">note_add</i>
-              </a>
+        <div class="row">
+          <div class="col-lg">
+            <h2>Üldinfo</h2>
+            <p>
+              Hindamisel:<br/>
+              <strong class="lead">Kodutöö 2 - Bürokraatia (mäng)</strong>
+            </p>
+            <label for="homeworkUrl">
+              Kodutöö URL:
             </label>
-            <br/>
-          </template>
-          <template v-if="numBasePointsFactors < 6">
-            <div class="alert mt-3"
-                :class="{'alert-danger': numBasePointsFactors < 4,
-                         'alert-warning': numBasePointsFactors >= 4}">
-              <template v-if="numBasePointsFactors == 5">
-                <strong>Üks</strong> baaspunkt
-              </template>
-              <template v-else-if="numBasePointsFactors == 4">
-                <strong>Kaks</strong> baaspunkti
-              </template>
-              <template v-else>
-                <strong>{{ 6 - numBasePointsFactors }}</strong> baaspunkti
-              </template>
-              on puudu.
+            <input type="url" id="homeworkUrl" class="form-control" />
+            <small class="form-text text-success mb-2">Plagiaati ei tuvastatud.</small>
+            <label for="students">
+              Üliõpilased (kuni 2):
+            </label>
+            <input type="text" id="students" class="form-control" />
+            <div class="row mt-4">
+              <div class="col">
+                <label>Tähtaeg</label>
+                <p class="lead">11. aprill, 2018</p>
+              </div>
+              <div class="col">
+                <label>Hilinemine</label>
+                <p class="lead">14 päeva (<points-label :points="dueDatePointsPenalty" suffix="p"></points-label>)</p>
+              </div>
             </div>
-          </template>
-          <template v-if="numBasePointsFactors == 4 || numBasePointsFactors == 5">
-            <label>
-              <input type="radio" name="grace" v-model.number="gracePoints" value="0">
-              Ära loe lahendatuks
-            </label>
-            <br/>
-            <label>
-              <input type="radio" name="grace" v-model.number="gracePoints" value="5">
-              Loe lahendatuks <span class="text-success font-weight-bold">+5</span> punkti eest
-            </label>
-            <br/>
-            <label>
-              <input type="radio" name="grace" v-model.number="gracePoints" value="10">
-              Loe lahendatuks <span class="text-success font-weight-bold">+10</span> punkti eest
-            </label>
-          </template>
-          <hr class="d-lg-none" />
-        </div>
-        <div class="col-lg">
-          <h2 class="mt-4 mt-lg-0">Lisapunktid <points-label :points="numBonusPoints"></points-label></h2>
-          <p>1 punkt igaühe eest</p>
-          <template v-for="factor in bonusPointsFactors">
-            <label class="w-100 bg-light">
-              <input type="checkbox" v-model="selectedBonusPointsFactors" :value="factor" />
-              {{ factor }}
-              <a href="#" class="btn btn-sm ml-2 float-right"
-                  :class="{ 'btn-primary': factorNotes[factor], 'btn-light add-note': !factorNotes[factor] }"
-                  data-toggle="modal" data-target="#factorNoteModal"
-                  @click="onNoteButton(factor)">
-                <i v-if="factorNotes[factor]" class="material-icons">description</i>
-                <i v-else class="material-icons">note_add</i>
-              </a>
-            </label>
-            <br/>
-          </template>
-          <hr/>
-          Täiendpunktid:
-          <input type="number" class="form-control mb-2" v-model.number="additionalPoints" />
-          Märkused:
-          <textarea class="form-control"></textarea>
+            <h3 class="mb-3">Varasemad esitamised</h3>
+            <table class="table table-striped">
+              <tr>
+                <th>Kuupäev</th>
+                <th class="text-center">Punktid</th>
+                <th class="text-center">Vaata</th>
+              </tr>
+              <tr>
+                <td>18. aprill 2018</td>
+                <td class="text-center"><span class="text-success">12</span></td>
+                <td class="text-center"><a href="#"><i class="material-icons">search</i></a></td>
+              </tr>
+              <tr>
+                <td>11. aprill 2018</td>
+                <td class="text-center"><span class="text-danger">8</span></td>
+                <td class="text-center"><a href="#"><i class="material-icons">search</i></a></td>
+              </tr>
+            </table>
+            <hr class="d-lg-none" />
+          </div>
+          <div class="col-lg">
+            <h2 class="mt-4 mt-lg-0">Baaspunktid <points-label :points="numBasePoints"></points-label></h2>
+            <p>10 punkti, kui kõik on lahendatud</p>
+            <template v-for="factor in basePointsFactors">
+              <label class="w-100 bg-light">
+                <input type="checkbox" v-model="selectedBasePointsFactors" :value="factor" />
+                {{ factor }}
+                <a href="#" class="btn btn-sm ml-2 float-right"
+                    :class="{ 'btn-primary': factorNotes[factor], 'btn-light add-note': !factorNotes[factor] }"
+                    data-toggle="modal" data-target="#factorNoteModal"
+                    @click="onNoteButton(factor)">
+                  <i v-if="factorNotes[factor]" class="material-icons">description</i>
+                  <i v-else class="material-icons">note_add</i>
+                </a>
+              </label>
+              <br />
+            </template>
+            <template v-if="numBasePointsFactors < 6">
+              <div class="alert mt-3"
+                  :class="{'alert-danger': numBasePointsFactors < 4,
+                           'alert-warning': numBasePointsFactors >= 4}">
+                <template v-if="numBasePointsFactors == 5">
+                  <strong>Üks</strong> baaspunkt
+                </template>
+                <template v-else-if="numBasePointsFactors == 4">
+                  <strong>Kaks</strong> baaspunkti
+                </template>
+                <template v-else>
+                  <strong>{{ 6 - numBasePointsFactors }}</strong> baaspunkti
+                </template>
+                on puudu.
+              </div>
+            </template>
+            <template v-if="numBasePointsFactors == 4 || numBasePointsFactors == 5">
+              <label>
+                <input type="radio" name="grace" v-model.number="gracePoints" value="0">
+                Ära loe lahendatuks
+              </label>
+              <br/>
+              <label>
+                <input type="radio" name="grace" v-model.number="gracePoints" value="5">
+                Loe lahendatuks <span class="text-success font-weight-bold">+5</span> punkti eest
+              </label>
+              <br/>
+              <label>
+                <input type="radio" name="grace" v-model.number="gracePoints" value="10">
+                Loe lahendatuks <span class="text-success font-weight-bold">+10</span> punkti eest
+              </label>
+            </template>
+            <hr class="d-lg-none" />
+          </div>
+          <div class="col-lg">
+            <h2 class="mt-4 mt-lg-0">Lisapunktid <points-label :points="numBonusPoints"></points-label></h2>
+            <p>1 punkt igaühe eest</p>
+            <template v-for="factor in bonusPointsFactors">
+              <label class="w-100 bg-light">
+                <input type="checkbox" v-model="selectedBonusPointsFactors" :value="factor" />
+                {{ factor }}
+                <a href="#" class="btn btn-sm ml-2 float-right"
+                    :class="{ 'btn-primary': factorNotes[factor], 'btn-light add-note': !factorNotes[factor] }"
+                    data-toggle="modal" data-target="#factorNoteModal"
+                    @click="onNoteButton(factor)">
+                  <i v-if="factorNotes[factor]" class="material-icons">description</i>
+                  <i v-else class="material-icons">note_add</i>
+                </a>
+              </label>
+              <br/>
+            </template>
+            <hr/>
+            Täiendpunktid:
+            <input type="number" class="form-control mb-2" v-model.number="additionalPoints" />
+            Märkused:
+            <textarea class="form-control"></textarea>
+          </div>
         </div>
       </div>
-      <div id="footer" class="container pb-3 bg-white" style="width: 100%; position: fixed; bottom: 0px">
-        <div class="row mt-3">
+      <div id="footer" class="container pb-3 bg-white px-0" style="width: 100%; position: fixed; bottom: 0px">
+        <div class="row mt-3 mr-2 mr-lg-0 ml-lg-1">
           <div class="col">
             <div class="progress mb-2">
               <div class="progress-bar" role="progressbar"
@@ -148,7 +150,7 @@
             </div>
           </div>
         </div>
-        <div class="row">
+        <div class="row mr-2 mr-lg-0 ml-lg-1">
           <div class="col-2">
             <button class="btn btn-warning">
               Pikenda<span class="d-none d-md-inline"> tähtaega</span>
