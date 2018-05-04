@@ -43,12 +43,12 @@ let vm = new Vue({
     el: "#app",
     data: {
         basePointsFactors: [
-            "Ootejärjekord",
+            "Läbikukkumine, punktid, ja kordamine",
+            "Tähelepanu juhitakse animatsioonidega",
             "Sortimine (lohistamine või klõps)",
             "Tähtajaline lisaülesanne",
             "Elude kaotamine",
-            "Läbikukkumine, punktid, ja kordamine",
-            "Tähelepanu juhitakse animatsioonidega"
+            "Ootejärjekord",
         ],
         bonusPointsFactors: [
             "Ilus kujundus",
