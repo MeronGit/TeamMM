@@ -28,6 +28,19 @@ $(function() {
         html: true
     });
 
+    $("#homeworkUrl").typeahead({
+        minLength: 5
+    },
+    {
+        name: "uniid-to-dijkstra-url",
+        async: false,
+        source: function(query, syncResults) {
+            if (query.match(/^[a-zA-Z]+\.?[a-zA-Z]+$/)) {
+                syncResults([`http://dijkstra.cs.ttu.ee/~${query}/ui/t3/`])
+            }
+        }
+    });
+
     document.body.className = "";
 });
 
@@ -42,6 +55,7 @@ Vue.component('points-label', {
 let vm = new Vue({
     el: "#app",
     data: {
+        homeworkUrlState: "",
         basePointsFactors: [
             "Läbikukkumine, punktid, ja kordamine",
             "Tähelepanu juhitakse animatsioonidega",
@@ -123,6 +137,26 @@ let vm = new Vue({
         onNoteDeleteButton(event) {
             delete this.factorNotes[this.currentNoteFactorName];
             this.$forceUpdate();
+        },
+        checkHomeworkUrl(event) {
+            let homeworkUrl = $("#homeworkUrl").typeahead("val");
+            if (!event.target.validity.valid) {
+                this.homeworkUrlState = "incorrect";
+            } else if (!homeworkUrl.trim()) {
+                this.homeworkUrlState = "empty";
+            } else {
+                this.homeworkUrlState = "loading";
+                let vm = this;
+                setTimeout(function() {
+                    if (vm.homeworkUrlState != "loading") {
+                        return;
+                    } else if (homeworkUrl.startsWith("http://dijkstra.cs.ttu.ee/~hacker/ui/t3")) {
+                        vm.homeworkUrlState = "plagiarism";
+                    } else {
+                        vm.homeworkUrlState = "no-plagiarism";
+                    }
+                }, 1000);
+            }
         }
     }
 });

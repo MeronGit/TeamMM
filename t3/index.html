@@ -28,12 +28,20 @@
             <label for="homeworkUrl">
               Kodutöö URL:
             </label>
-            <input type="url" id="homeworkUrl" class="form-control" />
-            <small class="form-text text-success mb-2">Plagiaati ei tuvastatud.</small>
+            <div id="homeworkUrlContainer">
+              <input type="url" id="homeworkUrl" class="form-control" placeholder="Sisesta UNI-ID või URL" required
+                  @blur="checkHomeworkUrl" />
+              <small v-if="homeworkUrlState == 'loading'" class="form-text text-muted mb-2">Laadimine...</small>
+              <small v-else-if="homeworkUrlState == 'plagiarism'" class="form-text text-danger mb-2">Tuvastati tõenäoline plagiaat!</small>
+              <small v-else-if="homeworkUrlState == 'no-plagiarism'" class="form-text text-success mb-2">Plagiaati ei tuvastatud.</small>
+              <small v-else-if="homeworkUrlState == 'incorrect'" class="form-text text-danger mb-2">Ebakorrektne URL.</small>
+              <small v-else-if="homeworkUrlState == 'empty'" class="form-text text-danger mb-2">URL peab olema sisestatud.</small>
+              <small v-else class="form-text mb-2 invisible">Sisesta URL.</small>
+            </div>
             <label for="students">
               Üliõpilased (kuni 2):
             </label>
-            <input type="text" id="students" class="form-control" />
+            <input type="text" id="students" class="form-control" required />
             <div class="row mt-4">
               <div class="col">
                 <label>Tähtaeg</label>
