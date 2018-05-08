@@ -36,6 +36,12 @@ label .material-icons {
   vertical-align: -16%;
 }
 
+.material-icons.original-deadline {
+  cursor: help;
+  vertical-align: text-bottom;
+  font-weight: lighter;
+}
+
 .add-note {
   visibility: hidden;
 }

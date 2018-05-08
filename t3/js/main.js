@@ -13,6 +13,18 @@ let vm = new Vue({
         homeworkUrlState: "",
         lastCheckedHomeworkUrl: "",
         studentsState: "",
+        deadline: new Date(2018, 3, 25),
+        originalDeadline: new Date(2018, 3, 11),
+        previousSubmissions: [
+            {
+                date: new Date(2018, 3, 18),
+                points: 12
+            },
+            {
+                date: new Date(2018, 3, 11),
+                points: 8
+            }
+        ],
         basePointsFactors: [
             "Läbikukkumine, punktid, ja kordamine",
             "Tähelepanu juhitakse animatsioonidega",
@@ -42,8 +54,18 @@ let vm = new Vue({
         additionalPoints: 0,
     },
     computed: {
-        dueDatePointsPenalty() {
-            return -5;
+        daysOverdue() {
+            let now = new Date();
+            return Math.max(0, Math.floor((now - this.deadline)/(1000*60*60*24)));
+        },
+        deadlinePointsPenalty() {
+            if (this.daysOverdue == 0) {
+                return 0;
+            } else if (this.daysOverdue <= 7) {
+                return -2;
+            } else {
+                return -5;
+            }
         },
         numBasePointsFactors() {
             return this.selectedBasePointsFactors.length;
@@ -65,7 +87,7 @@ let vm = new Vue({
             return bonusPoints;
         },
         numTotalPoints() {
-            let points = this.dueDatePointsPenalty;
+            let points = this.deadlinePointsPenalty;
             if (this.numBasePoints > 0) {
                 points += this.numBasePoints;
                 points += this.numBonusPoints;
@@ -90,21 +112,6 @@ let vm = new Vue({
         }
     },
     methods: {
-        onNoteButton(factor) {
-            this.currentNoteFactorName = factor;
-            this.currentNote = "";
-            if (this.factorNotes[factor]) {
-                this.currentNote = this.factorNotes[factor];
-            }
-        },
-        onNoteSaveButton(event) {
-            this.factorNotes[this.currentNoteFactorName] = this.currentNote;
-            this.$forceUpdate();
-        },
-        onNoteDeleteButton(event) {
-            delete this.factorNotes[this.currentNoteFactorName];
-            this.$forceUpdate();
-        },
         checkHomeworkUrl(event) {
             let homeworkUrl = $("#homeworkUrl").typeahead("val");
             if (!homeworkUrl.trim()) {
@@ -140,6 +147,48 @@ let vm = new Vue({
             } else {
                 this.studentsState = "correct";
             }
+        },
+        formatDate(date, includeYear=false) {
+            let options = {
+                day: "numeric",
+                month: "long",
+            };
+            if (includeYear) {
+                options.year = "numeric";
+            }
+            return date.toLocaleDateString('et-EE', options);
+        },
+        onNoteButton(factor) {
+            this.currentNoteFactorName = factor;
+            this.currentNote = "";
+            if (this.factorNotes[factor]) {
+                this.currentNote = this.factorNotes[factor];
+            }
+        },
+        onNoteSaveButton(event) {
+            this.factorNotes[this.currentNoteFactorName] = this.currentNote;
+            this.$forceUpdate();
+        },
+        onNoteDeleteButton(event) {
+            delete this.factorNotes[this.currentNoteFactorName];
+            this.$forceUpdate();
+        },
+        postpone(event) {
+            let latestSubmission = this.previousSubmissions[0];
+            let ld = null;
+            if (latestSubmission) {
+                ld = latestSubmission.date;
+            }
+            let now = new Date();
+            if (latestSubmission && now.getYear() == ld.getYear() &&
+                    now.getMonth() == ld.getMonth() && now.getDay() == ld.getDay()) {
+                this.previousSubmissions.shift();
+            }
+            this.previousSubmissions.unshift({
+                date: now,
+                points: this.numTotalPoints
+            });
+            this.deadline.setDate(this.deadline.getDate() + 7);
         }
     },
     mounted() {
@@ -150,7 +199,7 @@ let vm = new Vue({
 $(function() {
     const studentNames = new Bloodhound({
         local: ["Magnus Teekivi", "Merli Lall", "Ragnar Rebase",
-                "Aivar Loopalu", "Britta Pung", "J"],
+                "Aivar Loopalu", "Britta Pung"],
         queryTokenizer: Bloodhound.tokenizers.whitespace,
         datumTokenizer: Bloodhound.tokenizers.whitespace
     });
@@ -177,6 +226,7 @@ $(function() {
     $('[data-toggle="popover"]').popover({
         html: true
     });
+    $('[data-toggle="tooltip"]').tooltip({ html: true });
 
     $("#homeworkUrl").typeahead({
         minLength: 5

@@ -42,36 +42,45 @@
               Üliõpilased (kuni 2):
             </label>
             <input type="text" id="students" class="form-control" required />
-            <small v-if="studentsState == 'empty'" class="form-text text-danger mb-2">Sisesta vähemalt üks</small>
-            <small v-else class="form-text mb-2 invisible">Sisesta kuni kaks</small>
+            <small v-if="studentsState == 'empty'" class="form-text text-danger mb-2">Sisesta vähemalt üks.</small>
+            <small v-else class="form-text mb-2 invisible">Sisesta kuni kaks.</small>
             <div class="row mt-4">
               <div class="col">
                 <label>Tähtaeg</label>
-                <p class="lead">11. aprill, 2018</p>
+                <p class="lead">
+                  {{ formatDate(deadline) }}
+                  <a v-if="originalDeadline.getTime() != deadline.getTime()" href="#"
+                      data-toggle="tooltip" title="Algtähtaeg: <strong>11. aprill 2018</strong>">
+                    <i class="material-icons original-deadline text-muted">info</i>
+                  </a>
+                </p>
               </div>
               <div class="col">
                 <label>Hilinemine</label>
-                <p class="lead">14 päeva (<points-label :points="dueDatePointsPenalty" suffix="p"></points-label>)</p>
+                <p class="lead">
+                  {{ daysOverdue }} päev<template v-if="daysOverdue != 1">a</template>
+                  (<points-label :points="deadlinePointsPenalty" suffix="p"></points-label>)
+                </p>
               </div>
             </div>
-            <h3 class="mb-3">Varasemad esitamised</h3>
-            <table class="table table-striped">
+            <h3 class="mb-3 mt-2">Varasemad esitamised</h3>
+            <table v-if="previousSubmissions.length > 0" class="table table-striped">
               <tr>
                 <th>Kuupäev</th>
                 <th class="text-center">Punktid</th>
                 <th class="text-center">Vaata</th>
               </tr>
-              <tr>
-                <td>18. aprill 2018</td>
-                <td class="text-center"><span class="text-success">12</span></td>
-                <td class="text-center"><a href="#"><i class="material-icons">search</i></a></td>
-              </tr>
-              <tr>
-                <td>11. aprill 2018</td>
-                <td class="text-center"><span class="text-danger">8</span></td>
+              <tr v-for="submission in previousSubmissions">
+                <td>{{ formatDate(submission.date, true) }}</td>
+                <td class="text-center">
+                  <span :class="{'text-danger': submission.points < 10, 'text-success': submission.points >= 10 }">
+                    {{ submission.points }}
+                  </span>
+                </td>
                 <td class="text-center"><a href="#"><i class="material-icons">search</i></a></td>
               </tr>
             </table>
+            <p v-else class="text-muted">(puuduvad)</p>
             <hr class="d-lg-none" />
           </div>
           <div class="col-lg">
@@ -162,8 +171,8 @@
         </div>
         <div class="row mr-2 mr-lg-0 ml-lg-1">
           <div class="col-2">
-            <button class="btn btn-warning" :disabled="!canPostpone">
-              Pikenda<span class="d-none d-md-inline"> tähtaega</span>
+            <button class="btn btn-warning" :disabled="!canPostpone" @click="postpone">
+              Pikenda<span class="d-none d-md-inline"> 1 nädal</span>
             </button>
           </div>
           <div class="col-8 text-center">
