@@ -30,7 +30,7 @@
             </label>
             <div id="homeworkUrlContainer">
               <input type="url" id="homeworkUrl" class="form-control" placeholder="Sisesta UNI-ID või URL" required
-                  @blur="checkHomeworkUrl" />
+                  @blur="checkHomeworkUrl" @input="resetHomeworkUrlState" />
               <small v-if="homeworkUrlState == 'loading'" class="form-text text-muted mb-2">Laadimine...</small>
               <small v-else-if="homeworkUrlState == 'plagiarism'" class="form-text text-danger mb-2">Tuvastati tõenäoline plagiaat!</small>
               <small v-else-if="homeworkUrlState == 'no-plagiarism'" class="form-text text-success mb-2">Plagiaati ei tuvastatud.</small>
@@ -42,6 +42,8 @@
               Üliõpilased (kuni 2):
             </label>
             <input type="text" id="students" class="form-control" required />
+            <small v-if="studentsState == 'empty'" class="form-text text-danger mb-2">Sisesta vähemalt üks</small>
+            <small v-else class="form-text mb-2 invisible">Sisesta kuni kaks</small>
             <div class="row mt-4">
               <div class="col">
                 <label>Tähtaeg</label>
@@ -160,7 +162,7 @@
         </div>
         <div class="row mr-2 mr-lg-0 ml-lg-1">
           <div class="col-2">
-            <button class="btn btn-warning">
+            <button class="btn btn-warning" :disabled="!canPostpone">
               Pikenda<span class="d-none d-md-inline"> tähtaega</span>
             </button>
           </div>

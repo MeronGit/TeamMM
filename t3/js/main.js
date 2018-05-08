@@ -1,48 +1,3 @@
-$(function() {
-    const studentNames = new Bloodhound({
-        local: ["Magnus Teekivi", "Merli Lall", "Ragnar Rebase",
-                "Aivar Loopalu", "Britta Pung", "J"],
-        queryTokenizer: Bloodhound.tokenizers.whitespace,
-        datumTokenizer: Bloodhound.tokenizers.whitespace
-    });
-    studentNames.initialize();
-
-    $("#students").tagsinput({
-        maxTags: 2,
-        freeInput: false,
-        typeaheadjs: [
-            {
-                higlight: true,
-            },
-            {
-                source: studentNames.ttAdapter()
-            }
-        ]
-    });
-    $("#students").tagsinput("input").on("keydown paste", function(event) {
-        if ($("#students").tagsinput("items").length >= 2) {
-            event.preventDefault();
-        }
-    });
-    $('[data-toggle="popover"]').popover({
-        html: true
-    });
-
-    $("#homeworkUrl").typeahead({
-        minLength: 5
-    },
-    {
-        name: "uniid-to-dijkstra-url",
-        async: false,
-        source: function(query, syncResults) {
-            if (query.match(/^[a-zA-Z]+\.?[a-zA-Z]+$/)) {
-                syncResults([`http://dijkstra.cs.ttu.ee/~${query}/ui/t3/`])
-            }
-        }
-    });
-
-    document.body.className = "";
-});
 
 Vue.component('points-label', {
     props: ['points', 'suffix'],
@@ -56,6 +11,8 @@ let vm = new Vue({
     el: "#app",
     data: {
         homeworkUrlState: "",
+        lastCheckedHomeworkUrl: "",
+        studentsState: "",
         basePointsFactors: [
             "Läbikukkumine, punktid, ja kordamine",
             "Tähelepanu juhitakse animatsioonidega",
@@ -115,15 +72,21 @@ let vm = new Vue({
             }
             return points;
         },
+        canSaveNote() {
+            return this.currentNote.trim().length > 0;
+        },
         pointsBarPercentage() {
             return Math.max(0, Math.min(100, (this.numTotalPoints / 20) * 100));
         },
-        canSubmit() {
-            return this.numTotalPoints >= 10;
+        canPostpone() {
+            return (this.homeworkUrlState == "no-plagiarism" ||
+                        this.homeworkUrlState == "plagiarism") &&
+                        this.studentsState == "correct";
         },
-        //https://stackoverflow.com/questions/6623231/remove-all-white-spaces-from-text
-        canSaveNote() {
-          return this.currentNote.replace(/\s/g,'').length > 0;
+        canSubmit() {
+            return this.numTotalPoints >= 10 &&
+                this.homeworkUrlState == "no-plagiarism" &&
+                this.studentsState == "correct";
         }
     },
     methods: {
@@ -144,23 +107,87 @@ let vm = new Vue({
         },
         checkHomeworkUrl(event) {
             let homeworkUrl = $("#homeworkUrl").typeahead("val");
-            if (!event.target.validity.valid) {
-                this.homeworkUrlState = "incorrect";
-            } else if (!homeworkUrl.trim()) {
+            if (!homeworkUrl.trim()) {
                 this.homeworkUrlState = "empty";
+            } else if (!event.target.validity.valid) {
+                this.homeworkUrlState = "incorrect";
             } else {
-                this.homeworkUrlState = "loading";
+                let timeout = 1000;
+                if (homeworkUrl == this.lastCheckedHomeworkUrl) {
+                    timeout = 0;
+                } else {
+                    this.lastCheckedHomeworkUrl = homeworkUrl;
+                    this.homeworkUrlState = "loading";
+                }
                 let vm = this;
                 setTimeout(function() {
-                    if (vm.homeworkUrlState != "loading") {
+                    if (vm.homeworkUrlState != "loading" && timeout != 0) {
                         return;
                     } else if (homeworkUrl.startsWith("http://dijkstra.cs.ttu.ee/~hacker/ui/t3")) {
                         vm.homeworkUrlState = "plagiarism";
                     } else {
                         vm.homeworkUrlState = "no-plagiarism";
                     }
-                }, 1000);
+                }, timeout);
+            }
+        },
+        resetHomeworkUrlState() {
+            this.homeworkUrlState = "";
+        },
+        checkStudents(event) {
+            if ($("#students").tagsinput("items").length == 0) {
+                this.studentsState = "empty";
+            } else {
+                this.studentsState = "correct";
             }
         }
+    },
+    mounted() {
+        document.body.className = "";
     }
+});
+
+$(function() {
+    const studentNames = new Bloodhound({
+        local: ["Magnus Teekivi", "Merli Lall", "Ragnar Rebase",
+                "Aivar Loopalu", "Britta Pung", "J"],
+        queryTokenizer: Bloodhound.tokenizers.whitespace,
+        datumTokenizer: Bloodhound.tokenizers.whitespace
+    });
+    studentNames.initialize();
+
+    $("#students").tagsinput({
+        maxTags: 2,
+        freeInput: false,
+        typeaheadjs: [
+            {
+                higlight: true,
+            },
+            {
+                source: studentNames.ttAdapter()
+            }
+        ]
+    });
+    $("#students").tagsinput("input").on("input keydown paste", function(event) {
+        if ($("#students").tagsinput("items").length >= 2) {
+            event.preventDefault();
+        }
+    }).on("blur", vm.checkStudents);
+    $("#students").on("itemAdded itemRemoved", vm.checkStudents);
+    $('[data-toggle="popover"]').popover({
+        html: true
+    });
+
+    $("#homeworkUrl").typeahead({
+        minLength: 5
+    },
+    {
+        name: "uniid-to-dijkstra-url",
+        async: false,
+        source: function(query, syncResults) {
+            if (query.match(/^[a-zA-Z]+\.?[a-zA-Z]+$/)) {
+                syncResults([`http://dijkstra.cs.ttu.ee/~${query}/ui/t3/`])
+            }
+        }
+    });
 });
