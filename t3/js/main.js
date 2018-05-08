@@ -120,6 +120,10 @@ let vm = new Vue({
         },
         canSubmit() {
             return this.numTotalPoints >= 10;
+        },
+        //https://stackoverflow.com/questions/6623231/remove-all-white-spaces-from-text
+        canSaveNote() {
+          return this.currentNote.replace(/\s/g,'').length > 0;
         }
     },
     methods: {
