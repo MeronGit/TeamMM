@@ -16,6 +16,7 @@ let vm = new Vue({
         deadline: new Date(2018, 3, 11),
         previousDeadline: null,
         originalDeadline: new Date(2018, 3, 11),
+        initialDeadlinePointsPenalty: 0,
         previousSubmissions: [],
         basePointsFactors: [
             "Läbikukkumine, punktid, ja kordamine",
@@ -42,7 +43,7 @@ let vm = new Vue({
         savedSubmissions: {
             "http://dijkstra.cs.ttu.ee/~mateek/ui/t3/": {
                 students: ["Magnus Teekivi", "Merli Lall"],
-                deadline: new Date(2018, 3, 25),
+                deadline: new Date(2018, 4, 2),
                 previousSubmissions: [
                     {
                         date: new Date(2018, 3, 18),
@@ -96,7 +97,7 @@ let vm = new Vue({
             } else {
                 pointsPenalty = -5;
             }
-            return pointsPenalty;
+            return this.initialDeadlinePointsPenalty + pointsPenalty;
         },
         numBasePointsFactors() {
             return this.selectedBasePointsFactors.length;
@@ -119,7 +120,7 @@ let vm = new Vue({
         },
         numTotalPoints() {
             let points = this.deadlinePointsPenalty;
-            if (this.numBasePoints > 0) {
+            if (this.homeworkUrlState != "plagiarism" && this.numBasePoints > 0) {
                 points += this.numBasePoints;
                 points += this.numBonusPoints;
             }
@@ -156,7 +157,7 @@ let vm = new Vue({
             this.deadline = new Date(2018, 3, 11);
             this.previousDeadline = null;
             this.factorNotes = {};
-            this.gracePoints = this.additionalPoints = 0;
+            this.initialDeadlinePointsPenalty = this.gracePoints = this.additionalPoints = 0;
             this.$forceUpdate();
             $("#homeworkUrl").typeahead('val', '');
             $("#students").tagsinput('removeAll');
@@ -269,6 +270,9 @@ let vm = new Vue({
             if (!this.previousDeadline) {
                 this.previousDeadline = this.deadline;
             }
+            if (this.initialDeadlinePointsPenalty == 0) {
+                this.initialDeadlinePointsPenalty = this.deadlinePointsPenalty;
+            }
             this.deadline = newDeadline;
         },
         undoPostpone(event) {
@@ -282,6 +286,7 @@ let vm = new Vue({
             } else if (this.previousDeadline) {
                 this.deadline = this.previousDeadline;
                 this.previousDeadline = null;
+                this.initialDeadlinePointsPenalty = 0;
             }
         },
         confirmSubmit(event) {
