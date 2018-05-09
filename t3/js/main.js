@@ -14,6 +14,7 @@ let vm = new Vue({
         lastCheckedHomeworkUrl: "",
         studentsState: "",
         deadline: new Date(2018, 3, 11),
+        previousDeadline: null,
         originalDeadline: new Date(2018, 3, 11),
         previousSubmissions: [],
         basePointsFactors: [
@@ -135,6 +136,9 @@ let vm = new Vue({
                         this.homeworkUrlState == "plagiarism") &&
                         this.studentsState == "correct";
         },
+        canUndoPostpone() {
+            return this.canPostpone && !!this.previousDeadline;
+        },
         canSubmit() {
             return this.numTotalPoints >= 10 &&
                 this.homeworkUrlState == "no-plagiarism" &&
@@ -150,6 +154,7 @@ let vm = new Vue({
                 this[field] = [];
             }
             this.deadline = new Date(2018, 3, 11);
+            this.previousDeadline = null;
             this.factorNotes = {};
             this.gracePoints = this.additionalPoints = 0;
             this.$forceUpdate();
@@ -258,8 +263,26 @@ let vm = new Vue({
                 points: this.numTotalPoints
             });
             let newDeadline = new Date(this.deadline.valueOf());
-            newDeadline.setDate(this.deadline.getDate() + 7);
+            do {
+                newDeadline.setDate(newDeadline.getDate() + 7);
+            } while (newDeadline < now);
+            if (!this.previousDeadline) {
+                this.previousDeadline = this.deadline;
+            }
             this.deadline = newDeadline;
+        },
+        undoPostpone(event) {
+            let now = new Date();
+            let newDeadline = new Date(this.deadline.valueOf());
+            newDeadline.setDate(newDeadline.getDate() - 7);
+            if (newDeadline > now || newDeadline.getYear() == now.getYear() &&
+                    newDeadline.getMonth() == now.getMonth() &&
+                    newDeadline.getDate() == now.getDate()) {
+                this.deadline = newDeadline;
+            } else if (this.previousDeadline) {
+                this.deadline = this.previousDeadline;
+                this.previousDeadline = null;
+            }
         },
         confirmSubmit(event) {
             this.resetForm();
@@ -313,4 +336,5 @@ $(function() {
             }
         }
     });
+    $("#homeworkUrl").bind("typeahead:select", vm.checkHomeworkUrl);
 });

@@ -182,7 +182,9 @@
               <button class="btn btn-warning" :disabled="!canPostpone" @click="postpone">
                 Pikenda<span class="d-none d-md-inline"> 1 nädal</span>
               </button>
-              <button class="btn btn-light btn-sm"><i class="material-icons sma">undo</i></button>
+              <button class="btn btn-light btn-sm" :disabled="!canUndoPostpone" @click="undoPostpone">
+                <i class="material-icons sma" title="Võta tagasi">undo</i>
+              </button>
             </div>
           </div>
           <div class="col-6 text-center">
