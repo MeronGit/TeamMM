@@ -13,18 +13,9 @@ let vm = new Vue({
         homeworkUrlState: "",
         lastCheckedHomeworkUrl: "",
         studentsState: "",
-        deadline: new Date(2018, 3, 25),
+        deadline: new Date(2018, 3, 11),
         originalDeadline: new Date(2018, 3, 11),
-        previousSubmissions: [
-            {
-                date: new Date(2018, 3, 18),
-                points: 12
-            },
-            {
-                date: new Date(2018, 3, 11),
-                points: 8
-            }
-        ],
+        previousSubmissions: [],
         basePointsFactors: [
             "Läbikukkumine, punktid, ja kordamine",
             "Tähelepanu juhitakse animatsioonidega",
@@ -47,11 +38,48 @@ let vm = new Vue({
         ],
         selectedBasePointsFactors: [],
         selectedBonusPointsFactors: [],
+        savedSubmissions: {
+            "http://dijkstra.cs.ttu.ee/~mateek/ui/t3/": {
+                students: ["Magnus Teekivi", "Merli Lall"],
+                deadline: new Date(2018, 3, 25),
+                previousSubmissions: [
+                    {
+                        date: new Date(2018, 3, 18),
+                        points: 12
+                    },
+                    {
+                        date: new Date(2018, 3, 11),
+                        points: 8
+                    }
+                ],
+                selectedBasePointsFactors: [
+                    "Tähelepanu juhitakse animatsioonidega",
+                    "Sortimine (lohistamine või klõps)",
+                    "Tähtajaline lisaülesanne",
+                    "Elude kaotamine",
+                    "Ootejärjekord"
+                ],
+                selectedBonusPointsFactors: [
+                    "Ilus kujundus",
+                    "Head ilmumised",
+                    "Heliline tagasiside",
+                    "Mängu õpitavus on hea",
+                ],
+                factorNotes: {
+                    "Ootejärjekord": "Eriti hästi tehtud!",
+                    "Head ilmumised": "Ajastused olid küll aeglased, aga asja eest"
+                },
+                gracePoints: 10,
+                additionalPoints: 4,
+                additionalNotes: "Vaeva on nähtud"
+            }
+        },
         factorNotes: {},
         currentNoteFactorName: "",
         currentNote: "",
         gracePoints: 0,
         additionalPoints: 0,
+        additionalNotes: "",
     },
     computed: {
         daysOverdue() {
@@ -136,6 +164,26 @@ let vm = new Vue({
                         vm.homeworkUrlState = "plagiarism";
                     } else {
                         vm.homeworkUrlState = "no-plagiarism";
+                        let savedSubmission = vm.savedSubmissions[homeworkUrl];
+                        if (savedSubmission) {
+                            let fieldsToOverwrite = [
+                                "deadline",
+                                "previousSubmissions",
+                                "selectedBasePointsFactors",
+                                "selectedBonusPointsFactors",
+                                "factorNotes",
+                                "gracePoints",
+                                "additionalPoints",
+                                "additionalNotes"
+                            ];
+                            for (let fieldName of fieldsToOverwrite) {
+                                vm[fieldName] = savedSubmission[fieldName];
+                            }
+                            $("#students").tagsinput("removeAll");
+                            for (let student of savedSubmission.students) {
+                                $("#students").tagsinput('add', student);
+                            }
+                        }
                     }
                 }, timeout);
             }

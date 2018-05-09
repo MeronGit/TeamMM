@@ -49,7 +49,7 @@
                 <label>Tähtaeg</label>
                 <p class="lead">
                   {{ formatDate(deadline) }}
-                  <a v-if="originalDeadline.getTime() != deadline.getTime()" href="#"
+                  <a :class="{'d-none': originalDeadline.getTime() == deadline.getTime()}" href="#"
                       data-toggle="tooltip" title="Algtähtaeg: <strong>11. aprill 2018</strong>">
                     <i class="material-icons original-deadline text-muted">info</i>
                   </a>
@@ -159,7 +159,7 @@
             Täiendpunktid:
             <input type="number" class="form-control mb-2" v-model.number="additionalPoints" />
             Märkused:
-            <textarea class="form-control"></textarea>
+            <textarea class="form-control" v-model="additionalNotes"></textarea>
           </div>
         </div>
       </div>
@@ -241,19 +241,22 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="submitModalTitle">Kinnita?</h5>
+              <h5 class="modal-title" id="submitModalTitle">Kinnita</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Sulge">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
             <div class="modal-body">
               <p>
-                Kas soovid hinnata töö <strong>{{ numTotalPoints}}</strong> punktile?
+                Hinnata töö <strong>{{ numTotalPoints }}</strong> punktile
+                ja alustada uut hindamist?
               </p>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Katkesta</button>
-              <button type="button" class="btn btn-success" data-dismiss="modal">Salvesta</button>
+              <button type="button" class="btn btn-success" data-dismiss="modal">
+                Kinnita
+              </button>
             </div>
           </div>
         </div>
