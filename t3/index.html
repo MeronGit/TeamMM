@@ -15,6 +15,9 @@
       <div class="p-2">
         <div class="row">
           <div class="col">
+            <button class="btn btn-primary float-right mt-2" @click="resetForm">
+              Uus hindamine
+            </button>
             <h1 class="mb-4 pb-2">Hindamisvorm</h1>
           </div>
         </div>
@@ -253,8 +256,11 @@
               </p>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Katkesta</button>
-              <button type="button" class="btn btn-success" data-dismiss="modal">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                Katkesta
+              </button>
+              <button type="button" class="btn btn-success" data-dismiss="modal"
+                  @click="confirmSubmit">
                 Kinnita
               </button>
             </div>

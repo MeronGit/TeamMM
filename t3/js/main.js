@@ -142,6 +142,20 @@ let vm = new Vue({
         }
     },
     methods: {
+        resetForm() {
+            for (let field of ["homeworkUrlState", "lastCheckedHomeworkUrl", "studentsState", "additionalNotes"]) {
+                this[field] = "";
+            }
+            for (let field of ["previousSubmissions", "selectedBasePointsFactors", "selectedBonusPointsFactors"]) {
+                this[field] = [];
+            }
+            this.deadline = new Date(2018, 3, 11);
+            this.factorNotes = {};
+            this.gracePoints = this.additionalPoints = 0;
+            this.$forceUpdate();
+            $("#homeworkUrl").typeahead('val', '');
+            $("#students").tagsinput('removeAll');
+        },
         checkHomeworkUrl(event) {
             let homeworkUrl = $("#homeworkUrl").typeahead("val");
             if (!homeworkUrl.trim()) {
@@ -246,6 +260,10 @@ let vm = new Vue({
             let newDeadline = new Date(this.deadline.valueOf());
             newDeadline.setDate(this.deadline.getDate() + 7);
             this.deadline = newDeadline;
+        },
+        confirmSubmit(event) {
+            this.resetForm();
+            location.href = "#";
         }
     },
     mounted() {
