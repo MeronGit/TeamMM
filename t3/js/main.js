@@ -56,16 +56,18 @@ let vm = new Vue({
     computed: {
         daysOverdue() {
             let now = new Date();
-            return Math.max(0, Math.floor((now - this.deadline)/(1000*60*60*24)));
+            return Math.floor((now - this.deadline)/(1000*60*60*24));
         },
         deadlinePointsPenalty() {
-            if (this.daysOverdue == 0) {
-                return 0;
+            let pointsPenalty = 0;
+            if (this.daysOverdue <= 0) {
+                pointsPenalty = 0;
             } else if (this.daysOverdue <= 7) {
-                return -2;
+                pointsPenalty = -2;
             } else {
-                return -5;
+                pointsPenalty = -5;
             }
+            return pointsPenalty;
         },
         numBasePointsFactors() {
             return this.selectedBasePointsFactors.length;
@@ -158,6 +160,11 @@ let vm = new Vue({
             }
             return date.toLocaleDateString('et-EE', options);
         },
+        daysSince(date) {
+            let now = new Date();
+            let diff = now - date;
+            return Math.floor(diff/(1000*60*60*24));
+        },
         onNoteButton(factor) {
             this.currentNoteFactorName = factor;
             this.currentNote = "";
@@ -188,7 +195,9 @@ let vm = new Vue({
                 date: now,
                 points: this.numTotalPoints
             });
-            this.deadline.setDate(this.deadline.getDate() + 7);
+            let newDeadline = new Date(this.deadline.valueOf());
+            newDeadline.setDate(this.deadline.getDate() + 7);
+            this.deadline = newDeadline;
         }
     },
     mounted() {
@@ -223,9 +232,7 @@ $(function() {
         }
     }).on("blur", vm.checkStudents);
     $("#students").on("itemAdded itemRemoved", vm.checkStudents);
-    $('[data-toggle="popover"]').popover({
-        html: true
-    });
+    $('[data-toggle="popover"]').popover({ html: true });
     $('[data-toggle="tooltip"]').tooltip({ html: true });
 
     $("#homeworkUrl").typeahead({

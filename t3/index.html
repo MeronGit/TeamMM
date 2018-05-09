@@ -56,10 +56,14 @@
                 </p>
               </div>
               <div class="col">
-                <label>Hilinemine</label>
+                <label v-if="daysOverdue > 0">Hilinemine</label>
+                <label v-else>Jäänud</label>
                 <p class="lead">
-                  {{ daysOverdue }} päev<template v-if="daysOverdue != 1">a</template>
-                  (<points-label :points="deadlinePointsPenalty" suffix="p"></points-label>)
+                  {{ Math.abs(daysOverdue) }}
+                  päev<template v-if="Math.abs(daysSince(deadline)) != 1">a</template>
+                  <template v-if="deadlinePointsPenalty != 0">
+                    (<points-label :points="deadlinePointsPenalty" suffix="p"></points-label>)
+                  </template>
                 </p>
               </div>
             </div>
@@ -175,7 +179,7 @@
               <button class="btn btn-warning" :disabled="!canPostpone" @click="postpone">
                 Pikenda<span class="d-none d-md-inline"> 1 nädal</span>
               </button>
-              <button class="btn btn-light btn-sm"><i class="material-icons">undo</i></button>
+              <button class="btn btn-light btn-sm"><i class="material-icons sma">undo</i></button>
             </div>
           </div>
           <div class="col-6 text-center">
