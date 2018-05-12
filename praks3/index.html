@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Kasside andmebaas</title>
+    <link rel="stylesheet" href="bootstrap.min.css" />
+    <link rel="stylesheet" href="sticky-footer.css" />
+  </head>
+  <body>
+    <main role="main" id="cats" class="container">
+      <h1 class="mt-5 mb-3">Kasside andmebaas - {{getCurrentTabTitle()}}</h1>
+      <ul class="nav nav-tabs">
+        <li class="nav-item">
+          <a class="nav-link" v-bind:class="{active: tabNo==0}" href="#" v-on:click="switchTab(0)">Nimekiri</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" v-bind:class="{active: tabNo==1}" href="#" v-on:click="switchTab(1)">Lisa kass</a>
+        </li>
+      </ul>
+
+      <div v-if="tabNo==0" class="row m-1 mt-3">
+        <div class="col-12">
+          <table class="table table-striped">
+            <tr>
+              <th>Kassi nimi</th>
+              <th>Sünniaasta</th>
+            </tr>
+            <tr v-for="cat in cats">
+              <td>{{cat.name}}</td>
+              <td>{{cat.birthYear}}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div v-if="tabNo==1" class="row m-1 mt-3">
+        <div class="col-6">
+          <form v-on:submit.prevent="addNew">
+            <div class="form-group">
+              <label for="name">Nimi:</label>
+              <input type="text" class="form-control" id="name" v-model="newName" />
+            </div>
+            <div class="form-group">
+              <label for="birthYear">Sünniaasta:</label>
+              <input type="number" class="form-control" id="birthYear" v-model="newBirthYear" />
+            </div>
+            <button type="submit" class="btn btn-primary">Lisa</button>
+          </form>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <span class="text-muted">&copy;2018 by Magnus Teekivi 155705IAPB44</span>
+      </div>
+    </footer>
+
+    <script src="vue.min.js"></script>
+    <script src="main.js"></script>
+  </body>
+</html>

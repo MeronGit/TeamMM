@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>FUI</title>
+    <link href="https://fonts.googleapis.com/css?family=Faster+One|Mrs+Sheppards|VT323" rel="stylesheet">
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="loadingText">
+      LAADIMINE... PALUN OODAKE...
+    </div>
+    <h1>LOGI SISSE</h1>
+    <big class="successMsg">Sisselogimine õnnestus!</big>
+    <input tabindex="-1" id="password" type="password" placeholder="PAROOL ( VÕI SIIS SALASÕNA )" /><br/>
+    <input tabindex="-1" id="email" type="text" placeholder="E-POSTIAADRESS ( MITTE KASUTAJANIMI )" />
+    <button tabindex="-1" onclick="logIn()">lOGI sISSE</button>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <a href="#" onclick="toggleFrustrationsList()">näita nimekirja</a>
+    <pre id="frustrationsList" style="display: none">
+      Epilepsikute vastane kasutajaliides
+      <strong>Kontrast väike (helehall ja valge)</strong>
+      Värinad vormiväljades?
+      Mittefunktsioneeriv tagasi nupp nt.
+      <strong>Uppercase, erinevad fontid</strong>
+      <strong>password enne username'i</strong>
+      <strong>Login screenil peab 3x peale vajutama enne kui sisse saab logida, eelnevatel 2 korral kustuvad andmed ära</strong>
+      <strong>Enne login screeni on loading screen?</strong>
+      <strong>tekst on transformiga kaldu</strong>
+      <strong>tabiga liikumine on keelatud, enter ei toimi</strong>
+      tekst on erineva suurusega
+      Teavita halvast disainist: nupp mittefunktsionaalne
+    </pre>
+    <script src="main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,78 @@
+@keyframes appear {
+    0% {
+        transform: translateY(-100%);
+        opacity: 0.0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1.0;
+    }
+}
+
+body {
+    color: #bbb;
+    font-family: 'Mrs Sheppards', cursive;
+    animation: 5s 2s appear backwards;
+}
+body.attemptTwo {
+    text-align: center;
+    background-color: yellow;
+}
+body.attemptThree {
+    text-align: right;
+    background-color: pink;
+}
+body.success {
+    background-color: green;
+}
+
+body.attemptTwo input[type="text"] {
+    margin-top: 100px;
+}
+
+.successMsg {
+    display: none;
+}
+body.success .successMsg {
+    display: block;
+}
+
+@keyframes skewit {
+    0% {
+        transform: skew(-45deg);
+    }
+    100% {
+        transform: skew(45deg);
+    }
+}
+
+input {
+    font-size: 2em;
+    transform: skew(45deg);
+    animation: .5s skewit infinite linear;
+}
+
+input[type="text"] {
+    font-family: 'Faster One', cursive;
+    animation-direction: alternate;
+}
+input[type="password"] {
+    font-family: 'VT323', monospace;
+    animation-direction: alternate-reverse;
+}
+
+button {
+    transform: rotate(-90deg);
+    transform-origin: top left;
+}
+
+pre {
+    color: black;
+}
+
+.loadingText {
+    color: red;
+    position: absolute;
+    top: 120%;
+    text-align: center;
+}

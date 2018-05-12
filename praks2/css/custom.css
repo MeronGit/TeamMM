@@ -1,0 +1,27 @@
+body {
+    margin-top: 25px;
+}
+
+/*
+img {
+    width: 20%;
+    height: auto;
+    padding: 10px;
+}
+*/
+
+input[type=search] {
+    margin-left: 25px;
+}
+
+input[type=search], .nav-section {
+    margin-top: 6px;
+}
+
+h4 {
+    margin-top: 20px;
+}
+
+.rating {
+    margin-top: 7px;
+}
